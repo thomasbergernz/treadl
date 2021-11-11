@@ -1,8 +1,11 @@
+import re
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import werkzeug
 from chalicelib.util import util
-from chalicelib.api import accounts, users, projects, objects, uploads, billing, groups, search, invitations, root
+from chalicelib.api import accounts, users, projects, objects, uploads, billing, groups, search, invitations, root, activitypub
+
+SERVER_NAME = 'treadl.com'
 
 app = Flask(__name__)
 CORS(app)
@@ -296,3 +299,24 @@ def root_users():
 @app.route('/root/groups', methods=['GET'])
 def root_groups():
   return util.jsonify(root.get_groups(get_user(required=True)))
+
+## ACTIVITYPUB
+
+@app.route('/.well-known/webfinger', methods=['GET']) # /.well-known/webfinger?resource=acct:will@treadl.com
+def well_known_webfinger():
+  resource = request.args.get('resource')
+  rr = re.compile('acct:([a-zA-Z0-9_]+)@([a-zA-Z0-9_.]+)', re.IGNORECASE)
+  match = rr.match(resource)
+  username = match.group(1)
+  servername = match.group(2)
+  if servername == SERVER_NAME:
+    return jsonify(activitypub.webfinger_user(username, servername))
+  return jsonify({'message': 'Server name not recognised'}), 404
+
+@app.route('/activitypub/users/<username>', methods=['GET'])
+def activitypub_user(username):
+  return jsonify(activitypub.user(username))
+
+@app.route('/activitypub/users/<username>/outbox', methods=['GET'])
+def activitypub_user_outbox(username):
+  return jsonify(activitypub.outbox(username))
