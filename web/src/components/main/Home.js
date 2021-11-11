@@ -72,9 +72,10 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
           <h2><span role="img" aria-label="wave">👋</span> {greeting}{user && <span>, {user.username}</span>}</h2>
           <Card fluid color='blue'>
             <Card.Content>
-              <Card.Header>Feedback & more</Card.Header>
-              <p>Please tell us how you're finding Treadl. Also, if you want to help out and improve Treadl then please get in touch!</p>
-              <Button size='mini' icon='envelope' content='Email us' as='a' href='mailto:hello@seastorm.co' />
+              <Card.Header><span role="img" aria-label="Loudspeaker">📣</span> News</Card.Header>
+              <h3>Treadl is now open-source</h3>
+              <p>The source code for Treadl is publicly available to view and use in your own projects. Contributions are encouraged too!</p>
+              <Button size='mini' icon='code' content='View project' as='a' href='https://git.wilw.dev/seastorm/treadl' target='_blank' rel='noopener noreferrer' />
             </Card.Content>
           </Card>
 
