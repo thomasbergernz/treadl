@@ -100,6 +100,12 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
             </Grid.Column>
             <Grid.Column computer={8} textAlign="right">
               <div style={{ paddingTop: 40 }}>
+                <p><small>Treadl software is free and open-source.<br />Contributions to the project are always welcome.</small></p>
+                <p>
+                  <Icon name="code" />
+                  <a href="https://git.wilw.dev/seastorm/treadl" target="_blank" rel="noopener noreferrer">View source code</a>
+                </p>
+                <Divider />
                 <p>
                   <Icon name="book" />
                   <Link to="/privacy">Privacy Policy</Link>

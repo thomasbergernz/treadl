@@ -11,7 +11,7 @@ function MarketingHome({ onRegisterClicked }) {
     <div>
       <Helmet title='Home' />
       <div style={{
-        minHeight: '200px', backgroundImage: 'linear-gradient(to right, #ffafbd, #ffc3a0)', padding: '40px 30px 50px 30px', color: 'white',
+        minHeight: '200px', backgroundImage: 'linear-gradient(to right, rgb(237,1,118), rgb(221,13,197))', padding: '40px 30px 50px 30px', color: 'white',
       }}
       >
         <Container>
@@ -30,8 +30,9 @@ function MarketingHome({ onRegisterClicked }) {
               }}
               >
                 <h4><span role="img" aria-label="party" style={{marginRight: 10}}>🎉</span> Treadl is free</h4>
-                <p>We offer Treadl for free and there are no hidden catches. <a style={{color:'white', textDecoration: 'underline'}} href='#why-free'>Find out why Treadl is free.</a>
-              </p>
+                <p>The Treadl software is <a style={{color:'white', textDecoration: 'underline'}} href='#why-free'>free to use</a></p>
+                <h4><span role="img" aria-label="coder" style={{marginRight: 10}}>🧑‍💻</span> Treadl is open-source</h4>
+                <p>The code powering Treadl is <a style={{color:'white', textDecoration: 'underline'}} href='https://git.wilw.dev/seastorm/treadl' target="_blank" rel="noopener noreferrer">publicly available</a>.</p>
               </div>
             </Grid.Column>
 
@@ -162,7 +163,7 @@ function MarketingHome({ onRegisterClicked }) {
           </Grid.Column>
 
           <Grid.Column computer={6}>
-            <h2>Join us today, and get special benefits when we launch <span role="img" aria-label="rocket">🚀</span></h2>
+            <h2>Ready to get started?</h2>
             <p>See what it's all about. Signing-up only takes a few seconds, and we'd love to hear your feedback.</p>
             <Divider hidden />
             <Button size="large" color="teal" fluid onClick={onRegisterClicked}>Join us</Button>

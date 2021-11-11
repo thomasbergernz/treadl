@@ -12,7 +12,7 @@ import UserChip from 'components/includes/UserChip';
 
 const StyledNavBar = styled.div`
   height:60px;
-  background-image: linear-gradient(to right, #ffafbd, #ffc3a0);
+  background-image: linear-gradient(to right, rgb(237,1,118), rgb(221,13,197));
   padding: 5px 0px;
   .logo{
     height:40px;
