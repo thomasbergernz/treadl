@@ -1,0 +1,13 @@
+export FLASK_APP="app.py"
+export FLASK_ENV="development"
+export FLASK_RUN_PORT="2001"
+export MONGO_URL="mongodb://localhost"
+export MONGO_DATABASE="weaving"
+export JWT_SECRET="devsecret"
+export STRIPE_KEY=""
+export STRIPE_PLAN_HOBBYIST=""
+export STRIPE_PLAN_WEAVER=""
+export GOOGLE_APPLICATION_CREDENTIALS="chalicelib/firebase.json",
+export AWS_S3_BUCKET="treadl-files"
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""

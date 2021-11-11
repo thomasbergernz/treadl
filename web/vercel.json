@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "^/static/(.*)", "destination": "/static/$1"},
+    { "source": "/.well-known/:match*", "destination": "https://api.treadl.com/.well-known/:match*" },
+    { "source": "/users/(.*)", "destination": "https://api.treadl.com/activitypub/users/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
