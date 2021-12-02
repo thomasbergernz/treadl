@@ -1,25 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
-//import { encode } from "blurhash";
 import api from 'api';
-
-/*const loadImage = async src =>
-  new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = (...args) => reject(args);
-    img.src = src;
-  });
-
-const getImageData = image => {
-  const canvas = document.createElement("canvas");
-  canvas.width = image.width;
-  canvas.height = image.height;
-  const context = canvas.getContext("2d");
-  context.drawImage(image, 0, 0);
-  return context.getImageData(0, 0, image.width, image.height);
-};*/
-
 class FileChooser extends Component {
   constructor(props) {
     super(props);
@@ -54,13 +35,6 @@ class FileChooser extends Component {
         api.uploads.generateFileUploadRequest({
           forType: this.props.forType, forId: this.props.for._id, name: fileName, size: file.size, type: file.type,
         }, async (response) => {
-          /*let blurHash;
-          if (file.type.indexOf('image') === 0) {
-            const imageUrl = window.URL.createObjectURL(file);
-            const image = await loadImage(imageUrl);
-            const imageData = getImageData(image);
-            blurHash = encode(imageData.data, imageData.width, imageData.height, 4, 4);
-          }*/
           const xhr = new XMLHttpRequest();
           xhr.open('PUT', response.signedRequest);
           xhr.setRequestHeader('Content-Type', file.type);

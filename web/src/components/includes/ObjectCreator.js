@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Button, Dropdown } from 'semantic-ui-react';
+import { toast } from 'react-toastify';
 import actions from 'actions';
 import api from 'api';
 
@@ -29,6 +30,7 @@ class ObjectCreator extends Component {
       this.props.onCreateObject(object);
       this.props.history.push(`/${this.props.project.fullName}/${object._id}`);
     }, (err) => {
+      toast.error(err.message);
       this.setState({ isUploading: false });
       this.props.onError && this.props.onError(err);
     });

@@ -170,7 +170,7 @@ def create_object(user, username, path, data):
           obj['_id'] = result.inserted_id
           return obj
       except Exception as e:
-        raise util.errors.BadRequest('Unable to load WIF file')
+        raise util.errors.BadRequest('Unable to load WIF file. It is either invalid or in a format Treadl cannot understand.')
     elif data.get('name'):
       pattern = default_pattern.copy()
       pattern['warp'].update({'shafts': data.get('shafts', 8)})
