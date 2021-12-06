@@ -129,10 +129,15 @@ def loads(wif_file):
   draft['warp'] = {}
   draft['warp']['shafts'] = weaving.getint('shafts')
   draft['warp']['threading'] = []
-  draft['warp']['defaultColour'] = draft['colours'][warp.getint('color')-1]
-  warp_colour_index = warp.getint('color') - 1
-  # In case of no color table or colour index out of bounds
-  draft['warp']['defaultColour'] = draft['colours'][warp_colour_index] if len(draft['colours']) > warp_colour_index else draft['colours'][0]
+  
+  
+  if warp.get('color'):
+    warp_colour_index = warp.getint('color') - 1
+    draft['warp']['defaultColour'] = draft['colours'][warp_colour_index]
+
+  else:
+    # In case of no color table or colour index out of bounds
+    draft['warp']['defaultColour'] = draft['colours'][0]
 
   for x in threading:
     shaft = threading[x]
@@ -155,9 +160,13 @@ def loads(wif_file):
   draft['weft'] = {}
   draft['weft']['treadles'] = weaving.getint('treadles')
   draft['weft']['treadling'] = []
-  weft_colour_index = weft.getint('color') - 1
-  # In case of no color table or colour index out of bounds 
-  draft['weft']['defaultColour'] = draft['colours'][weft_colour_index] if len(draft['colours']) > weft_colour_index else draft['colours'][1]
+  
+  if weft.get('color'):
+    weft_colour_index = weft.getint('color') - 1
+    draft['weft']['defaultColour'] = draft['colours'][weft_colour_index]
+  else:
+    # In case of no color table or colour index out of bounds 
+    draft['weft']['defaultColour'] = draft['colours'][1]
 
   for x in treadling:
     shaft = treadling[x]
