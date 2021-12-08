@@ -6,6 +6,7 @@ db = None
 
 def get_db():
   global db
-  if not db:
+
+  if db is None:
     db = MongoClient(os.environ['MONGO_URL'])[os.environ['MONGO_DATABASE']]
   return db
