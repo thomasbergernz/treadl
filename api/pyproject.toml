@@ -5,7 +5,7 @@ description = "Treadl API"
 authors = ["Will <will@seastorm.co>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 flask = "^1.1.1"
 bcrypt = "^3.1.7"
 pyjwt = "^1.7.1"
