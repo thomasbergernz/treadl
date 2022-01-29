@@ -8,6 +8,7 @@ import actions from 'actions';
 import api from 'api';
 
 import UserChip from 'components/includes/UserChip';
+import HelpLink from 'components/includes/HelpLink';
 import ObjectCreator from 'components/includes/ObjectCreator';
 import FormattedMessage from 'components/includes/FormattedMessage';
 import Draft from './objects/Draft.js';
@@ -114,6 +115,8 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
                   </Card.Content>
                 }
               </Card>
+
+              <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects' />
             </Grid.Column>
             )}
 

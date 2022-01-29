@@ -189,6 +189,7 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
                   {user?.roles?.indexOf('root') > -1 &&
                     <Dropdown.Item as={Link} to='/root'>Root</Dropdown.Item>
                   }
+                  <Dropdown.Item as='a' href='https://git.wilw.dev/seastorm/treadl/wiki' target='_blank' rel='noopener noreferrer'>Help</Dropdown.Item>
                   <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -227,6 +228,10 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
             <p><strong>Creating a group:</strong> You have the option to do things alone, or create a group. By clicking on the ‘Create a group’ button, you can name your group, and then invite members via email or directly through Treadl if they are existing Treadl users.</p>
             <p><strong>Creating a new project:</strong> When you are ready to create/store a project on the system, you are invited to give the project a name, and a brief description. You will then be taken to a ‘Welcome to your project’ screen, where if you click on ‘add something’, you have the option of creating a new weaving pattern directly inside Treadl or you can simply import a WIF file from your preferred weaving software. Once imported, you can perform further editing within Treadl, or you can add supporting picture files and any other additional information you wish to keep (eg weaving notes, yarn details etc).</p>
             <p>Once complete you then have the option of saving the file privately, shared within a group, or made public for other Treadl users to see.</p>
+
+            <h3>Help and support</h3>
+            <p>The Treadl Wiki provides useful information that might help you if you get stuck.</p>
+            <Button as='a' href='https://git.wilw.dev/seastorm/treadl/wiki' target='_blank' rel='noopener noreferrer'>View the Wiki</Button>
 
             <h3>We hope you enjoy using Treadl</h3>
             <p>If you have any comments or feedback please tell us by emailing <a href="mailto:hello@treadl.com">hello@treadl.com</a>!</p>

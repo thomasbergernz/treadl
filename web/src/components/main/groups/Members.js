@@ -9,6 +9,7 @@ import actions from 'actions';
 import api from 'api';
 
 import UserChip from 'components/includes/UserChip';
+import HelpLink from 'components/includes/HelpLink';
 import UserSearch from 'components/includes/UserSearch';
 
 function Members({ user, group, members, requests, loading, onReceiveUser, onJoinGroup, onLeaveGroup, onUpdateGroupLoading, onDismissInvitation }) {
@@ -83,12 +84,14 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
           <Grid stackable columns={2}>
             <Grid.Column>
               <p>Share this link with others that you'd like to join your group. You can also send this link to people who don't already have a Treadl account.</p>
+              <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups#discovering-your-group' text='Get help with discovery' marginBottom/>
               <Input ref={joinLinkRef} fluid readOnly value={utils.absoluteUrl(`/groups/${group._id}`)}
                 action=<Button color='teal' icon='copy' onClick={copyLink}/>  
               />
             </Grid.Column>
             <Grid.Column>
               <p>If you know someone who already has a Treadl account you can search for their username and we'll send them an invitation to join your group.</p>
+              <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups#inviting-others-to-your-group' text='Get help with invites' marginBottom/>
               <UserSearch fluid onSelected={sendInvitation}/>
             </Grid.Column>
           </Grid>

@@ -9,6 +9,7 @@ import actions from 'actions';
 import api from 'api';
 
 import UserChip from 'components/includes/UserChip';
+import HelpLink from 'components/includes/HelpLink';
 import Feed from './Feed.js';
 import Members from './Members.js';
 import Projects from './Projects.js';
@@ -137,6 +138,9 @@ function Group({ user, group, requests, myRequests, loading, errorMessage, onRec
                   }
                 </Menu>
               }
+
+              <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups#a-tour-around-your-new-group' />
+
             </Grid.Column>
             <Grid.Column computer={12}>
               {user ?

@@ -7,6 +7,7 @@ import utils from 'utils/utils.js';
 import actions from 'actions';
 import api from 'api';
 
+import HelpLink from 'components/includes/HelpLink';
 class ProjectSettings extends Component {
   constructor(props) {
     super(props);
@@ -54,6 +55,8 @@ class ProjectSettings extends Component {
     return (
       <div>
         <h2>Project settings</h2>
+
+        <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects#changing-the-project-s-settings' />
 
         <Divider hidden section />
 

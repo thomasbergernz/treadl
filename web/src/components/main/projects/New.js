@@ -9,6 +9,7 @@ import actions from 'actions';
 import api from 'api';
 
 import UserChip from 'components/includes/UserChip';
+import HelpLink from 'components/includes/HelpLink';
 
 class NewProject extends Component {
   constructor(props) {
@@ -58,6 +59,9 @@ class NewProject extends Component {
 Create a new project
           </h2>
           <p>This will contain all of the files and patterns for your project.</p>
+
+          <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects#creating-a-new-project' />
+          
           <Divider section />
 
           <h3>About your project</h3>

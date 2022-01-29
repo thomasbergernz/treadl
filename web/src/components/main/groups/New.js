@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import actions from 'actions';
 import api from 'api';
 
+import HelpLink from 'components/includes/HelpLink';
+
 function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onUpdateGroupName, onUpdateGroupDescription, onUpdateGroupClosed, onReceiveGroup, loading, onUpdateGroupLoading, history }) {
 
   const createGroup = () => {
@@ -29,6 +31,9 @@ function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onU
           <Icon name="users" /> Create a new group
         </h2>
         <p>Groups are great for communities of weavers and makers, or to help people of similar interests collaborate and come together.</p>
+
+        <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups#creating-a-new-group' />
+
         <Divider section />
 
         <h3>About your group</h3>

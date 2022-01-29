@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import ElementPan from 'components/includes/ElementPan';
+import HelpLink from 'components/includes/HelpLink';
 
 import Warp from './Warp.js';
 import Weft from './Weft.js';
@@ -100,6 +101,7 @@ class Draft extends Component {
           </Grid.Column>
 
           <Grid.Column computer={4}>
+            <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Editing-patterns#using-the-pattern-editor' marginBottom/>
             <Tools warp={warp} weft={weft} object={this.state} pattern={this.state.pattern} updateObject={this.updateObject} updatePattern={this.updatePattern} saveObject={this.saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
           </Grid.Column>
 

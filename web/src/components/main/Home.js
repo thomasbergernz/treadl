@@ -9,6 +9,7 @@ import api from 'api';
 import utils from 'utils/utils.js';
 
 import UserChip from 'components/includes/UserChip';
+import HelpLink from 'components/includes/HelpLink';
 import ProjectCard from 'components/includes/ProjectCard';
 
 function Home({ user, groups, projects, invitations, loadingProjects, onReceiveProjects, onReceiveInvitations, onDismissInvitation, onReceiveGroup, onJoinGroup }) {
@@ -83,6 +84,7 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
             <Card fluid>
               <Card.Content>
                 <Card.Header>Your groups</Card.Header>
+                
                 <List relaxed>
                   {groups.map(g => 
                     <List.Item key={g._id}>
@@ -95,6 +97,7 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
                   )}
                 </List>
                 <Button fluid size='small' icon='plus' content='Create a new group' as={Link} to='/groups/new' />
+                <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups' text='Learn more about groups' marginTop/>
               </Card.Content>
             </Card>
           :
@@ -126,6 +129,7 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
                 <p>Projects can contain anything - from rough ideas or design experiments through to commissions and exhibitions. Treat them as if they were just weaving-related <span role="img" aria-label="folder">📁</span> folders on your computer.</p>
                 <Divider  />
                 <h4>Start by creating a new project. Don't worry, you can keep it private.</h4>
+                <p><HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects' text='Learn more about projects' marginTop/></p>
                 <Button as={Link} to="/projects/new" color="teal" icon="plus" content="Create a project" />
               </Segment>
 
@@ -136,7 +140,9 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
             <div>
               <Button as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' floated='right'/>
               <h2><Icon name='book' /> Your projects</h2>
-              <p>Projects contain the patterns and files that make up your creations.</p>
+              <p>Projects contain the patterns and files that make up your creations.
+                <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects' text='Learn more about projects' marginLeft/>
+              </p>
               <Divider clearing hidden />
               <Card.Group itemsPerRow={2} stackable>
                 {projects && projects.map(proj => (
