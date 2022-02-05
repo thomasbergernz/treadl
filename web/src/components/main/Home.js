@@ -71,12 +71,19 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
           )}
 
           <h2><span role="img" aria-label="wave">👋</span> {greeting}{user && <span>, {user.username}</span>}</h2>
+
           <Card fluid color='blue'>
             <Card.Content>
-              <Card.Header><span role="img" aria-label="Loudspeaker">📣</span> News</Card.Header>
-              <h3>Treadl is now open-source</h3>
-              <p>The source code for Treadl is publicly available to view and use in your own projects. Contributions are encouraged too!</p>
-              <Button size='mini' icon='code' content='View project' as='a' href='https://git.wilw.dev/seastorm/treadl' target='_blank' rel='noopener noreferrer' />
+              <Card.Header><span role="img" aria-label="Loudspeaker">📣</span> Treadl is open-source</Card.Header>
+              <Card.Description>The source code for Treadl is <a href='https://git.wilw.dev/seastorm/treadl' target='_blank' rel='noopener noreferrer'>publicly available to view</a> and use in your own projects. Contributions are encouraged too!</Card.Description>
+            </Card.Content>
+          </Card>
+
+          <Card fluid color='blue'>
+            <Card.Content>
+              <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support Treadl</Card.Header>
+              <Card.Description>Treadl is offered free of charge, but costs money to run and build. If you get value out of Treadl and want to support its ongoing development, then you can  become a patron!</Card.Description>
+              <Button style={{marginTop: 10}} size='small' as='a' href='https://www.patreon.com/treadl' target='_blank' rel='noopener noreferrer'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
             </Card.Content>
           </Card>
 

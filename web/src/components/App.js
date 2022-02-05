@@ -96,10 +96,13 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
           <Grid>
             <Grid.Column computer={8}>
               <Link to="/"><img alt="Treadl logo" src={logo} style={{ width: '100px', paddingTop: 20, paddingBottom: 20 }} /></Link>
-              <p style={{ color: 'rgb(140,140,140)', fontSize: 11 }}>&copy; {(new Date()).getFullYear()} Seastorm Limited</p>
             </Grid.Column>
             <Grid.Column computer={8} textAlign="right">
               <div style={{ paddingTop: 40 }}>
+                <p>
+                  <Icon name='trophy' />
+                  <a href='https://www.patreon.com/treadl' target='_blank' rel='noopener noreferrer'>Become a patron</a>
+                </p>
                 <p>
                   <Icon name='book' />
                   <a href='https://git.wilw.dev/seastorm/treadl/wiki' target='_blank' rel='noopener noreferrer'>Documentation</a>

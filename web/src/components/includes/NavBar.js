@@ -43,6 +43,7 @@ const StyledNavBar = styled.div`
 const SearchBar = styled.div`
   background-color:rgba(0,0,0,0.1);
   padding-left:5px;
+  padding-top: 3px;
   color:white;
   border: none;
   border-radius:5px;
@@ -56,11 +57,20 @@ const SearchBar = styled.div`
   &:focus-within{
     background-color:rgba(250,250,250,0.5);
     color:rgb(50,50,50);
+    input {
+      outline: none;
+    }
+    input::placeholder {
+      color:black;
+    }
   }
   input{
     border:none;
     background:none;
     padding:8px;
+    &::placeholder {
+      color:white;
+    }
   }
 `;
 
