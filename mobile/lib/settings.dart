@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 
 class SettingsScreen extends StatelessWidget {
+  final TextEditingController _passwordController = TextEditingController();
  
   void _logout(BuildContext context) async {
     Api api = Api();
@@ -12,6 +13,64 @@ class SettingsScreen extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();      
     prefs.remove('apiToken');
     Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (Route<dynamic> route) => false);
+  }
+
+  void _deleteAccount(BuildContext context) async {
+
+    AlertDialog alert = AlertDialog(
+      title: Text('Delete your Treadl account'),
+      content: Column(children: [
+        Text('We will remove your account, along with any projects and items you\'ve created. To continue, please enter your account password.'),
+        SizedBox(height: 20),
+        TextField(
+          controller: _passwordController,
+          obscureText: true,
+          decoration: InputDecoration(
+            hintText: 'Type your password...', labelText: 'Account Password'
+          )
+        ),
+      ]),
+      actions: [
+        FlatButton(
+          child: Text('Cancel'),
+          onPressed: () { Navigator.of(context).pop(); }
+        ),
+        RaisedButton(
+          child: Text('Delete Account'),
+          onPressed: () async {
+            Api api = Api();
+            var data = await api.request('DELETE', '/accounts', {'password': _passwordController.text});
+            if (data['success'] == true) {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.remove('apiToken');
+              Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (Route<dynamic> route) => false);
+            } else {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => CupertinoAlertDialog(
+                  title: new Text('There was a problem with deleting your account'),
+                  content: new Text(data['message']),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      isDefaultAction: true,
+                      child: Text('OK'),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                )
+              );
+            }
+          }
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override
@@ -26,42 +85,32 @@ class SettingsScreen extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: 
-              Text('Thanks for using Treadl', style: Theme.of(context).textTheme.titleMedium),
+              Text('Thanks for using Treadl', style: Theme.of(context).textTheme.titleLarge),
           ),
           Container(
-            child: Text("Treadl is an app for managing your projects and for keeping in touch with your weaving communities.\n\nWe're always trying to make Treadl better for our users, so if you have any feedback please let us know!", style: Theme.of(context).textTheme.bodyText1)
+            child: Text("Treadl is an app for managing your projects and for keeping in touch with your weaving communities.\n\nWe're always trying to make Treadl better, so if you have any feedback please let us know!", style: Theme.of(context).textTheme.bodyText1)
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-            child: RaisedButton(
-              onPressed: () => launch('https://twitter.com/treadlhq'),
-              child: new Text("Follow us on Twitter",
-                textAlign: TextAlign.center,
-              )
-            )
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: 
-              Text('Open development', style: Theme.of(context).textTheme.titleMedium),
-          ),
-          Container(
-            child: Text("We develop Treadl with an open roadmap, inviting comments and suggestions for upcoming features.", style: Theme.of(context).textTheme.bodyText1)
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-            child: RaisedButton(
-              onPressed: () => launch('https://www.notion.so/ddc7dbc3520b49a0ade2994adbaf27dc?v=9a6e74b785fb403689030a4cabd8122c'),
-              child: new Text("View roadmap",
-                textAlign: TextAlign.center,
-              )
-            )
-          ),
+
+          SizedBox(height: 30),
       
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () => _logout(context),
+          ),
+          ListTile(
+            leading: Icon(Icons.delete),
+            title: Text('Delete Account'),
+            onTap: () => _deleteAccount(context),
+          ),
+
+          SizedBox(height: 30),
+
+          ListTile(
+            leading: Icon(Icons.link),
+            trailing: Icon(Icons.explore),
+            title: Text('Visit Our Website'),
+            onTap: () => launch('https://treadl.com'),
           ),
           ListTile(
             leading: Icon(Icons.insert_drive_file),
@@ -75,8 +124,6 @@ class SettingsScreen extends StatelessWidget {
             title: Text('Privacy Policy'),
             onTap: () => launch('https://treadl.com/privacy'),
           ),
-          SizedBox(height: 30),
-          Text('Copyright 2020 Seastorm Limited',textAlign: TextAlign.center)
         ]
       ),
     );

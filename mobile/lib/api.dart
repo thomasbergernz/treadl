@@ -24,7 +24,7 @@ class Api {
     if (token != null) {
       headers['Authorization'] = 'Bearer ' + token;
     }
-    if (method == 'POST') {
+    if (method == 'POST' || method == 'DELETE') {
       headers['Content-Type'] = 'application/json';
     }
     return headers;
@@ -44,9 +44,14 @@ class Api {
     http.Client client = http.Client();
     return await client.put(url, headers: await getHeaders('POST'), body: json);
   }
-  Future<http.Response> _delete(Uri url) async {
+  Future<http.Response> _delete(Uri url, [Map<String, dynamic> data]) async {
     http.Client client = http.Client();
-    return await client.delete(url, headers: await getHeaders('DELETE'));
+    if (data != null) {
+      String json = jsonEncode(data);
+      return await client.delete(url, headers: await getHeaders('DELETE'), body: json);
+    } else {
+      return await client.delete(url, headers: await getHeaders('DELETE'));
+    }
   }
 
   Future<Map<String, dynamic>> request(String method, String path, [Map<String, dynamic> data]) async {
@@ -63,7 +68,7 @@ class Api {
       response = await _get(uri);
     }
     if (method == 'DELETE') {
-      response = await _delete(uri);
+      response = await _delete(uri, data);
     }
     int status = response.statusCode;
     if (status == 200) {
@@ -74,7 +79,7 @@ class Api {
     else {
       print('ERROR');
       Map<String, dynamic> respData = jsonDecode(response.body);
-      return {'success': false, 'code': response.statusCode, 'message': respData['Message']};
+      return {'success': false, 'code': response.statusCode, 'message': respData['message']};
     }
   }
 
