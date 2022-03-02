@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Api {
 
   String _token;
-  final String apiBase = 'https://api.treadl.com';
-  //final String apiBase = 'http://localhost:8000';
+  //final String apiBase = 'https://api.treadl.com';
+  final String apiBase = 'http://localhost:2001';
 
   Future<String> loadToken() async {
     if (_token != null) {
@@ -30,39 +30,40 @@ class Api {
     return headers;
   }
 
-  Future<http.Response> _get(String url) async {
+  Future<http.Response> _get(Uri url) async {
     http.Client client = http.Client();
     return await client.get(url, headers: await getHeaders('GET'));
   }
-  Future<http.Response> _post(String url, Map<String, dynamic> data) async {
+  Future<http.Response> _post(Uri url, Map<String, dynamic> data) async {
     String json = jsonEncode(data);
     http.Client client = http.Client();
     return await client.post(url, headers: await getHeaders('POST'), body: json);
   }
-  Future<http.Response> _put(String url, Map<String, dynamic> data) async {
+  Future<http.Response> _put(Uri url, Map<String, dynamic> data) async {
     String json = jsonEncode(data);
     http.Client client = http.Client();
     return await client.put(url, headers: await getHeaders('POST'), body: json);
   }
-  Future<http.Response> _delete(String url) async {
+  Future<http.Response> _delete(Uri url) async {
     http.Client client = http.Client();
     return await client.delete(url, headers: await getHeaders('DELETE'));
   }
 
   Future<Map<String, dynamic>> request(String method, String path, [Map<String, dynamic> data]) async {
     String url = apiBase + path;
+    Uri uri = Uri.parse(url);
     http.Response response;
     if (method == 'POST') {
-      response = await _post(url, data);
+      response = await _post(uri, data);
     }
     if (method == 'PUT') {
-      response = await _put(url, data);
+      response = await _put(uri, data);
     }
     if (method == 'GET') {
-      response = await _get(url);
+      response = await _get(uri);
     }
     if (method == 'DELETE') {
-      response = await _delete(url);
+      response = await _delete(uri);
     }
     int status = response.statusCode;
     if (status == 200) {
@@ -78,11 +79,12 @@ class Api {
   }
 
  Future<bool> putFile(String url, File file, String contentType) async { 
+    Uri uri = Uri.parse(url);
     http.Client client = http.Client();
     Map<String,String> headers = {
       'Content-Type': contentType
     };
-    http.Response response = await client.put(url, headers: headers, body: await file.readAsBytes());
+    http.Response response = await client.put(uri, headers: headers, body: await file.readAsBytes());
     int status = response.statusCode;
     return status == 200;
   }

@@ -19,11 +19,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _requestPushPermissions() async {
     setState(() => _loading = true);
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+    FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+    await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    _pushToken = await _firebaseMessaging.getToken();
+    /*final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
     await _firebaseMessaging.requestNotificationPermissions(
       const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false),
     );
-    _pushToken = await _firebaseMessaging.getToken();
+    _pushToken = await _firebaseMessaging.getToken();*/
     if (_pushToken != null) {
       api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken});
     }
@@ -99,12 +110,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 RaisedButton(
                   child: Text('Let\'s go'),
                   onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false),
-                ),
-                SizedBox(height: 30),
-                RaisedButton(
-                  child: Text('Follow us on Twitter', style: TextStyle(color: Colors.white)),
-                  onPressed: () => launch('https://twitter.com/treadlhq'),
-                  color: Colors.blue[600],
                 ),
               ]
             )

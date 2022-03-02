@@ -71,7 +71,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
                 onChanged: (c) => _toggleVisibility(context, c),
               ),
               SizedBox(width: 10),
-              Text('Private project', style: Theme.of(context).textTheme.body1),
+              Text('Private project', style: Theme.of(context).textTheme.bodyText1),
             ]
           )
         ),

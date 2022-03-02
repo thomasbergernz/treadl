@@ -87,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 textAlign: TextAlign.center,
                 text: TextSpan(
                   text: 'By registering you agree to Treadl\'s ',
-                  style: Theme.of(context).textTheme.body1,
+                  style: Theme.of(context).textTheme.bodyText1,
                   children: <TextSpan>[
                     TextSpan(text: 'Terms of Use', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.pink), recognizer: new TapGestureRecognizer()..onTap = () => launch('https://treadl.com/terms-of-use')),
                     TextSpan(text: ' and '),

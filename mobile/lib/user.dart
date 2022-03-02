@@ -60,7 +60,7 @@ class _UserScreenState extends State<UserScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(_user['username'], style: Theme.of(context).textTheme.title),
+                    Text(_user['username'], style: Theme.of(context).textTheme.titleMedium),
                     SizedBox(height: 5),
                     _user['location'] != null ?
                       Row(children: [

@@ -26,10 +26,10 @@ class SettingsScreen extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: 
-              Text('Thanks for using Treadl', style: Theme.of(context).textTheme.title),
+              Text('Thanks for using Treadl', style: Theme.of(context).textTheme.titleMedium),
           ),
           Container(
-            child: Text("Treadl is an app for managing your projects and for keeping in touch with your weaving communities.\n\nWe're always trying to make Treadl better for our users, so if you have any feedback please let us know!", style: Theme.of(context).textTheme.body1)
+            child: Text("Treadl is an app for managing your projects and for keeping in touch with your weaving communities.\n\nWe're always trying to make Treadl better for our users, so if you have any feedback please let us know!", style: Theme.of(context).textTheme.bodyText1)
           ),
           Container(
             margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
@@ -43,10 +43,10 @@ class SettingsScreen extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: 
-              Text('Open development', style: Theme.of(context).textTheme.title),
+              Text('Open development', style: Theme.of(context).textTheme.titleMedium),
           ),
           Container(
-            child: Text("We develop Treadl with an open roadmap, inviting comments and suggestions for upcoming features.", style: Theme.of(context).textTheme.body1)
+            child: Text("We develop Treadl with an open roadmap, inviting comments and suggestions for upcoming features.", style: Theme.of(context).textTheme.bodyText1)
           ),
           Container(
             margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
