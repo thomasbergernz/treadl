@@ -4,6 +4,7 @@ from chalicelib.util import database, mail, util
 from chalicelib.api import uploads
 
 jwt_secret = os.environ['JWT_SECRET']
+MIN_PASSWORD_LENGTH = 8
 
 def register(username, email, password):
   if not username or len(username) < 4 or not email or len(email) < 6:
@@ -12,8 +13,8 @@ def register(username, email, password):
   email = email.lower()
   if not re.match("^[a-z0-9_]+$", username):
     raise util.errors.BadRequest('Usernames can only contain letters, numbers, and underscores')
-  if not password or len(password) < 6:
-    raise util.errors.BadRequest('Your password should be longer.')
+  if not password or len(password) < MIN_PASSWORD_LENGTH:
+    raise util.errors.BadRequest('Your password should be at least {0} characters.'.format(MIN_PASSWORD_LENGTH))
   db = database.get_db()
   existingUser = db.users.find_one({'$or': [{'username': username}, {'email': email}]})
   if existingUser:
@@ -104,7 +105,7 @@ def update_email(user, data):
 def update_password(user, data):
   if not data: raise util.errors.BadRequest('Invalid request')
   if 'newPassword' not in data: raise util.errors.BadRequest('Invalid request')
-  if len(data['newPassword']) < 6: raise util.errors.BadRequest('New password is too short')
+  if len(data['newPassword']) < MIN_PASSWORD_LENGTH: raise util.errors.BadRequest('New password should be at least {0} characters long'.format(MIN_PASSWORD_LENGTH))
 
   db = database.get_db()
   if 'currentPassword' in data:
@@ -123,6 +124,12 @@ def update_password(user, data):
 
   hashed_password = bcrypt.hashpw(data['newPassword'].encode("utf-8"), bcrypt.gensalt())
   db.users.update({'_id': user['_id']}, {'$set': {'password': hashed_password}, '$unset': {'tokens.passwordReset': ''}})
+
+  mail.send({
+    'to_user': user,
+    'subject': 'Your Treadl password has changed',
+    'text': 'Dear {},\n\nThis email is to let you know that we recently received a request to change your account password on Treadl. We have now made this change.\n\nIf you think this is a mistake then please login to change your password as soon as possible.'.format(user['username'])
+  })
   return {'passwordUpdated': True}
 
 def delete(user, password):
