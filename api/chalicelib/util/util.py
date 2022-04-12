@@ -1,9 +1,34 @@
 import json, datetime
+from flask import request
 import werkzeug
+from flask_limiter.util import get_remote_address
 from bson.objectid import ObjectId
 from chalicelib.api import accounts, billing
+from chalicelib.util import util
 
 errors = werkzeug.exceptions
+
+def get_user(required = True):
+  headers = request.headers
+  if not headers.get('Authorization') and required:
+    raise util.errors.Unauthorized('This resource requires authentication')
+  if headers.get('Authorization'):
+    user = accounts.get_user_context(headers.get('Authorization').replace('Bearer ', ''))
+    if user is None and required:
+      raise util.errors.Unauthorized('Invalid token')
+    return user
+  return None
+
+def limit_by_client():
+  data = request.get_json()
+  if data:
+    if data.get('email'): return data.get('email')
+    if data.get('token'): return data.get('token')
+  return get_remote_address()
+
+def limit_by_user():
+  user = util.get_user(required = False)
+  return user['_id'] if user else get_remote_address()
 
 def has_plan(user, plan_key):
   if not user: return False

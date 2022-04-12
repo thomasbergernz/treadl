@@ -109,6 +109,7 @@ def update_password(user, data):
 
   db = database.get_db()
   if 'currentPassword' in data:
+    if not user: raise util.errors.BadRequest('User context is required')
     if not bcrypt.checkpw(data['currentPassword'].encode('utf-8'), user['password']):
       raise util.errors.BadRequest('Incorrect password')
   elif 'token' in data:
