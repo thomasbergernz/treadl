@@ -40,7 +40,7 @@ To login to your account please visit https://treadl.com and click Login. Use yo
 
 INTRODUCTION
 
-Treadl has been designed as a resource for weavers – not only for those working alone as individuals, but also for groups who wish to share ideas, design inspirations and weaving patterns. It is ideal for those looking for a depository to store their individual work, and also for groups such as guilds, teaching groups, or any other collaborative working partnerships. 
+Treadl has been designed as a resource for weavers – not only for those working alone as individuals, but also for groups who wish to share ideas, design inspirations and weaving patterns. It is ideal for those looking for a depository to store their individual work, and also for groups such as guilds, teaching groups, or any other collaborative working partnerships.
 Projects can be created within Treadl using the integral WIF-compatible draft editor, or alternatively files can be imported from other design software along with supporting images and other information you may wish to be saved within the project file. Once complete, projects may be stored privately, shared within a closed group, or made public for other Treadl users to see. The choice is yours!
 
 Treadl is free to use. For more information please visit our website at https://treadl.com.
@@ -69,7 +69,7 @@ The Treadl Team
 
 def login(email, password):
   db = database.get_db()
-  user = db.users.find_one({'$or': [{'username': email.lower()}, {'email': email}]})
+  user = db.users.find_one({'$or': [{'username': email.lower()}, {'email': email.lower()}]})
   try:
     if user and bcrypt.checkpw(password.encode("utf-8"), user['password']):
       return {'token': generate_access_token(user['_id'])}
@@ -120,7 +120,7 @@ def update_password(user, data):
   else:
     raise util.errors.BadRequest('Current password or reset token is required')
   if not user: raise util.errors.BadRequest('Unable to change your password')
-  
+
   hashed_password = bcrypt.hashpw(data['newPassword'].encode("utf-8"), bcrypt.gensalt())
   db.users.update({'_id': user['_id']}, {'$set': {'password': hashed_password}, '$unset': {'tokens.passwordReset': ''}})
   return {'passwordUpdated': True}
