@@ -3,7 +3,7 @@ from flask import request
 import werkzeug
 from flask_limiter.util import get_remote_address
 from bson.objectid import ObjectId
-from chalicelib.api import accounts, billing
+from chalicelib.api import accounts
 from chalicelib.util import util
 
 errors = werkzeug.exceptions
@@ -29,18 +29,6 @@ def limit_by_client():
 def limit_by_user():
   user = util.get_user(required = False)
   return user['_id'] if user else get_remote_address()
-
-def has_plan(user, plan_key):
-  if not user: return False
-  user_billing = user.get('billing', {})
-  if plan_key == 'free':
-    if not user_billing.get('planId'): return True
-  plan_id = None
-  for plan in billing.plans:
-    if plan['key'] == plan_key:
-      plan_id = plan['id']
-      break
-  return user_billing.get('planId') == plan_id
 
 def can_view_project(user, project):
   if not project: return False

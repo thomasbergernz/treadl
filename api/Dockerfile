@@ -9,7 +9,7 @@ RUN pip install poetry
 COPY poetry.lock /app
 COPY pyproject.toml /app
 
-RUN poetry export -f requirements.txt | pip install -r /dev/stdin
+RUN poetry export --without-hashes -f requirements.txt | pip install -r /dev/stdin
 
 # Add remaining files
 COPY . /app/

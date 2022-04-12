@@ -3,7 +3,7 @@ from flask_limiter import Limiter
 from flask_cors import CORS
 import werkzeug
 from chalicelib.util import util
-from chalicelib.api import accounts, users, projects, objects, uploads, billing, groups, search, invitations, root
+from chalicelib.api import accounts, users, projects, objects, uploads, groups, search, invitations, root
 
 app = Flask(__name__)
 CORS(app)
@@ -123,30 +123,6 @@ def project_by_path(username, project_path):
     return util.jsonify(projects.update(util.get_user(), username, project_path, request.json))
   if request.method == 'DELETE':
     return util.jsonify(projects.delete(util.get_user(), username, project_path))
-
-
-# BILLING
-
-@app.route('/billing', methods=['GET'])
-def get_billing():
-  return util.jsonify(billing.get(util.get_user()))
-
-@app.route('/billing/plans', methods=['GET'])
-def get_plans():
-  return util.jsonify(billing.get_plans(util.get_user(required=False)))
-
-@app.route('/billing/card', methods=['GET', 'PUT', 'DELETE'])
-def card():
-  if request.method == 'PUT':
-    return util.jsonify(billing.update_card(util.get_user(), request.json))
-  if request.method == 'DELETE':
-    return util.jsonify(billing.delete_card(util.get_user()))
-
-@app.route('/billing/subscription/<plan_id>', methods=['PUT'])
-def subscription(plan_id):
-  if request.method == 'PUT':
-    return util.jsonify(billing.select_plan(util.get_user(), plan_id))
-
 
 # OBJECTS
 
@@ -286,7 +262,7 @@ def invite_route(id):
 
 @app.route('/root/users', methods=['GET'])
 def root_users():
-  return util.jsonify(root.util.get_users(util.get_user(required=True)))
+  return util.jsonify(root.get_users(util.get_user(required=True)))
 @app.route('/root/groups', methods=['GET'])
 def root_groups():
   return util.jsonify(root.get_groups(util.get_user(required=True)))

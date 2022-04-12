@@ -11,7 +11,6 @@ def me(user):
     'email': user.get('email'),
     'avatar': user.get('avatar'),
     'avatarUrl': user.get('avatar') and uploads.get_presigned_url('users/{0}/{1}'.format(user['_id'], user['avatar'])),
-    'planId': user.get('billing', {}).get('planId'),
     'roles': user.get('roles', []),
     'groups': user.get('groups', []),
     'subscriptions': user.get('subscriptions')
