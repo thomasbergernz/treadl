@@ -1,13 +1,23 @@
+import os
 from flask import Flask, request, jsonify
 from flask_limiter import Limiter
 from flask_cors import CORS
 import werkzeug
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 from chalicelib.util import util
 from chalicelib.api import accounts, users, projects, objects, uploads, groups, search, invitations, root
 
 app = Flask(__name__)
 CORS(app)
 limiter = Limiter(app, default_limits=['20 per minute'], key_func=util.limit_by_user)
+
+if os.environ.get('SENTRY_DSN'):
+  sentry_sdk.init(
+    dsn=os.environ['SENTRY_DSN'],
+    integrations=[FlaskIntegration()],
+    traces_sample_rate=1.0
+  )
 
 @app.errorhandler(werkzeug.exceptions.TooManyRequests)
 def handle_429(e):
@@ -24,6 +34,9 @@ def handle_forbidden(e):
 @app.errorhandler(werkzeug.exceptions.NotFound)
 def handle_not_found(e):
   return jsonify({'message': e.description}), 404
+@app.route('/debug-sentry')
+def trigger_error():
+  division_by_zero = 1 / 0
 
 # ACCOUNTS
 @limiter.limit('5 per minute', key_func=util.limit_by_client, methods=['POST'])
