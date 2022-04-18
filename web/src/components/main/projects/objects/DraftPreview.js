@@ -59,14 +59,16 @@ class DraftPreview extends Component {
       const weftColourwayCanvas = document.querySelector(`.preview-${id} .weft-colourway`);
       const drawdownCanvas = document.querySelector(`.preview-${id} .drawdown`);
       const tieupsCanvas = document.querySelector(`.preview-${id} .tieups`);
-      ctx.drawImage(warpColourwayCanvas, canvas.width - warpCanvas.width - weft.treadles * baseSize - 20, 0);
-      ctx.drawImage(warpCanvas, canvas.width - warpCanvas.width - weft.treadles * baseSize - 20, 10);
-      ctx.drawImage(weftCanvas, canvas.width - 10 - weft.treadles * baseSize, warp.shafts * baseSize + 20);
-      ctx.drawImage(weftColourwayCanvas, canvas.width - 10, warp.shafts * baseSize + 20);
-      ctx.drawImage(tieupsCanvas, canvas.width - weft.treadles * baseSize - 10, 10);
-      ctx.drawImage(drawdownCanvas, canvas.width - drawdownCanvas.width - weft.treadles * baseSize - 20, warp.shafts * baseSize + 20);
+      if (warpCanvas) {
+        ctx.drawImage(warpColourwayCanvas, canvas.width - warpCanvas.width - weft.treadles * baseSize - 20, 0);
+        ctx.drawImage(warpCanvas, canvas.width - warpCanvas.width - weft.treadles * baseSize - 20, 10);
+        ctx.drawImage(weftCanvas, canvas.width - 10 - weft.treadles * baseSize, warp.shafts * baseSize + 20);
+        ctx.drawImage(weftColourwayCanvas, canvas.width - 10, warp.shafts * baseSize + 20);
+        ctx.drawImage(tieupsCanvas, canvas.width - weft.treadles * baseSize - 10, 10);
+        ctx.drawImage(drawdownCanvas, canvas.width - drawdownCanvas.width - weft.treadles * baseSize - 20, warp.shafts * baseSize + 20);
 
-      this.props.onImageLoaded(canvas.toDataURL());
+        this.props.onImageLoaded(canvas.toDataURL());
+      }
     }, 500);
   }
 

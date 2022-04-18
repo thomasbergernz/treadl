@@ -19,7 +19,10 @@ def delete(user, id):
 
 def get(user, id):
   db = database.get_db()
-  return db.objects.find_one(ObjectId(id))
+  obj = db.objects.find_one(ObjectId(id))
+  if not obj:
+    raise util.errors.NotFound('Object not found')
+  return obj
 
 def copy_to_project(user, id, project_id):
   db = database.get_db()

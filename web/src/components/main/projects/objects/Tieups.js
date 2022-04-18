@@ -36,8 +36,10 @@ class Tieups extends Component {
     const tieups = Object.assign([], this.props.tieups);
 
     if (tieup >= tieups.length) this.fillUpTo(tieups, tieup);
-    if (tieups[tieup] && tieups[tieup].indexOf(shaft) === -1) tieups[tieup].push(shaft);
-    else tieups[tieup].splice(tieups[tieup].indexOf(shaft));
+    if (tieups[tieup] !== undefined) {
+      if (tieups[tieup].indexOf(shaft) === -1) tieups[tieup].push(shaft);
+      else tieups[tieup].splice(tieups[tieup].indexOf(shaft));
+    }
     this.props.updatePattern({ tieups });
   }
 
