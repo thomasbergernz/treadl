@@ -227,7 +227,7 @@ const mapStateToProps = (state, ownProps) => {
     return aDate < bDate;
   });
   const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const myProjects = state.projects.projects.filter(p => p.owner && p.owner.username === user.username);
+  const myProjects = state.projects.projects.filter(p => p.owner?.username === user?.username);
   return { user, myProjects, project, objects, fullProjectPath: `${username}/${projectPath}`, object, comments };
 };
 const mapDispatchToProps = dispatch => ({
