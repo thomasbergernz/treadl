@@ -112,6 +112,7 @@ class Tools extends Component {
     }
     this.props.updatePattern({ warp });
     this.props.onEditorUpdated();
+    this.props.onEditorUpdated({ tool: 'pan' });
   }
   changeHeight = () => {
     const newHeight = parseInt(window.prompt('Enter a new height for your pattern.\n\nIMPORTANT: If your new height is less than the current height, then any treadles selected beyond the new height will be lost.'));

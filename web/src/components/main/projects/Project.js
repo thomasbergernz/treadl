@@ -39,7 +39,7 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
   }
 
   return (
-    <Container style={{ marginTop: '40px' }}>
+    <Container fluid style={{ marginTop: '40px', padding: '0px 20px' }}>
       <Helmet title={project?.name || 'Project'} />
       {errorMessage && (
       <Message>

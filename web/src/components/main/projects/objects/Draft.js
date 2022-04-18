@@ -70,15 +70,15 @@ class Draft extends Component {
     const { warp, weft, tieups, baseSize } = this.state.pattern;
     const cellStyle = { width: `${baseSize || 10}px`, height: `${baseSize || 10}px` };
     return (
-      <Grid stackable>
+      <div>
         <Helmet title={`${this.state?.name || 'Weaving Draft'}`} />
         <Prompt
           when={unsaved ? true : false}
           message='You have unsaved changes. Are you sure you want to leave tnis page?'
         />
-        <Grid.Row>
+        <div style={{display: 'flex'}}>
 
-          <Grid.Column computer={12}>
+          <div style={{flex: 1, overflow: 'hidden'}}>
             <ElementPan
               disabled={!(this.props.editor && this.props.editor.tool === 'pan')}
               startX={5000}
@@ -98,15 +98,15 @@ class Draft extends Component {
 
               </StyledPattern>
             </ElementPan>
-          </Grid.Column>
+          </div>
 
-          <Grid.Column computer={4}>
+          <div style={{width: 300, marginLeft: 20}}>
             <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Editing-patterns#using-the-pattern-editor' marginBottom/>
             <Tools warp={warp} weft={weft} object={this.state} pattern={this.state.pattern} updateObject={this.updateObject} updatePattern={this.updatePattern} saveObject={this.saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
-          </Grid.Column>
+          </div>
 
-        </Grid.Row>
-      </Grid>
+        </div>
+      </div>
     );
   }
 }
