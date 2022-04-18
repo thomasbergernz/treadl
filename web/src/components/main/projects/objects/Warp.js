@@ -10,7 +10,7 @@ const StyledWarp = styled.div`
   position: absolute;
   right: ${props => (props.treadles * props.baseSize) + 20}px;
   height: ${props => (props.shafts * props.baseSize) + 10}px;
-  width: 2000;
+  width: ${props => (props.threading * props.baseSize) + 10}px;
   .warp-colourway td{
     border:none;
     border-top:1px solid rgb(150,150,150);
@@ -197,9 +197,9 @@ class Warp extends Component {
     const { warp, weft, baseSize } = this.props;
     return (
       <StyledWarp treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize}>
-        <canvas className='warp-colourway' ref="colourway" width={2000} height={10}
+        <canvas className='warp-colourway' ref="colourway" width={warp.threading.length * baseSize} height={10}
           style={{
-            position: 'absolute', top: 0, right: 0, height: 10, width: 2000,
+            position: 'absolute', top: 0, right: 0, height: 10, width: warp.threading.length * baseSize,
           }}
           onClick={this.mouseClickColourway}
           onMouseDown={this.mouseDownColourway}
@@ -207,11 +207,11 @@ class Warp extends Component {
           onMouseUp={this.mouseUpColourway}
           onMouseLeave={this.mouseUpColourway}
         />
-        <canvas className='warp-threads' ref="warp" width={2000} height={warp.shafts * baseSize}
+        <canvas className='warp-threads' ref="warp" width={warp.threading.length * baseSize} height={warp.shafts * baseSize}
           style={{
             position: 'absolute', top: 10, right: 0,
             height: warp.shafts * baseSize,
-            width: 2000, borderRadius: 4,
+            width: warp.threading.length * baseSize, borderRadius: 4,
             boxShadow: '0px 0px 10px rgba(0,0,0,0.15)',
           }}
           onClick={this.click}

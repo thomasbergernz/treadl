@@ -87,6 +87,45 @@ class Tools extends Component {
     }, err => console.log(err));
   }
 
+  changeWidth = () => {
+    const newWidth = parseInt(window.prompt('Enter a new width for your pattern.\n\nIMPORTANT: If your new width is less than the current width, then any shafts selected beyond the new width will be lost.'));
+    if (!newWidth) return;
+    const { warp } = this.props;
+    if (newWidth > warp.threading.length) {
+      let i = warp.threading.length;
+      while (i < newWidth) {
+        warp.threading.push({ shaft: 0 });
+        warp.threads++;
+        i++;
+      }
+    }
+    else if (newWidth < warp.threading.length) {
+      warp.threading.splice(newWidth);
+      warp.threads = warp.threading.length;
+    }
+    this.props.updatePattern({ warp });
+    this.props.onEditorUpdated();
+  }
+  changeHeight = () => {
+    const newHeight = parseInt(window.prompt('Enter a new height for your pattern.\n\nIMPORTANT: If your new height is less than the current height, then any treadles selected beyond the new height will be lost.'));
+    if (!newHeight) return;
+    const { weft } = this.props;
+    if (newHeight > weft.treadling.length) {
+      let i = weft.treadling.length;
+      while (i < newHeight) {
+        weft.treadling.push({ treadle: 0 });
+        weft.threads++;
+        i++;
+      }
+    }
+    else if (newHeight < weft.treadling.length) {
+      weft.treadling.splice(newHeight);
+      weft.threads = weft.treadling.length;
+    }
+    this.props.updatePattern({ weft });
+    this.props.onEditorUpdated();
+  }
+
   render() {
     const { warp, weft, editor, unsaved, saving } = this.props;
     return (
@@ -136,6 +175,20 @@ class Tools extends Component {
                   <Grid.Column>
                     <small>Treadles</small>
                     <Input fluid type="number" value={weft.treadles} onKeyDown={e => false} onChange={this.setTreadles} size="mini" />
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row style={{paddingTop: 0}}>
+                  <Grid.Column>
+                    <small>Width</small>
+                    <Input fluid readOnly value={warp.threading?.length || 0} size="mini" 
+                      action={{icon: 'edit', onClick: this.changeWidth}}
+                    />
+                  </Grid.Column>
+                  <Grid.Column>
+                    <small>Height</small>
+                    <Input fluid readOnly value={weft.treadling?.length  || 0} size="mini" 
+                      action={{icon: 'edit', onClick: this.changeHeight}}
+                    />
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
