@@ -87,6 +87,13 @@ class Tools extends Component {
     }, err => console.log(err));
   }
 
+  revertChanges = () => {
+    const sure = window.confirm('Really revert your changes to your last save point?\n\nAny updates to your pattern since you last saved will be lost.')
+    if (sure) {
+      window.location.reload();
+    }
+  }
+
   changeWidth = () => {
     const newWidth = parseInt(window.prompt('Enter a new width for your pattern.\n\nIMPORTANT: If your new width is less than the current width, then any shafts selected beyond the new width will be lost.'));
     if (!newWidth) return;
@@ -133,6 +140,7 @@ class Tools extends Component {
         {unsaved &&
           <Segment attached="top">
             <Button fluid color="teal" icon="save" content="Save pattern" onClick={() => this.props.saveObject(this.refs.canvas)} loading={saving}/>
+            <Button style={{marginTop: 5}} fluid icon='refresh' content='Undo changes' onClick={this.revertChanges} />
           </Segment>
         }
         <Segment attached>
