@@ -96,6 +96,7 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
           <Grid>
             <Grid.Column computer={8}>
               <Link to="/"><img alt="Treadl logo" src={logo} style={{ width: '100px', paddingTop: 20, paddingBottom: 20 }} /></Link>
+              <p style={{color: '#888888'}}>&copy; Treadl 2022</p>
             </Grid.Column>
             <Grid.Column computer={8} textAlign="right">
               <div style={{ paddingTop: 40 }}>

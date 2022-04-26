@@ -101,8 +101,8 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
             <div className='nav-links'>
               <Popup basic on='focus' open={searchPopupOpen} onOpen={e => openSearchPopup(true)} onClose={e => openSearchPopup(false)}
                 trigger={<SearchBar><input placeholder='Click to search...' value={searchTerm} onChange={e => updateSearchTerm(e.target.value)} onKeyDown={e => e.keyCode === 13 && search()} /></SearchBar>}
-                content={<div style={{width: 300}}>
-                  {!searchResults?.users && !searchResults?.groups ? 
+                content={<div style={{width: 300}} className='joyride-search'>
+                  {!searchResults?.users && !searchResults?.groups ?
                     <small>
                       {searching
                         ? <span><Loader size='tiny' inline active style={{marginRight: 10}}/> Searching...</span>

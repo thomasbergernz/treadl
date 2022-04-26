@@ -14,11 +14,11 @@ const LinkContainer = styled.span`
   }
 `;
 
-function HelpLink({ text, link, marginTop, marginLeft, marginBottom, style }) {
+function HelpLink({ className, text, link, marginTop, marginLeft, marginBottom, style }) {
   if (!link) return null;
   return (
     <LinkContainer style={style} marginTop={marginTop} marginLeft={marginLeft} marginBottom={marginBottom}>
-      <a href={link} target='_blank' rel='noopener noreferrer'>
+      <a className={className} href={link} target='_blank' rel='noopener noreferrer'>
         <span className='emoji'>🪧</span>
         {text || 'Get help with this page'}
       </a>
