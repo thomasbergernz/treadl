@@ -91,12 +91,16 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
         <Divider hidden section />
       </div>
 
-      <div style={{ background: 'rgb(240,240,240)', padding: '15px 0px' }}>
+      <div style={{ background: 'rgb(240,240,240)', padding: '30px 0px' }}>
         <Container>
           <Grid>
             <Grid.Column computer={8}>
               <Link to="/"><img alt="Treadl logo" src={logo} style={{ width: '100px', paddingTop: 20, paddingBottom: 20 }} /></Link>
               <p style={{color: '#888888'}}>&copy; Treadl 2022</p>
+              <p style={{marginTop: 10}}><small>Treadl software is free and open-source. Contributions to the project are always welcome.
+                <br />
+                <Icon name="code" /> <a href="https://git.wilw.dev/seastorm/treadl" target="_blank" rel="noopener noreferrer">Project source homepage</a>
+              </small></p>
             </Grid.Column>
             <Grid.Column computer={8} textAlign="right">
               <div style={{ paddingTop: 40 }}>
@@ -108,12 +112,7 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
                   <Icon name='book' />
                   <a href='https://git.wilw.dev/seastorm/treadl/wiki' target='_blank' rel='noopener noreferrer'>Documentation</a>
                 </p>
-                <Divider />
-                <p><small>Treadl software is free and open-source.<br />Contributions to the project are always welcome.</small></p>
-                <p>
-                  <Icon name="code" />
-                  <a href="https://git.wilw.dev/seastorm/treadl" target="_blank" rel="noopener noreferrer">View source code</a>
-                </p>
+
                 <Divider />
                 <p>
                   <Icon name="file alternate outline" />
