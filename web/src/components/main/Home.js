@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Loader, Divider, Button, Message, Container, Segment, Grid, Card, Icon, List } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
@@ -11,8 +11,53 @@ import utils from 'utils/utils.js';
 import UserChip from 'components/includes/UserChip';
 import HelpLink from 'components/includes/HelpLink';
 import ProjectCard from 'components/includes/ProjectCard';
+import Tour from 'components/includes/Tour';
 
 function Home({ user, groups, projects, invitations, loadingProjects, onReceiveProjects, onReceiveInvitations, onDismissInvitation, onReceiveGroup, onJoinGroup }) {
+  const [steps] = useState([
+    {
+      disableBeacon: true,
+      placement: 'center',
+      target: 'body',
+      title: 'Welcome to Treadl!',
+      content: (<div>
+        <p><strong>Thanks for signing-up 😀. We'd love to quickly show you around your homepage.</strong></p>
+        <p>You can skip this tour if you just want to get on.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-projects',
+      title: 'Projects',
+      content: (<div>
+        <p><strong>Treadl contents (patterns, images, files, and more) are stored in projects</strong></p>
+        <p>Your projects will appear in this area.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-createProject',
+      title: 'Create a new project',
+      content: (<div>
+        <p>Use this button to create a new project. Projects can be public to the community or kept private.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-groups',
+      title: 'Groups',
+      content: (<div>
+        <p><strong>Treadl groups</strong></p>
+        <p>Your group memberships will show here. Groups allow you to talk and share content with other people on Treadl.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-createGroup',
+      title: 'Groups',
+      content: (<div>
+        <p><strong>You can create your own groups to build a community</strong></p>
+        <p>People use groups for weaving classes, organisation, community groups, and more.</p>
+       </div>)
+    },
+  ]);
+  const [runJoyride, setRunJoyride] = useState(false);
 
   useEffect(() => {
     api.invitations.get(({ invitations, sentInvitations}) => {
@@ -21,6 +66,8 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
   }, [onReceiveInvitations]);
   useEffect(() => {
     api.users.getMyProjects(onReceiveProjects);
+    setTimeout(() =>
+    setRunJoyride(true), 2000);
   }, [onReceiveProjects]);
 
   const declineInvite = (invite) => {
@@ -45,6 +92,8 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
 
   return (
     <Container style={{ marginTop: '40px' }}>
+      <Tour user={user} id='home' run={runJoyride} />
+
       <Helmet title='Dashboard' />
       <Grid stackable>
         <Grid.Column computer={5}>
@@ -88,7 +137,7 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
           </Card>
 
           {(groups && groups.length) ?
-            <Card fluid>
+            <Card fluid className='joyride-groups'>
               <Card.Content>
                 <Card.Header>Your groups</Card.Header>
 
@@ -103,7 +152,7 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
                     </List.Item>
                   )}
                 </List>
-                <Button fluid size='small' icon='plus' content='Create a new group' as={Link} to='/groups/new' />
+                <Button className='joyride-createGroup' fluid size='small' icon='plus' content='Create a new group' as={Link} to='/groups/new' />
                 <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups' text='Learn more about groups' marginTop/>
               </Card.Content>
             </Card>
@@ -111,13 +160,13 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
             <Message>
               <Message.Header>Groups</Message.Header>
               <p>Groups enable you to build communities of weavers and makers with similar interests. Create one for your weaving group or class today.</p>
-              <Button as={Link} to='/groups/new' size='small' color='purple' icon='plus' content='Create a group' />
+              <Button className='joyride-createGroup' as={Link} to='/groups/new' size='small' color='purple' icon='plus' content='Create a group' />
             </Message>
           }
 
         </Grid.Column>
 
-        <Grid.Column computer={11}>
+        <Grid.Column computer={11} className='joyride-projects'>
           {loadingProjects && !projects.length &&
             <div style={{textAlign: 'center'}}>
               <h4>Loading your projects...</h4>
@@ -137,7 +186,7 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
                 <Divider  />
                 <h4>Start by creating a new project. Don't worry, you can keep it private.</h4>
                 <p><HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects' text='Learn more about projects' marginTop/></p>
-                <Button as={Link} to="/projects/new" color="teal" icon="plus" content="Create a project" />
+                <Button className='joyride-createProject' as={Link} to="/projects/new" color="teal" icon="plus" content="Create a project" />
               </Segment>
 
             </div>
@@ -145,7 +194,7 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
 
           {projects && projects.length > 0 &&
             <div>
-              <Button as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' floated='right'/>
+              <Button className='joyride-createProject' as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' floated='right'/>
               <h2><Icon name='book' /> Your projects</h2>
               <p>Projects contain the patterns and files that make up your creations.
                 <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects' text='Learn more about projects' marginLeft/>
