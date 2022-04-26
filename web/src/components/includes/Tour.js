@@ -4,6 +4,14 @@ import Joyride from 'react-joyride';
 import api from '../../api';
 import actions from '../../actions';
 
+import WarpImage from 'images/tour/warp.png';
+import WeftImage from 'images/tour/weft.png';
+import ColourImage from 'images/tour/colour.png';
+import PanImage from 'images/tour/pan.png';
+import PointImage from 'images/tour/point.png';
+import TieupsImage from 'images/tour/tieups.png';
+import ToolsImage from 'images/tour/tools.png';
+
 const tours = {
     home: [{
       disableBeacon: true,
@@ -84,6 +92,7 @@ const tours = {
       content: (<div>
         <p><strong>Add threads to your warp by selecting a tool (from the sidebar) and clicking and dragging your mouse over this area.</strong></p>
         <p>Different tools produce different thread patterns.</p>
+        <img width='100%' src={WarpImage} />
        </div>)
     },
     {
@@ -92,14 +101,17 @@ const tours = {
       content: (<div>
         <p><strong>Add colours to your threads</strong></p>
         <p>Select the colour tool (from the sidebar) and drag over your warp to change the thread colours.</p>
+        <img width='100%' src={ColourImage} />
        </div>)
     },
     {
       target: '.joyride-weft',
+      placement: 'left',
       title: 'The weft',
       content: (<div>
         <p><strong>The weft works in the same way as the warp</strong></p>
         <p>Drag drawing tools and colour tools over this area to change the thread patterns and colours.</p>
+        <img width='100%' src={WeftImage} />
        </div>)
     },
     {
@@ -108,6 +120,7 @@ const tours = {
       content: (<div>
         <p><strong>The tieups determine how your warp and weft threads will be linked</strong></p>
         <p>Select individual tieups by clicking the squares relevant to your pattern.</p>
+        <img width='100%' src={TieupsImage} />
        </div>)
     },
     {
@@ -123,6 +136,7 @@ const tours = {
       title: 'Panning tool',
       content: (<div>
         <p><strong>Select this and click-and-drag over your drawdown to move it around</strong></p>
+        <img width='100%' src={PanImage} />
        </div>)
     },
     {
@@ -130,6 +144,7 @@ const tours = {
       title: 'Colour tool',
       content: (<div>
         <p><strong>Select this tool and click-and-drag over your warp and weft to add colours to your threads</strong></p>
+        <img width='100%' src={ColourImage} />
        </div>)
     },
     {
@@ -138,6 +153,7 @@ const tours = {
       placement: 'left',
       content: (<div>
         <p><strong>Select this tool and click-and-drag over your warp and weft to add threads in a straight pattern</strong></p>
+        <img width='100%' src={WarpImage} />
        </div>)
     },
     {
@@ -146,6 +162,7 @@ const tours = {
       placement: 'left',
       content: (<div>
         <p><strong>Select this tool and click-and-drag over your warp and weft to add threads in a point pattern</strong></p>
+        <img width='100%' src={PointImage} />
        </div>)
     },
     {
@@ -155,6 +172,7 @@ const tours = {
       content: (<div>
         <p><strong>Expand the sections in the toolbox to see what else is possible</strong></p>
         <p>For example, you can change your pattern's zoom level and view different types of interlacements.</p>
+        <img width='100%' src={ToolsImage} />
        </div>)
     },
     {
