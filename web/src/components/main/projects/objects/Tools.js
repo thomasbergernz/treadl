@@ -137,7 +137,7 @@ class Tools extends Component {
   render() {
     const { warp, weft, editor, unsaved, saving } = this.props;
     return (
-      <div className="pattern-toolbox">
+      <div className="pattern-toolbox joyride-tools">
         {unsaved &&
           <Segment attached="top">
             <Button fluid color="teal" icon="save" content="Save pattern" onClick={() => this.props.saveObject(this.refs.canvas)} loading={saving}/>
@@ -176,7 +176,7 @@ class Tools extends Component {
               <small>Name</small>
               <Input type="text" size="small" fluid style={{ marginBottom: '5px' }} value={this.props.object.name} onChange={this.setName} />
               <Grid columns={2}>
-                <Grid.Row>
+                <Grid.Row className='joyride-threads'>
                   <Grid.Column>
                     <small>Shafts</small>
                     <Input fluid type="number" value={warp.shafts} onKeyDown={e => false} onChange={this.setShafts} size="mini" />
@@ -189,13 +189,13 @@ class Tools extends Component {
                 <Grid.Row style={{paddingTop: 0}}>
                   <Grid.Column>
                     <small>Width</small>
-                    <Input fluid readOnly value={warp.threading?.length || 0} size="mini" 
+                    <Input fluid readOnly value={warp.threading?.length || 0} size="mini"
                       action={{icon: 'edit', onClick: this.changeWidth}}
                     />
                   </Grid.Column>
                   <Grid.Column>
                     <small>Height</small>
-                    <Input fluid readOnly value={weft.treadling?.length  || 0} size="mini" 
+                    <Input fluid readOnly value={weft.treadling?.length  || 0} size="mini"
                       action={{icon: 'edit', onClick: this.changeHeight}}
                     />
                   </Grid.Column>
@@ -208,10 +208,10 @@ class Tools extends Component {
             </Accordion.Title>
             <Accordion.Content active={this.drawerIsActive('drawing')}>
               <Button.Group fluid>
-                <Button data-tooltip="Pan (drag to move) pattern" color={this.props.editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => this.enableTool('pan')}><Icon name="move" /></Button>
-                <Button data-tooltip="Paint selected colour" color={this.props.editor.tool === 'colour' && 'blue'} size="tiny" icon onClick={() => this.enableTool('colour')}><Icon name="paint brush" /></Button>
-                <Button data-tooltip="Straight draw" color={this.props.editor.tool === 'straight' && 'blue'} size="tiny" icon onClick={() => this.enableTool('straight')}>/ /</Button>
-                <Button data-tooltip="Point draw" color={this.props.editor.tool === 'point' && 'blue'} size="tiny" icon onClick={() => this.enableTool('point')}><Icon name="chevron up" /></Button>
+                <Button className='joyride-pan' data-tooltip="Pan (drag to move) pattern" color={this.props.editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => this.enableTool('pan')}><Icon name="move" /></Button>
+                <Button className='joyride-colour' data-tooltip="Paint selected colour" color={this.props.editor.tool === 'colour' && 'blue'} size="tiny" icon onClick={() => this.enableTool('colour')}><Icon name="paint brush" /></Button>
+                <Button className='joyride-straight' data-tooltip="Straight draw" color={this.props.editor.tool === 'straight' && 'blue'} size="tiny" icon onClick={() => this.enableTool('straight')}>/ /</Button>
+                <Button className='joyride-point' data-tooltip="Point draw" color={this.props.editor.tool === 'point' && 'blue'} size="tiny" icon onClick={() => this.enableTool('point')}><Icon name="chevron up" /></Button>
               </Button.Group>
             </Accordion.Content>
 

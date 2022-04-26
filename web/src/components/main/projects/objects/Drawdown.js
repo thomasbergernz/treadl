@@ -105,7 +105,7 @@ class Drawdown extends Component {
   render() {
     const { warp, weft, baseSize } = this.props;
     return (
-      <StyledDrawdown ref="drawdown" className="drawdown"
+      <StyledDrawdown ref="drawdown" className="drawdown joyride-drawdown"
         width={warp.threads * baseSize}
         height={weft.threads * baseSize}
         weft={weft} warp={warp} baseSize={baseSize}

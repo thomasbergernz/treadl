@@ -191,13 +191,13 @@ class Warp extends Component {
     }
   }
 
-  
+
 
   render() {
     const { warp, weft, baseSize } = this.props;
     return (
       <StyledWarp treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize}>
-        <canvas className='warp-colourway' ref="colourway" width={warp.threading.length * baseSize} height={10}
+        <canvas className='warp-colourway joyride-warpColourway' ref="colourway" width={warp.threading.length * baseSize} height={10}
           style={{
             position: 'absolute', top: 0, right: 0, height: 10, width: warp.threading.length * baseSize,
           }}
@@ -207,7 +207,7 @@ class Warp extends Component {
           onMouseUp={this.mouseUpColourway}
           onMouseLeave={this.mouseUpColourway}
         />
-        <canvas className='warp-threads' ref="warp" width={warp.threading.length * baseSize} height={warp.shafts * baseSize}
+        <canvas className='warp-threads joyride-warp' ref="warp" width={warp.threading.length * baseSize} height={warp.shafts * baseSize}
           style={{
             position: 'absolute', top: 10, right: 0,
             height: warp.shafts * baseSize,

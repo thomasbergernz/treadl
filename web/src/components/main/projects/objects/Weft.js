@@ -207,7 +207,7 @@ class Weft extends Component {
     }
   }
 
-  
+
 
   render() {
     const { warp, weft, baseSize } = this.props;
@@ -221,7 +221,7 @@ class Weft extends Component {
           onMouseUp={this.mouseUpColourway}
           onMouseLeave={this.mouseUpColourway}
         />
-        <canvas className='weft-threads' ref="weft" width={weft.treadles * baseSize} height={weft.threads * baseSize}
+        <canvas className='weft-threads joyride-weft' ref="weft" width={weft.treadles * baseSize} height={weft.threads * baseSize}
           style={{
             position: 'absolute',
             top: 0, right: 10, height: weft.threads * baseSize, width: weft.treadles * baseSize,

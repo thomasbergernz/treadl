@@ -15,7 +15,7 @@ class Tieups extends Component {
   componentDidMount() {
     this.paintTieups();
   }
-  
+
   fillUpTo = (tieups, limit) => {
     let i = tieups.length;
     while (i <= limit) {
@@ -71,7 +71,7 @@ class Tieups extends Component {
   render() {
     const { warp, weft, baseSize } = this.props;
     return (
-      <StyledTieups ref='tieups' className='tieups' width={weft.treadles * baseSize} height= {warp.shafts * baseSize} style={{width: weft.treadles * baseSize, height: warp.shafts * baseSize}} onClick={this.click}/>
+      <StyledTieups ref='tieups' className='tieups joyride-tieups' width={weft.treadles * baseSize} height= {warp.shafts * baseSize} style={{width: weft.treadles * baseSize, height: warp.shafts * baseSize}} onClick={this.click}/>
     );
   }
 }

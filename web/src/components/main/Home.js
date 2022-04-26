@@ -49,7 +49,7 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
 
   return (
     <Container style={{ marginTop: '40px' }}>
-      <Tour user={user} id='home' run={runJoyride} />
+      <Tour id='home' run={runJoyride} />
 
       <Helmet title='Dashboard' />
       <Grid stackable>

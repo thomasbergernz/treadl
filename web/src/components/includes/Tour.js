@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Joyride from 'react-joyride';
 import api from '../../api';
 import actions from '../../actions';
@@ -56,10 +56,124 @@ const tours = {
        </div>)
     },
   ],
+
+  pattern: [
+    {
+      disableBeacon: true,
+      disableOverlay: false,
+      placement: 'center',
+      target: 'body',
+      title: 'Welcome to the Treadl pattern editor!',
+      content: (<div>
+        <p><strong>The editor can look a bit daunting at first, and so we'd like to briefly show you how it works.</strong></p>
+        <p>If you already know what you're doing, then feel free to skip this.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-drawdown',
+      placement: 'top',
+      title: 'The drawdown',
+      content: (<div>
+        <p><strong>This is where your pattern is displayed. It updates in real-time.</strong></p>
+        <p>You need to have threads in both your warp and weft, as well as tieups specified, in order for a pattern to show.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-warp',
+      title: 'The warp',
+      content: (<div>
+        <p><strong>Add threads to your warp by selecting a tool (from the sidebar) and clicking and dragging your mouse over this area.</strong></p>
+        <p>Different tools produce different thread patterns.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-warpColourway',
+      title: 'The warp colourway',
+      content: (<div>
+        <p><strong>Add colours to your threads</strong></p>
+        <p>Select the colour tool (from the sidebar) and drag over your warp to change the thread colours.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-weft',
+      title: 'The weft',
+      content: (<div>
+        <p><strong>The weft works in the same way as the warp</strong></p>
+        <p>Drag drawing tools and colour tools over this area to change the thread patterns and colours.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-tieups',
+      title: 'The tieups area',
+      content: (<div>
+        <p><strong>The tieups determine how your warp and weft threads will be linked</strong></p>
+        <p>Select individual tieups by clicking the squares relevant to your pattern.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-threads',
+      title: 'Shafts and treadles',
+      content: (<div>
+        <p><strong>You may need to update the shafts and treadles used by your pattern so that it can be used with your loom</strong></p>
+        <p>Changing these values will update the available threads in your warp and weft.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-pan',
+      title: 'Panning tool',
+      content: (<div>
+        <p><strong>Select this and click-and-drag over your drawdown to move it around</strong></p>
+       </div>)
+    },
+    {
+      target: '.joyride-colour',
+      title: 'Colour tool',
+      content: (<div>
+        <p><strong>Select this tool and click-and-drag over your warp and weft to add colours to your threads</strong></p>
+       </div>)
+    },
+    {
+      target: '.joyride-straight',
+      title: 'Straight draw tool',
+      placement: 'left',
+      content: (<div>
+        <p><strong>Select this tool and click-and-drag over your warp and weft to add threads in a straight pattern</strong></p>
+       </div>)
+    },
+    {
+      target: '.joyride-point',
+      title: 'Point draw tool',
+      placement: 'left',
+      content: (<div>
+        <p><strong>Select this tool and click-and-drag over your warp and weft to add threads in a point pattern</strong></p>
+       </div>)
+    },
+    {
+      target: '.joyride-tools',
+      title: 'Rich tooling',
+      placement: 'left',
+      content: (<div>
+        <p><strong>Expand the sections in the toolbox to see what else is possible</strong></p>
+        <p>For example, you can change your pattern's zoom level and view different types of interlacements.</p>
+       </div>)
+    },
+    {
+      target: '.joyride-help',
+      title: 'Help is available',
+      content: (<div>
+        <p><strong>Click this link to view documentation about the editor</strong></p>
+        <p>And you can always reach out to us directly if you're stuck or have questions.</p>
+       </div>)
+    },
+  ],
 };
 
-function Tour({ user, id, run }) {
+function Tour({ id, run }) {
   const dispatch = useDispatch();
+  const { user } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    return { user };
+  });
 
   if (!user || user.finishedTours?.indexOf(id) > -1) return null;
 

@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import ElementPan from 'components/includes/ElementPan';
 import HelpLink from 'components/includes/HelpLink';
+import Tour from 'components/includes/Tour';
 
 import Warp from './Warp.js';
 import Weft from './Weft.js';
@@ -76,6 +77,7 @@ class Draft extends Component {
           when={unsaved ? true : false}
           message='You have unsaved changes. Are you sure you want to leave tnis page?'
         />
+        <Tour id='pattern' run={true} />
         <div style={{display: 'flex'}}>
 
           <div style={{flex: 1, overflow: 'hidden'}}>
@@ -101,7 +103,7 @@ class Draft extends Component {
           </div>
 
           <div style={{width: 300, marginLeft: 20}}>
-            <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Editing-patterns#using-the-pattern-editor' marginBottom/>
+            <HelpLink className='joyride-help' link='https://git.wilw.dev/seastorm/treadl/wiki/Editing-patterns#using-the-pattern-editor' marginBottom/>
             <Tools warp={warp} weft={weft} object={this.state} pattern={this.state.pattern} updateObject={this.updateObject} updatePattern={this.updatePattern} saveObject={this.saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
           </div>
 
