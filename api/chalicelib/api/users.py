@@ -13,7 +13,8 @@ def me(user):
     'avatarUrl': user.get('avatar') and uploads.get_presigned_url('users/{0}/{1}'.format(user['_id'], user['avatar'])),
     'roles': user.get('roles', []),
     'groups': user.get('groups', []),
-    'subscriptions': user.get('subscriptions')
+    'subscriptions': user.get('subscriptions'),
+    'finishedTours': user.get('completedTours', []) + user.get('skippedTours', []),
   }
 
 def get(user, username):
@@ -52,6 +53,14 @@ def update(user, username, data):
   if updater:
     db.users.update({'username': username}, updater)
   return get(user, data.get('username', username))
+
+def finish_tour(user, username, tour, status):
+  db = database.get_db()
+  if user['username'] != username:
+    raise util.errors.Forbidden('Not allowed')
+  key = 'completedTours' if status == 'completed' else 'skippedTours'
+  db.users.update_one({'_id': user['_id']}, {'$addToSet': {key: tour}})
+  return {'finishedTour': tour}
 
 def get_projects(user, id):
   db = database.get_db()

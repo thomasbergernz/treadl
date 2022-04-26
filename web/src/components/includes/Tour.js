@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import Joyride from 'react-joyride';
+import api from '../../api';
+import actions from '../../actions';
 
 const tours = {
   home: [{
@@ -45,7 +48,21 @@ const tours = {
   },],
 };
 
-function Tour({ id, run, finished }) {
+function Tour({ user, id, run }) {
+  const dispatch = useDispatch();
+
+  if (!user || user.finishedTours?.indexOf(id) > -1) return null;
+
+  const cb = event => {
+    if (event.type === 'tour:end') {
+      const status = event.status == 'skipped' ? 'skipped' : 'completed';
+      api.users.finishTour(user.username, id, status);
+      const finishedTours = user.finishedTours;
+      finishedTours.push(id);
+      dispatch(actions.users.update(id, { finishedTours }));
+    }
+  };
+
   return (
     <Joyride steps={tours[id]} run={run} continuous={true} scrollToFirstStep={true} showSkipButton={true} disableCloseOnEsc={true} locale={{last: 'Finish'}}
       styles={{
@@ -53,7 +70,7 @@ function Tour({ id, run, finished }) {
           primaryColor: '#ed0176'
         }
       }}
-      callback={x => console.log(x)}
+      callback={cb}
     />
   );
 }

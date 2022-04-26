@@ -105,6 +105,11 @@ def users_username(username):
   if request.method == 'GET': return util.jsonify(users.get(util.get_user(required=False), username))
   if request.method == 'PUT': return util.jsonify(users.update(util.get_user(), username, request.json))
 
+@app.route('/users/<username>/tours/<tour>', methods=['PUT'])
+def users_tour(username, tour):
+  status = request.args.get('status', 'completed')
+  return util.jsonify(users.finish_tour(util.get_user(), username, tour, status))
+
 @app.route('/users/me/projects', methods=['GET'])
 def me_projects_route():
   user = util.get_user()

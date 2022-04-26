@@ -12,6 +12,9 @@ export const users = {
   update(username, data, success, fail) {
     api.authenticatedRequest('PUT', `/users/${username}`, data, success, fail);
   },
+  finishTour(username, tour, status, success, fail) {
+    api.authenticatedRequest('PUT', `/users/${username}/tours/${tour}?status=${status}`, null, success, fail)
+  },
   getMyProjects(success, fail) {
     store.dispatch(actions.projects.request());
     api.authenticatedRequest('GET', '/users/me/projects', null, d => success && success(d.projects), fail);
