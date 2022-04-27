@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Joyride from 'react-joyride';
 import api from '../../api';
 import actions from '../../actions';
+import { LinkContainer as HelpLinkContainer } from 'components/includes/HelpLink';
 
 import WarpImage from 'images/tour/warp.png';
 import WeftImage from 'images/tour/weft.png';
@@ -214,6 +215,26 @@ function Tour({ id, run }) {
       }}
       callback={cb}
     />
+  );
+}
+
+export function ReRunTour({ id }) {
+  const dispatch = useDispatch();
+  const { user } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    return { user };
+  });
+  if (!user || user.finishedTours?.indexOf(id) === -1) return null;
+
+  const reset = () => {
+    const finishedTours = user.finishedTours;
+    const index = finishedTours.indexOf(id);
+    finishedTours.splice(index, 1);
+    dispatch(actions.users.update(id, { finishedTours }));
+  };
+
+  return (
+    <HelpLinkContainer marginLeft onClick={reset}><span className='emoji'>▶️</span>Re-play tour</HelpLinkContainer>
   );
 }
 
