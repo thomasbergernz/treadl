@@ -80,7 +80,7 @@ const tours = {
     },
     {
       target: '.joyride-drawdown',
-      placement: 'top',
+      placement: 'center',
       title: 'The drawdown',
       content: (<div>
         <p><strong>This is where your pattern is displayed. It updates in real-time.</strong></p>
@@ -107,7 +107,7 @@ const tours = {
     },
     {
       target: '.joyride-weft',
-      placement: 'left',
+      placement: 'top',
       title: 'The weft',
       content: (<div>
         <p><strong>The weft works in the same way as the warp</strong></p>
