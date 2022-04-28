@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
-import { Grid } from 'semantic-ui-react';
 import { withRouter, Prompt } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';

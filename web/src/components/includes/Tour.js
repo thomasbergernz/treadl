@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Joyride from 'react-joyride';
 import api from '../../api';
 import actions from '../../actions';
 import { LinkContainer as HelpLinkContainer } from 'components/includes/HelpLink';
+import Emoji from 'components/includes/Emoji';
 
 import WarpImage from 'images/tour/warp.png';
 import WeftImage from 'images/tour/weft.png';
@@ -21,7 +22,7 @@ const tours = {
       target: 'body',
       title: 'Welcome to Treadl!',
       content: (<div>
-        <p><strong>Thanks for signing-up 😀. We'd love to quickly show you around your homepage.</strong></p>
+        <p><strong>Thanks for signing-up <Emoji e='😀' label='Smiley' />. We'd love to quickly show you around your homepage.</strong></p>
         <p>You can skip this tour if you just want to get on with things.</p>
        </div>)
     },
@@ -93,7 +94,7 @@ const tours = {
       content: (<div>
         <p><strong>Add threads to your warp by selecting a tool (from the sidebar) and clicking and dragging your mouse over this area.</strong></p>
         <p>Different tools produce different thread patterns.</p>
-        <img width='100%' src={WarpImage} />
+        <img width='100%' src={WarpImage} alt='Warp pattern area'/>
        </div>)
     },
     {
@@ -102,7 +103,7 @@ const tours = {
       content: (<div>
         <p><strong>Add colours to your threads</strong></p>
         <p>Select the colour tool (from the sidebar) and drag over your warp to change the thread colours.</p>
-        <img width='100%' src={ColourImage} />
+        <img width='100%' src={ColourImage} alt='Warp colourway'/>
        </div>)
     },
     {
@@ -112,7 +113,7 @@ const tours = {
       content: (<div>
         <p><strong>The weft works in the same way as the warp</strong></p>
         <p>Drag drawing tools and colour tools over this area to change the thread patterns and colours.</p>
-        <img width='100%' src={WeftImage} />
+        <img width='100%' src={WeftImage} alt='Weft pattern area'/>
        </div>)
     },
     {
@@ -121,7 +122,7 @@ const tours = {
       content: (<div>
         <p><strong>The tieups determine how your warp and weft threads will be linked</strong></p>
         <p>Select individual tieups by clicking the squares relevant to your pattern.</p>
-        <img width='100%' src={TieupsImage} />
+        <img width='100%' src={TieupsImage} alt='Tieups pattern area'/>
        </div>)
     },
     {
@@ -137,7 +138,7 @@ const tours = {
       title: 'Panning tool',
       content: (<div>
         <p><strong>Select this and click-and-drag over your drawdown to move it around</strong></p>
-        <img width='100%' src={PanImage} />
+        <img width='100%' src={PanImage} alt='Panning tool'/>
        </div>)
     },
     {
@@ -145,7 +146,7 @@ const tours = {
       title: 'Colour tool',
       content: (<div>
         <p><strong>Select this tool and click-and-drag over your warp and weft to add colours to your threads</strong></p>
-        <img width='100%' src={ColourImage} />
+        <img width='100%' src={ColourImage} alt='Colour tool'/>
        </div>)
     },
     {
@@ -154,7 +155,7 @@ const tours = {
       placement: 'left',
       content: (<div>
         <p><strong>Select this tool and click-and-drag over your warp and weft to add threads in a straight pattern</strong></p>
-        <img width='100%' src={WarpImage} />
+        <img width='100%' src={WarpImage} alt='Straight draw tool'/>
        </div>)
     },
     {
@@ -163,7 +164,7 @@ const tours = {
       placement: 'left',
       content: (<div>
         <p><strong>Select this tool and click-and-drag over your warp and weft to add threads in a point pattern</strong></p>
-        <img width='100%' src={PointImage} />
+        <img width='100%' src={PointImage} alt='Point draw tool'/>
        </div>)
     },
     {
@@ -173,7 +174,7 @@ const tours = {
       content: (<div>
         <p><strong>Expand the sections in the toolbox to see what else is possible</strong></p>
         <p>For example, you can change your pattern's zoom level and view different types of interlacements.</p>
-        <img width='100%' src={ToolsImage} />
+        <img width='100%' src={ToolsImage} alt='Toolbox'/>
        </div>)
     },
     {
@@ -198,7 +199,7 @@ function Tour({ id, run }) {
 
   const cb = event => {
     if (event.type === 'tour:end') {
-      const status = event.status == 'skipped' ? 'skipped' : 'completed';
+      const status = event.status === 'skipped' ? 'skipped' : 'completed';
       api.users.finishTour(user.username, id, status);
       const finishedTours = user.finishedTours;
       finishedTours.push(id);
@@ -234,7 +235,7 @@ export function ReRunTour({ id }) {
   };
 
   return (
-    <HelpLinkContainer marginLeft onClick={reset}><span className='emoji'>▶️</span>Re-play tour</HelpLinkContainer>
+    <HelpLinkContainer marginLeft onClick={reset}><Emoji e='▶️' label='Play' />Re-play tour</HelpLinkContainer>
   );
 }
 
