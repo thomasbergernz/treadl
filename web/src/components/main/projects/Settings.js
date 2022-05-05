@@ -13,7 +13,7 @@ class ProjectSettings extends Component {
     super(props);
     this.state = { name: props.project.name, visibility: props.project.visibility || 'public', openSource: props.project.openSource, groupVisibility: props.project.groupVisibility || [] };
   }
-  
+
   changeVisibility = (event, r) => {
     this.setState({ visibility: r.checked ? 'private' : 'public' });
   }
@@ -56,7 +56,7 @@ class ProjectSettings extends Component {
       <div>
         <h2>Project settings</h2>
 
-        <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects#changing-the-project-s-settings' />
+        <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects#changing-the-project-s-settings`} />
 
         <Divider hidden section />
 

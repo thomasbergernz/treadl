@@ -199,7 +199,7 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
                   {user?.roles?.indexOf('root') > -1 &&
                     <Dropdown.Item as={Link} to='/root'>Root</Dropdown.Item>
                   }
-                  <Dropdown.Item as='a' href='https://git.wilw.dev/seastorm/treadl/wiki' target='_blank' rel='noopener noreferrer'>Help</Dropdown.Item>
+                  <Dropdown.Item as='a' href={`${process.env.REACT_APP_SUPPORT_ROOT}`} target='_blank' rel='noopener noreferrer'>Help</Dropdown.Item>
                   <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -241,7 +241,7 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
 
             <h3>Help and support</h3>
             <p>The Treadl Wiki provides useful information that might help you if you get stuck.</p>
-            <Button as='a' href='https://git.wilw.dev/seastorm/treadl/wiki' target='_blank' rel='noopener noreferrer'>View the Wiki</Button>
+            <Button as='a' href={process.env.REACT_APP_SUPPORT_ROOT} target='_blank' rel='noopener noreferrer'>View the Wiki</Button>
 
             <h3>We hope you enjoy using Treadl</h3>
             <p>If you have any comments or feedback please tell us by emailing <a href="mailto:hello@treadl.com">hello@treadl.com</a>!</p>

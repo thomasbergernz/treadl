@@ -98,7 +98,7 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
               <Link to="/"><img alt="Treadl logo" src={logo} style={{ width: '100px', paddingTop: 20, paddingBottom: 20 }} /></Link>
               <p style={{marginTop: 10}}><small>Treadl software is free and open-source. Contributions to the project are always welcome.
                 <br />
-                <Icon name="code" /> <a href="https://git.wilw.dev/seastorm/treadl" target="_blank" rel="noopener noreferrer">Project source homepage</a>
+                <Icon name="code" /> <a href={process.env.REACT_APP_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">Project source homepage</a>
               </small></p>
             </Grid.Column>
             <Grid.Column computer={8} textAlign="right">
@@ -109,7 +109,7 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
                 </p>
                 <p>
                   <Icon name='book' />
-                  <a href='https://git.wilw.dev/seastorm/treadl/wiki' target='_blank' rel='noopener noreferrer'>Documentation</a>
+                  <a href={process.env.REACT_APP_SUPPORT_ROOT} target='_blank' rel='noopener noreferrer'>Documentation</a>
                 </p>
 
                 <Divider />

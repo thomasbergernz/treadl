@@ -99,7 +99,7 @@ function Group({ user, group, requests, myRequests, loading, errorMessage, onRec
                 </Card.Meta></Card.Content>}
                 <Card.Content>
                   <h3>Admins</h3>
-                  {group.adminUsers && group.adminUsers.map(a => 
+                  {group.adminUsers && group.adminUsers.map(a =>
                     <UserChip user={a} key={a._id}/>
                   )}
                 </Card.Content>
@@ -114,7 +114,7 @@ function Group({ user, group, requests, myRequests, loading, errorMessage, onRec
                       }
                     </div>
                   }
-                  {!utils.isInGroup(user, group._id) && 
+                  {!utils.isInGroup(user, group._id) &&
                     (group.closed ?
                       <Button disabled={myRequests?.length > 0} color='yellow' size='tiny' fluid icon='user plus' content='Request to join' onClick={requestToJoin} />
                     :
@@ -139,7 +139,7 @@ function Group({ user, group, requests, myRequests, loading, errorMessage, onRec
                 </Menu>
               }
 
-              <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups#a-tour-around-your-new-group' />
+              <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Groups#a-tour-around-your-new-group`} />
 
             </Grid.Column>
             <Grid.Column computer={12}>
@@ -169,8 +169,8 @@ function Group({ user, group, requests, myRequests, loading, errorMessage, onRec
                     </Segment>
                   }
                   <Switch>
-                    <Route path='/groups/:id' exact render={() => <Feed group={group} />} /> 
-                    <Route path='/groups/:id/feed' render={() => <Feed group={group} />} /> 
+                    <Route path='/groups/:id' exact render={() => <Feed group={group} />} />
+                    <Route path='/groups/:id/feed' render={() => <Feed group={group} />} />
                     <Route path='/groups/:id/members' render={() => <Members group={group} />} />
                     <Route path='/groups/:id/projects' render={() => <Projects group={group} />} />
                     <Route path='/groups/:id/settings' render={() => <Settings group={group} />} />

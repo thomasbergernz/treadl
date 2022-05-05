@@ -116,7 +116,7 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
                 }
               </Card>
 
-              <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects' />
+              <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects`} />
             </Grid.Column>
             )}
 

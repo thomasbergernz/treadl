@@ -60,8 +60,8 @@ Create a new project
           </h2>
           <p>This will contain all of the files and patterns for your project.</p>
 
-          <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Projects#creating-a-new-project' />
-          
+          <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects#creating-a-new-project`} />
+
           <Divider section />
 
           <h3>About your project</h3>
@@ -108,7 +108,7 @@ Create a new project
   }
 }
 
-const mapStateToProps = state => { 
+const mapStateToProps = state => {
   const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
   const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
   return { user, groups };

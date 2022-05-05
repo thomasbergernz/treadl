@@ -106,7 +106,7 @@ class Draft extends Component {
           </div>
 
           <div style={{width: 300, marginLeft: 20}}>
-            <HelpLink className='joyride-help' link='https://git.wilw.dev/seastorm/treadl/wiki/Editing-patterns#using-the-pattern-editor' marginBottom/>
+            <HelpLink className='joyride-help' link={`${process.env.REACT_APP_SUPPORT_ROOT}Editing-patterns#using-the-pattern-editor`} marginBottom/>
             <ReRunTour id='pattern' />
             <Tools warp={warp} weft={weft} object={this.state} pattern={this.state.pattern} updateObject={this.updateObject} updatePattern={this.updatePattern} saveObject={this.saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
           </div>

@@ -12,7 +12,7 @@ import HelpLink from 'components/includes/HelpLink';
 function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onUpdateGroupName, onUpdateGroupDescription, onUpdateGroupClosed, onReceiveGroup, loading, onUpdateGroupLoading, history }) {
 
   const createGroup = () => {
-    onUpdateGroupLoading(true); 
+    onUpdateGroupLoading(true);
     api.groups.create({ name: newGroupName, description: newGroupDescription, closed: newGroupClosed }, (group) => {
       onReceiveGroup(group);
       onUpdateGroupLoading(false);
@@ -32,7 +32,7 @@ function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onU
         </h2>
         <p>Groups are great for communities of weavers and makers, or to help people of similar interests collaborate and come together.</p>
 
-        <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups#creating-a-new-group' />
+        <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Groups#creating-a-new-group`} />
 
         <Divider section />
 
@@ -42,7 +42,7 @@ function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onU
         <Divider hidden />
         <p><strong>Optional:</strong> Write a short description to describe your group to others.</p>
         <Form><Form.TextArea placeholder="Group description (optional)..." value={newGroupDescription} onChange={e => onUpdateGroupDescription(e.target.value)} /></Form>
-        
+
         <Checkbox style={{marginTop: 40}} toggle checked={newGroupClosed} label="Make this group a closed group" onChange={(e,c) => onUpdateGroupClosed(c.checked)} />
         <div style={{ marginLeft: 63, color: 'rgb(150,150,150)' }}>
           <p>Closed groups are more restrictive and new members must be invited or approved to join. Members can join non-closed groups without being invited.</p>

@@ -40,7 +40,7 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
   const kickUser = (id) => {
     utils.confirm('Really kick this user?').then(() => {
       api.groups.deleteMember(group._id, id, () => {
-        onLeaveGroup(id, group._id);         
+        onLeaveGroup(id, group._id);
       }, err => toast.error(err.message));
     }, () => {});
   }
@@ -74,7 +74,7 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
   return (
     <div>
       {loading && (!members || !members.length) && <Loader active inline="centered" />}
-      {!loading && utils.isGroupAdmin(user, group) && 
+      {!loading && utils.isGroupAdmin(user, group) &&
         <Segment raised color='blue' style={{marginBottom: 30}}>
           {(members && members.length === 1 && members[0]._id === user._id) ?
             <Header>You're the only person in this group</Header>
@@ -84,14 +84,14 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
           <Grid stackable columns={2}>
             <Grid.Column>
               <p>Share this link with others that you'd like to join your group. You can also send this link to people who don't already have a Treadl account.</p>
-              <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups#discovering-your-group' text='Get help with discovery' marginBottom/>
+              <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Groups#discovering-your-group`} text='Get help with discovery' marginBottom/>
               <Input ref={joinLinkRef} fluid readOnly value={utils.absoluteUrl(`/groups/${group._id}`)}
-                action=<Button color='teal' icon='copy' onClick={copyLink}/>  
+                action=<Button color='teal' icon='copy' onClick={copyLink}/>
               />
             </Grid.Column>
             <Grid.Column>
               <p>If you know someone who already has a Treadl account you can search for their username and we'll send them an invitation to join your group.</p>
-              <HelpLink link='https://git.wilw.dev/seastorm/treadl/wiki/Groups#inviting-others-to-your-group' text='Get help with invites' marginBottom/>
+              <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Groups#inviting-others-to-your-group`} text='Get help with invites' marginBottom/>
               <UserSearch fluid onSelected={sendInvitation}/>
             </Grid.Column>
           </Grid>
@@ -118,9 +118,9 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
           </Table>
         </Segment>
       }
-      
+
       <Card.Group itemsPerRow={3} doubling stackable>
-        {invitations && invitations.map(i => 
+        {invitations && invitations.map(i =>
           <Card key={i._id}>
             <Card.Content>
               <UserChip user={i.recipientUser} />
@@ -137,7 +137,7 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
             </Card.Content>
           </Card>
         )}
-        {members && members.map(m => 
+        {members && members.map(m =>
           <Card key={m._id}>
             <Card.Content>
               <UserChip user={m} />
@@ -159,7 +159,7 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
         )}
       </Card.Group>
 
-      
+
     </div>
   )
 }

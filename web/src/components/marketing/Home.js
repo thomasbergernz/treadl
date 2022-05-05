@@ -32,7 +32,7 @@ function MarketingHome({ onRegisterClicked }) {
                 <h4><span role="img" aria-label="party" style={{marginRight: 10}}>🎉</span> Treadl is free</h4>
                 <p>The Treadl software is <a style={{color:'white', textDecoration: 'underline'}} href='#why-free'>free to use</a></p>
                 <h4><span role="img" aria-label="coder" style={{marginRight: 10}}>🧑‍💻</span> Treadl is open-source</h4>
-                <p>The code powering Treadl is <a style={{color:'white', textDecoration: 'underline'}} href='https://git.wilw.dev/seastorm/treadl' target="_blank" rel="noopener noreferrer">publicly available</a>.</p>
+                <p>The code powering Treadl is <a style={{color:'white', textDecoration: 'underline'}} href={process.env.REACT_APP_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">publicly available</a>.</p>
               </div>
             </Grid.Column>
 
