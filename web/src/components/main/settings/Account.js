@@ -67,7 +67,7 @@ function AccountSettings({ user, onLogout, history, onReceiveUser }) {
         <p>Deleting your account immediately removes your profile, settings, projects, and contents. This action cannot be un-done.</p>
         <Message>
           <p><strong>Before you go...</strong></p>
-          <p>We are still a very new service with a way to go in our journey. We'd love to hear your honest feedback about Treadl and why it wasn't right for you. Please <a href="mailto:hello@seastorm.co" target="_blank" rel="noopener noreferrer">get in touch</a> and we'll do what we can to help out.</p>
+          <p>We are still a very new service with a way to go in our journey. We'd love to hear your honest feedback about Treadl and why it wasn't right for you. Please <a href="mailto:hello@treadl.com" target="_blank" rel="noopener noreferrer">get in touch</a> and we'll do what we can to help out.</p>
         </Message>
         <Divider hidden />
         <p>To continue, please enter your Treadl account password.</p>

@@ -8,11 +8,8 @@ class TermsOfUse extends Component {
       <Container style={{ marginTop: 50, marginBottom: 50 }}>
         <Helmet title='Terms of Use' />
         <h1>Treadl Terms of Use</h1>
-        <p>This document is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing hello@treadl.com.</p>
-
-        <p>Treadl and its services and websites at (and any subdomains of) treadl.com ('our services', Treadl, etc.) is owned and operated by Seastorm Limited (‘we’, ‘our’, ‘us’, etc.). Seastorm Limited is a company registered in England and Wales, with company number 11867862.</p>
-
-        <p>This document will have slight changes made to it occasionally. If there are more significant changes made that affect you, and if we have personal data about you, we will do our best to notify you of these changes.</p>
+        <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing hello@treadl.com.</p>
+        <p>This document will have slight changes made to it occasionally. Please refer back to it from time to time.</p>
 
         <h2>Terms</h2>
         <p>Treadl does not guarantee constant availability of service access and accepts no liability for downtime or access failure due to circumstances beyond its reasonable control (including any failure by ISP or system provider).</p>
@@ -28,6 +25,16 @@ class TermsOfUse extends Component {
         <p>Our services are provided on an “as is”, “as available” basis without warranties of any kind, express or implied, including, but not limited to, those of TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE or NON-INFRINGEMENT or any warranty arising from a course of dealing, usage, or trade practice. No advice or written information provided shall create a warranty; nor shall members or visitors to our services rely on any such information or advice.</p>
 
         <p>We reserve the right to permanently ban any user from our services for any reason related to mis-behaviour. We will be the sole judge of behavior and we do not offer appeals or refunds in those cases.</p>
+
+        <p>All users must follow the Treadl code of conduct:</p>
+
+        <ul>
+          <li>Do not upload or add content that contains slurs, racist, homophobic, transphobic, ableist or otherwise discriminatory content. Do not add or upload content containing any hateful ideologies.</li>
+          <li>Be kind to others, and don't be intentionally difficult or antagonistic. Harassment or threats or personal attacks will not be tolerated in any way.</li>
+          <li>Do not post any adult content.</li>
+          <li>Do not post any illegal (from the perspective of EU law) or copyrighted content for which you do not own the rights.</li>
+          <li>Do not post any content, or interact with the platform, in a way that is designed to bring harm to the platform or to negatively affect other people.</li>
+        </ul>
 
       </Container>
     );

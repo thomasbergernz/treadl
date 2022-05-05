@@ -77,7 +77,7 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
   bool _replying = false;
 
   _NoticeboardPostState(this._entry, {this.onDelete = null, this.onReply = null}) { }
-  
+
   void _sendReply() async {
     setState(() => _replying = true);
     var data = await api.request('POST', '/groups/' + _entry['group'] + '/entries/' + _entry['_id'] + '/replies', {'content': _replyController.text});
@@ -130,7 +130,7 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
                 RaisedButton(
                   color: Colors.orange,
                   onPressed: () {
-                    launch('https://seastorm.co/support#treadl');
+                    launch('https://www.treadl.com');
                   },
                   child: Text('Report this post'),
                 ),
@@ -168,9 +168,9 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
                 },
                 child: utils.avatarImage(utils.avatarUrl(_entry['authorUser']), size: isReply ? 30 : 40)
               ),
-              SizedBox(width: 5), 
+              SizedBox(width: 5),
               Text(_entry['authorUser']['username'], style: TextStyle(color: Colors.pink)),
-              SizedBox(width: 5), 
+              SizedBox(width: 5),
               Text(DateFormat('kk:mm on MMMM d y').format(createdAt), style: TextStyle(color: Colors.grey, fontSize: 10)),
               SizedBox(width: 10),
               !isReply ? GestureDetector(
@@ -211,7 +211,7 @@ class NoticeboardInput extends StatelessWidget {
             maxLines: 8,
             minLines: 1,
             decoration: InputDecoration(
-              hintText: 'Begin writing...', labelText: label 
+              hintText: 'Begin writing...', labelText: label
             ),
           )),
           IconButton(

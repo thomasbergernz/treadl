@@ -96,7 +96,6 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
           <Grid>
             <Grid.Column computer={8}>
               <Link to="/"><img alt="Treadl logo" src={logo} style={{ width: '100px', paddingTop: 20, paddingBottom: 20 }} /></Link>
-              <p style={{color: '#888888'}}>&copy; Treadl 2022</p>
               <p style={{marginTop: 10}}><small>Treadl software is free and open-source. Contributions to the project are always welcome.
                 <br />
                 <Icon name="code" /> <a href="https://git.wilw.dev/seastorm/treadl" target="_blank" rel="noopener noreferrer">Project source homepage</a>

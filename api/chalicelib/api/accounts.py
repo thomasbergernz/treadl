@@ -24,7 +24,7 @@ def register(username, email, password):
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
     result = db.users.insert_one({ 'username': username, 'email': email, 'password': hashed_password, 'createdAt': datetime.datetime.now(), 'subscriptions': {'email': ['groups.invited', 'groups.joinRequested', 'groups.joined', 'messages.replied', 'projects.commented']}})
     mail.send({
-      'to': 'will@seastorm.co',
+      'to': 'will@treadl.com',
       'subject': 'Treadl signup',
       'text': 'A new user signed up with username {0} and email {1}'.format(username, email)
     })

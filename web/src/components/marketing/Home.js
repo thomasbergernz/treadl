@@ -159,7 +159,7 @@ function MarketingHome({ onRegisterClicked }) {
 
             <h2 id='why-free'>How is Treadl free?</h2>
             <p>Treadl was built in order to help family weavers organise, store, and share their weaving projects, as well as plan and design new patterns. We thought that all of this could be useful to other people too!</p>
-            <p>Treadl is built on modern and low-cost technologies that are not too expensive to maintain. We may eventually add in additional paid-for features to help cover our costs if these grow too big. If you'd like to help us out or find out more then please <a href='mailto:hello@seastorm.co' target='_blank' rel='noopener noreferrer'>get in touch</a>!</p>
+            <p>Treadl is built on modern and low-cost technologies that are not too expensive to maintain. We may eventually add in additional paid-for features to help cover our costs if these grow too big. If you'd like to help us out or find out more then please <a href='mailto:hello@treadl.com' target='_blank' rel='noopener noreferrer'>get in touch</a>!</p>
           </Grid.Column>
 
           <Grid.Column computer={6}>

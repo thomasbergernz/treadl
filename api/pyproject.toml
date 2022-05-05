@@ -2,7 +2,7 @@
 name = "api"
 version = "0.1.0"
 description = "Treadl API"
-authors = ["Will <will@seastorm.co>"]
+authors = ["Will <will@treadl.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
