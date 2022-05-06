@@ -6,7 +6,6 @@ import { Link, Routes, Route } from 'react-router-dom';
 
 import Identity from './Identity';
 import Notification from './Notification';
-import Billing from './Billing';
 import Account from './Account';
 
 class Settings extends Component {
@@ -20,7 +19,6 @@ class Settings extends Component {
             <Menu fluid vertical tabular>
               <Menu.Item as={Link} to="/settings/identity" name="identity" active={this.props.location.pathname === '/settings/identity' || this.props.location.pathname === '/settings'} icon="user secret" />
               <Menu.Item as={Link} to='/settings/notifications' content='Notifications' icon='envelope' active={this.props.location.pathname === '/settings/notifications'} />
-                {/*<Menu.Item as={Link} to="/settings/billing" content="Plan &amp; billing" icon="credit card" active={this.props.location.pathname === '/settings/billing'} />*/}
               <Menu.Item as={Link} to="/settings/account" name="Account" active={this.props.location.pathname === '/settings/account'} icon="key" />
             </Menu>
           </Grid.Column>
@@ -29,7 +27,6 @@ class Settings extends Component {
             <Routes>
               <Route path="/settings/notifications" element={<Notification />} />
               <Route path="/settings/account" element={<Account />} />
-              <Route path="/settings/billing" element={<Billing />} />
               <Route path="/settings" element={<Identity />} />
             </Routes>
 

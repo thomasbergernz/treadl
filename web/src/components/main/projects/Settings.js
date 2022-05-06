@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import { Form, Input, Divider, Segment, Button, Icon } from 'semantic-ui-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
 import api from 'api';
 
 import HelpLink from 'components/includes/HelpLink';
 
-function ProjectSettings({ project, groups, fullProjectPath, onReceiveProject, onDeleteProject }) {
+function ProjectSettings() {
+  const { groups, project, fullProjectPath } = useSelector(state => {
+    const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
+    return { groups, project, fullProjectPath: `${username}/${projectPath}` };
+  });
+
   const [name, setName] = useState(project.name);
   const [visibility, setVisibility] = useState(project.visibility || 'public');
   const [groupVisibility, setGroupVisibility] = useState(project.groupVisibility || []);
   const [openSource, setOpenSource] = useState(project.openSource || true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { username, projectPath } = useParams();
 
   const changeVisibility = (event, r) => {
     setVisibility(r.checked ? 'private' : 'public');
@@ -27,7 +36,7 @@ function ProjectSettings({ project, groups, fullProjectPath, onReceiveProject, o
   const saveName = () => {
     utils.confirm('Update name', 'Really update this project\'s name? If you\'ve shared this project\'s link with someone, they may no longer be able to find it.').then(() => {
       api.projects.update(fullProjectPath, { name: name }, (project) => {
-        onReceiveProject(project);
+        dispatch(actions.projects.receiveProject(project));
         navigate(`/${project.owner.username}/${project.path}`);
       }, err => toast.error(err.message));
     });
@@ -35,7 +44,7 @@ function ProjectSettings({ project, groups, fullProjectPath, onReceiveProject, o
 
   const saveVisibility = () => {
     api.projects.update(project.fullName, { visibility, openSource, groupVisibility }, (p) => {
-      onReceiveProject(p);
+      dispatch(actions.projects.receiveProject(p));
       toast.info('Visibility saved');
     }, err => toast.error(err.message));
   };
@@ -43,7 +52,7 @@ function ProjectSettings({ project, groups, fullProjectPath, onReceiveProject, o
   const deleteProject = () => {
     utils.confirm('Delete project', 'Really delete this project? All files and patterns it contains will also be deleted. This action cannot be undone.').then(() => {
       api.projects.delete(fullProjectPath, () => {
-        onDeleteProject(project._id);
+        dispatch(actions.projects.deleteProject(project._id));
         toast.info('🗑️ Project deleted');
         navigate('/');
       }, err => toast.error(err.message));
@@ -111,21 +120,4 @@ function ProjectSettings({ project, groups, fullProjectPath, onReceiveProject, o
   );
 }
 
-
-const mapStateToProps = (state, ownProps) => {
-  const { username, projectPath } = ownProps.match.params;
-  const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
-  return { user, groups, project, fullProjectPath: `${username}/${projectPath}` };
-};
-const mapDispatchToProps = dispatch => ({
-  onDeleteProject: id => dispatch(actions.projects.deleteProject(id)),
-  onReceiveProject: project => dispatch(actions.projects.receiveProject(project)),
-  onUpdateProject: (id, update) => dispatch(actions.projects.updateProject(id, update)),
-});
-const ProjectSettingsContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(ProjectSettings);
-
-export default ProjectSettingsContainer;
+export default ProjectSettings;

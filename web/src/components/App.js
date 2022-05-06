@@ -11,7 +11,6 @@ import NavBar from 'components/includes/NavBar';
 
 import logo from 'images/logo/main.png';
 import MarketingHome from './marketing/Home.js';
-import MarketingPricing from './marketing/Pricing.js';
 import PrivacyPolicy from './marketing/PrivacyPolicy';
 import TermsOfUse from './marketing/TermsOfUse';
 import Login from './Login.js';
@@ -77,7 +76,6 @@ function App() {
             ? <Home />
             : <MarketingHome onRegisterClicked={() => dispatch(actions.auth.openRegister())} />
           } />
-          <Route path="/pricing" element={<MarketingPricing onRegisterClicked={() => dispatch(actions.auth.openRegister())} />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/password/forgotten" element={<ForgottenPassword />} />

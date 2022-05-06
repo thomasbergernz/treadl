@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Loader, Button, Segment } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import utils from 'utils/utils.js';
 import actions from 'actions';
 import api from 'api';
@@ -9,16 +10,29 @@ import FeedMessage from 'components/includes/FeedMessage';
 import NewFeedMessage from 'components/includes/NewFeedMessage';
 import MessagesImage from 'images/messages.png';
 
-function Feed({ user, group, entries, onReceiveEntry, onDeleteEntry, newEntry, onJoinGroup, replyingTo, updateReplyingTo, loadingEntries, updateLoadingEntries, match }) {
+function Feed() {
+  const dispatch = useDispatch();
+  const { id }= useParams();
+  const { user, group, entries, replyingTo, loadingEntries } = useSelector(state => {
+    const group = state.groups.groups.filter(g => g._id === id)[0];
+    const entries = state.groups.entries.filter(e => e.group === id).sort((a, b) => {
+      const aDate = new Date(a.createdAt);
+      const bDate = new Date(b.createdAt);
+      return aDate < bDate;
+    });
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const { replyingTo } = state.posts;
+    return { user, group, entries, replyingTo, loadingEntries: state.groups.loadingEntries };
+  });
   const myGroups = user?.groups || [];
 
   useEffect(() => {
-    updateLoadingEntries(true);
-    api.groups.getEntries(match.params.id, entries => {
-      updateLoadingEntries(false);
-      entries.forEach(e => onReceiveEntry(e));
+    dispatch(actions.groups.updateLoadingEntries(true));
+    api.groups.getEntries(id, entries => {
+      dispatch(actions.groups.updateLoadingEntries(false));
+      entries.forEach(e => dispatch(actions.groups.receiveEntry(e)));
     });
-  }, [match.params.id, myGroups.length, onReceiveEntry, updateLoadingEntries]);
+  }, [dispatch, id, myGroups.length]);
 
   const mainEntries = entries && entries.filter(e => !e.inReplyTo);
 
@@ -26,9 +40,9 @@ function Feed({ user, group, entries, onReceiveEntry, onDeleteEntry, newEntry, o
     <div>
       {utils.isInGroup(user, group._id) && <>
         {replyingTo ?
-          <Button style={{marginBottom: 20}} color='teal' content='Write a new post' onClick={() => updateReplyingTo(null)} />
+          <Button style={{marginBottom: 20}} color='teal' content='Write a new post' onClick={() => dispatch(actions.posts.updateReplyingTo(null))} />
         :
-          <NewFeedMessage user={user} group={group} forType='group' onPosted={onReceiveEntry}/>
+          <NewFeedMessage user={user} group={group} forType='group' onPosted={e => dispatch(actions.groups.receiveEntry(e))}/>
         }
         {loadingEntries && !mainEntries?.length &&
           <div style={{textAlign:'center'}}>
@@ -44,35 +58,11 @@ function Feed({ user, group, entries, onReceiveEntry, onDeleteEntry, newEntry, o
           </Segment>
         }
         {mainEntries?.map(e =>
-          <FeedMessage key={e._id} user={user} forType='group' group={group} post={e} replies={entries.filter(r => r.inReplyTo === e._id)} onDeleted={onDeleteEntry} onReplyPosted={onReceiveEntry} />
+          <FeedMessage key={e._id} user={user} forType='group' group={group} post={e} replies={entries.filter(r => r.inReplyTo === e._id)} onDeleted={id => dispatch(actions.groups.deleteEntry(id))} onReplyPosted={e => dispatch(actions.groups.receiveEntry(e))} />
         )}
       </>}
     </div>
   )
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
-  const group = state.groups.groups.filter(g => g._id === id)[0];
-  const entries = state.groups.entries.filter(e => e.group === id).sort((a, b) => {
-    const aDate = new Date(a.createdAt);
-    const bDate = new Date(b.createdAt);
-    return aDate < bDate;
-  });
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const projects = state.projects.projects.filter(p => p.user === (user && user._id));
-  const { replyingTo } = state.posts;
-  return { user, group, loading: state.groups.loading, errorMessage: state.groups.errorMessage, projects, newEntry: state.groups.newEntry, entries, replyingTo, loadingEntries: state.groups.loadingEntries };
-};
-const mapDispatchToProps = dispatch => ({
-  onReceiveEntry: entry => dispatch(actions.groups.receiveEntry(entry)),
-  onDeleteEntry: id => dispatch(actions.groups.deleteEntry(id)),
-  onJoinGroup: (userId, groupId) => dispatch(actions.users.joinGroup(userId, groupId)),
-  updateReplyingTo: entryId => dispatch(actions.posts.updateReplyingTo(entryId)),
-  updateLoadingEntries: l => dispatch(actions.groups.updateLoadingEntries(l)),
-});
-const FeedContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Feed);
-
-export default FeedContainer;
+export default Feed;

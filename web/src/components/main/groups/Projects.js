@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Divider, Loader, Segment, Card, Dropdown, Button } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import actions from 'actions';
 import api from 'api';
 
 import ProjectCard from 'components/includes/ProjectCard';
 
-function Projects({ group, myProjects, onReceiveProject, projectFilter, updateProjectFilter }) {
+function Projects() {
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [projects, setProjects] = useState([]);
+  const dispatch = useDispatch();
+  const { id } = useParams();
+
+  const { user, group, myProjects, projectFilter, loading, errorMessage } = useSelector(state => {
+    let group;
+    state.groups.groups.forEach((g) => {
+      if (g._id === id) group = g;
+    });
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const myProjects = state.projects.projects.filter(p => p.user === user?._id);
+    const projectFilter = state.groups.projectFilter;
+    return { user, group, myProjects, projectFilter, loading: state.groups.loading, errorMessage: state.groups.errorMessage };
+  });
 
   useEffect(() => {
     setLoadingProjects(true);
@@ -28,7 +42,7 @@ function Projects({ group, myProjects, onReceiveProject, projectFilter, updatePr
     if (index > -1) groupVisibility.splice(index, 1);
     else groupVisibility.push(group._id);
     api.projects.update(project.fullName, { groupVisibility }, updatedProject => {
-      onReceiveProject(updatedProject);
+      dispatch(actions.projects.receiveProject(updatedProject));
       const existingIndex = projects.map(p => p._id).indexOf(updatedProject._id);
       const newProjects = Object.assign([], projects);
       if (index > -1 && existingIndex > -1) newProjects.splice(existingIndex, 1);
@@ -65,7 +79,7 @@ function Projects({ group, myProjects, onReceiveProject, projectFilter, updatePr
           <AddProject style={{float:'right'}} />
         </>}
         {projects?.length > 0 &&
-          <Input autoFocus style={{float:'right', marginRight: 5}} size='small' icon='search' value={projectFilter} onChange={e => updateProjectFilter(e.target.value)} placeholder='Filter projects...' />
+          <Input autoFocus style={{float:'right', marginRight: 5}} size='small' icon='search' value={projectFilter} onChange={e => dispatch(actions.groups.updateProjectFilter(e.target.value))} placeholder='Filter projects...' />
         }
         <Divider hidden clearing />
 
@@ -87,23 +101,4 @@ function Projects({ group, myProjects, onReceiveProject, projectFilter, updatePr
   )
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
-  let group;
-  state.groups.groups.forEach((g) => {
-    if (g._id === id) group = g;
-  });
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const myProjects = state.projects.projects.filter(p => p.user === user?._id);
-  const projectFilter = state.groups.projectFilter;
-  return { user, group, myProjects, projectFilter, loading: state.groups.loading, errorMessage: state.groups.errorMessage };
-};
-const mapDispatchToProps = dispatch => ({
-  onReceiveProject: project => dispatch(actions.projects.receiveProject(project)),
-  updateProjectFilter: f => dispatch(actions.groups.updateProjectFilter(f)),
-});
-const ProjectsContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Projects);
-
-export default ProjectsContainer;
+export default Projects;

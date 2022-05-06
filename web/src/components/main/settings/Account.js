@@ -2,22 +2,28 @@ import React, { useState } from 'react';
 import { Message, Form, Divider, Segment, Icon } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import actions from 'actions';
 import api from 'api';
 
-function AccountSettings({ user, onLogout, history, onReceiveUser }) {
+function AccountSettings() {
   const [newEmail, setNewEmail] = useState('');
   const [existingPassword, setExistingPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [deletePassword, setDeletePassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    return { user };
+  });
 
   const updateEmail = () => {
     api.accounts.updateEmail(newEmail, data => {
       setNewEmail('');
-      onReceiveUser(Object.assign({}, user, { email: data.email }));
+      dispatch(actions.users.receive(Object.assign({}, user, { email: data.email })));
     }, err => toast.error(err.message));
   }
 
@@ -33,7 +39,7 @@ function AccountSettings({ user, onLogout, history, onReceiveUser }) {
     const confirm = window.confirm('Really delete your account?');
     if (!confirm) return;
     api.accounts.delete(deletePassword, () => {
-      api.auth.logout(onLogout);
+      api.auth.logout(() => dispatch(actions.auth.logout()));
       navigate('/');
       toast.info('Sorry to see you go');
     }, err => toast.error(err.message));
@@ -82,16 +88,4 @@ function AccountSettings({ user, onLogout, history, onReceiveUser }) {
   );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  return { user };
-};
-const mapDispatchToProps = dispatch => ({
-  onReceiveUser: user => dispatch(actions.users.receive(user)),
-  onLogout: () => dispatch(actions.auth.logout()),
-});
-const AccountSettingsContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(AccountSettings);
-
-export default AccountSettingsContainer;
+export default AccountSettings;

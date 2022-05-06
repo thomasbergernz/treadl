@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Input, Message, Icon, Button, Dropdown } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -15,24 +15,44 @@ import DraftPreview from './objects/DraftPreview';
 import NewFeedMessage from 'components/includes/NewFeedMessage';
 import FeedMessage from 'components/includes/FeedMessage';
 
-function ObjectViewer({ user, myProjects, project, fullProjectPath, onEditObject, onDeleteObject, object, comments, history, onReceiveComment, onDeleteComment }) {
+function ObjectViewer() {
   const [editingName, setEditingName] = useState(false);
   const [editingDescription, setEditingDescription] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const navigate = useNavigate();
-  const objectId = object?._id;
+  const { username, projectPath, objectId } = useParams();
+  const dispatch = useDispatch();
+
+  const { user, myProjects, project, objects, fullProjectPath, object, comments } = useSelector(state => {
+    const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
+    const objects = [];
+    state.objects.objects.forEach((d) => {
+      if (d.project === project._id) objects.push(d);
+    });
+    const object = objects.filter(o => o._id === objectId)[0];
+    const comments = state.objects.comments?.filter(c => c.object === object?._id).sort((a, b) => {
+      const aDate = new Date(a.createdAt);
+      const bDate = new Date(b.createdAt);
+      return aDate < bDate;
+    });
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const myProjects = state.projects.projects.filter(p => p.owner?.username === user?.username);
+    return { user, myProjects, project, objects, fullProjectPath: `${username}/${projectPath}`, object, comments };
+  });
+
+  //const objectId = object?._id;
 
   useEffect(() => {
     if (!objectId) return;
     api.objects.getComments(objectId, data => {
-      data.comments.forEach(onReceiveComment);
+      data.comments.forEach(c => dispatch(actions.objects.receiveComment(c)));
     });
-  }, [objectId, onReceiveComment]);
+  }, [dispatch, objectId]);
 
   const deleteObject = (object) => {
     utils.confirm('Delete object', 'Really delete this object? This cannot be undone.').then(() => {
       navigate(`/${fullProjectPath}`);
-      api.objects.delete(object._id, () => onDeleteObject(object._id), err => toast.error(err.message));
+      api.objects.delete(object._id, () => dispatch(actions.objects.delete(object._id)), err => toast.error(err.message));
     }, () => {});
   }
 
@@ -147,7 +167,7 @@ function ObjectViewer({ user, myProjects, project, fullProjectPath, onEditObject
       {editingName ?
         <div style={{marginBottom: 5}}>
           <Input autoFocus size="small" value={object.name} style={{marginBottom: 10}}
-            onChange={e => onEditObject(object._id, 'name', e.target.value)}
+            onChange={e => dispatch(actions.objects.update(object._id, 'name', e.target.value))}
             action=<Button icon="check" primary onClick={e => saveObjectName(object)} />
           />
         </div>
@@ -167,7 +187,7 @@ function ObjectViewer({ user, myProjects, project, fullProjectPath, onEditObject
       <div style={{marginTop: 20, marginBottom: 20, padding: 10, border: '1px solid rgb(240,240,240)'}}>
         {object.type === 'pattern' &&
           <div style={{maxHeight: 400, overflowY: 'scroll'}}>
-            <DraftPreview object={object} onImageLoaded={i => onEditObject(object._id, 'patternImage', i)}/>
+            <DraftPreview object={object} onImageLoaded={i => dispatch(actions.objects.update(object._id, 'patternImage', i))}/>
           </div>
         }
         {object.isImage &&
@@ -183,7 +203,7 @@ function ObjectViewer({ user, myProjects, project, fullProjectPath, onEditObject
 
       {editingDescription ?
         <div style={{padding: 10, border: '1px solid rgb(230,230,230)'}}>
-          <RichText value={object.description} onChange={t => onEditObject(object._id, 'description', t)} />
+          <RichText value={object.description} onChange={t => dispatch(actions.objects.update(object._id, 'description', t))} />
           <Button primary size="small" icon="check" content="Save description" onClick={e => saveObjectDescription(object)} />
         </div>
       :
@@ -203,42 +223,14 @@ function ObjectViewer({ user, myProjects, project, fullProjectPath, onEditObject
           }
         </h3>
         {user ?
-          <NewFeedMessage noAttachments user={user} forType='object' object={object} onPosted={onReceiveComment} placeholder='Write a new comment...'/>
+          <NewFeedMessage noAttachments user={user} forType='object' object={object} onPosted={c => dispatch(actions.objects.receiveComment(c))} placeholder='Write a new comment...'/>
         : <Message size='small'>Please login to write your own comments.</Message>
         }
         {comments?.map(c =>
-          <FeedMessage key={c._id} user={user} forType='object' object={object} post={c} replies={[]} onDeleted={onDeleteComment} />
+          <FeedMessage key={c._id} user={user} forType='object' object={object} post={c} replies={[]} onDeleted={id => dispatch(actions.objects.deleteComment(id))} />
         )}
       </div>
     </>
   );
 }
-
-const mapStateToProps = (state, ownProps) => {
-  const { username, projectPath, objectId } = ownProps.match.params;
-  const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
-  const objects = [];
-  state.objects.objects.forEach((d) => {
-    if (d.project === project._id) objects.push(d);
-  });
-  const object = objects.filter(o => o._id === objectId)[0];
-  const comments = state.objects.comments?.filter(c => c.object === object?._id).sort((a, b) => {
-    const aDate = new Date(a.createdAt);
-    const bDate = new Date(b.createdAt);
-    return aDate < bDate;
-  });
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const myProjects = state.projects.projects.filter(p => p.owner?.username === user?.username);
-  return { user, myProjects, project, objects, fullProjectPath: `${username}/${projectPath}`, object, comments };
-};
-const mapDispatchToProps = dispatch => ({
-  onEditObject: (id, field, value) => dispatch(actions.objects.update(id, field, value)),
-  onDeleteObject: id => dispatch(actions.objects.delete(id)),
-  onReceiveComment: c => dispatch(actions.objects.receiveComment(c)),
-  onDeleteComment: id => dispatch(actions.objects.deleteComment(id)),
-});
-const ObjectViewerContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(ObjectViewer);
-
-export default ObjectViewerContainer;
+export default ObjectViewer;

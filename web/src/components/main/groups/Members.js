@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Table, Button, Input, Label, Header, Loader, Segment, Dropdown, Card } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import utils from 'utils/utils.js';
@@ -11,9 +12,19 @@ import UserChip from 'components/includes/UserChip';
 import HelpLink from 'components/includes/HelpLink';
 import UserSearch from 'components/includes/UserSearch';
 
-function Members({ user, group, members, requests, loading, onReceiveUser, onJoinGroup, onLeaveGroup, onUpdateGroupLoading, onDismissInvitation }) {
+function Members() {
   const [invitations, setInvitations] = useState([]);
   const joinLinkRef = useRef(null);
+  const { id } = useParams();
+  const dispatch = useDispatch();
+
+  const { user, group, members, loading, requests } = useSelector(state => {
+    const group = state.groups.groups.filter(g => g._id === id)[0];
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const members = state.users.users.filter(u => utils.isInGroup(u, id));
+    const requests = state.invitations.invitations.filter(i => i.recipientGroup === group?._id);
+    return { user, group, members, loading: state.groups.loading, requests };
+  });
 
   useEffect(() => {
     if (utils.isGroupAdmin(user, group)) {
@@ -21,15 +32,15 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
     }
   }, [user, group]);
   useEffect(() => {
-    onUpdateGroupLoading(true);
+    dispatch(actions.users.request(true));
     api.groups.getMembers(group._id, members => {
-      members.forEach(onReceiveUser);
-      onUpdateGroupLoading(false);
+      members.forEach(u => dispatch(actions.users.receive(u)));
+      dispatch(actions.users.request(false));
     }, err => {
       toast.error(err.message);
-      onUpdateGroupLoading(false);
+      dispatch(actions.users.request(false));
     });
-  }, [group, onReceiveUser, onUpdateGroupLoading]);
+  }, [dispatch, group]);
 
   const copyLink = () => {
     joinLinkRef.current.select();
@@ -39,7 +50,7 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
   const kickUser = (id) => {
     utils.confirm('Really kick this user?').then(() => {
       api.groups.deleteMember(group._id, id, () => {
-        onLeaveGroup(id, group._id);
+        dispatch(actions.users.leaveGroup(id, group._id));
       }, err => toast.error(err.message));
     }, () => {});
   }
@@ -59,14 +70,14 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
   }
   const approveRequest = (invite) => {
     api.invitations.accept(invite._id, (result) => {
-      onDismissInvitation(invite._id);
-      onReceiveUser(invite.invitedBy);
-      onJoinGroup(invite.user, group._id);
+      dispatch(actions.invitations.dismiss(invite._id))
+      dispatch(actions.users.receive(invite.invitedBy));
+      dispatch(actions.users.joinGroup(invite.user, group._id));
       toast.success(`${invite.invitedBy.username} is now a member`);
     }, err => toast.error(err.message));
   }
   const declineRequest = (request) => {
-    api.invitations.decline(request._id, () => onDismissInvitation(request._id),
+    api.invitations.decline(request._id, () => dispatch(actions.invitations.dismiss(request._id)),
       err => toast.error(err.message));
   }
 
@@ -163,23 +174,4 @@ function Members({ user, group, members, requests, loading, onReceiveUser, onJoi
   )
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
-  const group = state.groups.groups.filter(g => g._id === id)[0];
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const members = state.users.users.filter(u => utils.isInGroup(u, id));
-  const requests = state.invitations.invitations.filter(i => i.recipientGroup === group?._id);
-  return { user, group, members, loading: state.groups.loading, errorMessage: state.groups.errorMessage, requests };
-};
-const mapDispatchToProps = dispatch => ({
-  onDismissInvitation: id => dispatch(actions.invitations.dismiss(id)),
-  onReceiveUser: user => dispatch(actions.users.receive(user)),
-  onJoinGroup: (userId, groupId) => dispatch(actions.users.joinGroup(userId, groupId)),
-  onLeaveGroup: (userId, groupId) => dispatch(actions.users.leaveGroup(userId, groupId)),
-  onUpdateGroupLoading: l => dispatch(actions.users.request(l)),
-});
-const MembersContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Members);
-
-export default MembersContainer;
+export default Members;

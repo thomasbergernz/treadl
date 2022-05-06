@@ -3,23 +3,29 @@ import { Helmet } from 'react-helmet';
 import { Icon, Form, Grid, Input, Checkbox, Button, Divider } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import actions from 'actions';
 import api from 'api';
 
 import HelpLink from 'components/includes/HelpLink';
 
-function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onUpdateGroupName, onUpdateGroupDescription, onUpdateGroupClosed, onReceiveGroup, loading, onUpdateGroupLoading, history }) {
+function NewGroup() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, newGroupName, newGroupDescription, newGroupClosed, loading } = useSelector(state => {
+    const { loading, newGroupName, newGroupDescription, newGroupClosed } = state.groups;
+    return { user: state.users.users.filter(u => state.auth.currentUserId === u._id)[0], newGroupName, newGroupDescription, newGroupClosed, loading };
+  });
 
   const createGroup = () => {
-    onUpdateGroupLoading(true);
+    dispatch(actions.groups.request(true));
     api.groups.create({ name: newGroupName, description: newGroupDescription, closed: newGroupClosed }, (group) => {
-      onReceiveGroup(group);
-      onUpdateGroupLoading(false);
+      dispatch(actions.groups.receiveGroup(group));
+      dispatch(actions.groups.request(false));
       navigate(`/groups/${group._id}/members`);
     }, (err) => {
-      onUpdateGroupLoading(false);
+      dispatch(actions.groups.request(false));
       toast.error(err.message);
     });
   }
@@ -39,12 +45,12 @@ function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onU
 
         <h3>About your group</h3>
         <p>Give your group a short name. You can change this whenever you like.</p>
-        <Input autoFocus type="text" fluid onChange={e => onUpdateGroupName(e.target.value)} value={newGroupName} />
+        <Input autoFocus type="text" fluid onChange={e => dispatch(actions.groups.updateNewGroupName(e.target.value))} value={newGroupName} />
         <Divider hidden />
         <p><strong>Optional:</strong> Write a short description to describe your group to others.</p>
-        <Form><Form.TextArea placeholder="Group description (optional)..." value={newGroupDescription} onChange={e => onUpdateGroupDescription(e.target.value)} /></Form>
+        <Form><Form.TextArea placeholder="Group description (optional)..." value={newGroupDescription} onChange={e => dispatch(actions.groups.updateNewGroupDescription(e.target.value))} /></Form>
 
-        <Checkbox style={{marginTop: 40}} toggle checked={newGroupClosed} label="Make this group a closed group" onChange={(e,c) => onUpdateGroupClosed(c.checked)} />
+        <Checkbox style={{marginTop: 40}} toggle checked={newGroupClosed} label="Make this group a closed group" onChange={(e,c) => dispatch(actions.groups.updateNewGroupClosed(c.checked))} />
         <div style={{ marginLeft: 63, color: 'rgb(150,150,150)' }}>
           <p>Closed groups are more restrictive and new members must be invited or approved to join. Members can join non-closed groups without being invited.</p>
         </div>
@@ -53,7 +59,7 @@ function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onU
         <p>You can add and invite others to join your group after you've created it.</p>
 
         <div style={{textAlign: 'right'}}>
-          <Button basic onClick={history.goBack}>Cancel</Button>
+          <Button basic onClick={() => navigate(-1)}>Cancel</Button>
           <Button color="teal" icon="check" content="Create group" onClick={createGroup} loading={loading} />
         </div>
       </Grid.Column>
@@ -61,19 +67,4 @@ function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onU
   );
 }
 
-const mapStateToProps = state => {
-  const { loading, newGroupName, newGroupDescription, newGroupClosed } = state.groups;
-  return { user: state.users.users.filter(u => state.auth.currentUserId === u._id)[0], newGroupName, newGroupDescription, newGroupClosed, loading };
-};
-const mapDispatchToProps = dispatch => ({
-  onUpdateGroupLoading: l => dispatch(actions.groups.request(l)),
-  onReceiveGroup: group => dispatch(actions.groups.receiveGroup(group)),
-  onUpdateGroupName: n => dispatch(actions.groups.updateNewGroupName(n)),
-  onUpdateGroupDescription: d => dispatch(actions.groups.updateNewGroupDescription(d)),
-  onUpdateGroupClosed: c => dispatch(actions.groups.updateNewGroupClosed(c)),
-});
-const NewGroupContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(NewGroup);
-
-export default NewGroupContainer;
+export default NewGroup;
