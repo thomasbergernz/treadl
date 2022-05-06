@@ -28,6 +28,10 @@ import SettingsNotification from './main/settings/Notification';
 import SettingsAccount from './main/settings/Account';
 import NewGroup from './main/groups/New.js';
 import Group from './main/groups/Group.js';
+import GroupFeed from './main/groups/Feed.js';
+import GroupMembers from './main/groups/Members.js';
+import GroupProjects from './main/groups/Projects.js';
+import GroupSettings from './main/groups/Settings.js';
 import Root from './main/root';
 //import Docs from './docs';
 
@@ -93,7 +97,13 @@ function App() {
           </Route>
           <Route path="/projects/new" element={<NewProject />} />
           <Route path="/groups/new" element={<NewGroup />} />
-          <Route path="/groups/:id" element={<Group />} />
+          <Route path="/groups/:id" element={<Group />}>
+            <Route path='' end element={<GroupFeed />} />
+            <Route path='feed' element={<GroupFeed />} />
+            <Route path='members' element={<GroupMembers />} />
+            <Route path='projects' element={<GroupProjects />} />
+            <Route path='settings' element={<GroupSettings />} />
+          </Route>
           <Route path='/root' element={<Root />} />
           <Route path='/:username/:projectPath' element={<Project />} />
           <Route path="/:username" element={<Profile />}>

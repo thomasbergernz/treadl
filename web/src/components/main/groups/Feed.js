@@ -12,7 +12,7 @@ import MessagesImage from 'images/messages.png';
 
 function Feed() {
   const dispatch = useDispatch();
-  const { id }= useParams();
+  const { id } = useParams();
   const { user, group, entries, replyingTo, loadingEntries } = useSelector(state => {
     const group = state.groups.groups.filter(g => g._id === id)[0];
     const entries = state.groups.entries.filter(e => e.group === id).sort((a, b) => {

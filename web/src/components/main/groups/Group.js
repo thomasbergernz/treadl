@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Segment, Loader, Menu, Message, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Routes, Route, Link, useParams } from 'react-router-dom';
+import { Outlet, Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import utils from 'utils/utils.js';
@@ -181,13 +181,7 @@ function Group() {
                       }
                     </Segment>
                   }
-                  <Routes>
-                    <Route path='/groups/:id' end element={<Feed group={group} />} />
-                    <Route path='/groups/:id/feed' element={<Feed group={group} />} />
-                    <Route path='/groups/:id/members' element={<Members group={group} />} />
-                    <Route path='/groups/:id/projects' element={<Projects group={group} />} />
-                    <Route path='/groups/:id/settings' element={<Settings group={group} />} />
-                  </Routes>
+                  <Outlet />
                 </>
               :
                 <Message>Please login to view or join this group.</Message>

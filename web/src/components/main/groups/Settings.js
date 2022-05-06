@@ -1,19 +1,21 @@
 import React from 'react';
 import { Header, Button, Divider, Segment, Form,  } from 'semantic-ui-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import utils from 'utils/utils.js';
 import actions from 'actions';
 import api from 'api';
 
-function Settings({ group }) {
+function Settings() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { id } = useParams();
 
-  const { loading } = useSelector(state => {
+  const { loading, group } = useSelector(state => {
     const { loading } = state.groups;
-    return { loading };
+    const group = state.groups.groups.filter(g => g._id === id)[0];
+    return { loading, group };
   });
 
   const saveGroup = () => {
