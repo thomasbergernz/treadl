@@ -1,49 +1,46 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   Card, Input, Divider, Button,
 } from 'semantic-ui-react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { connect } from 'react-redux';
 import api from 'api';
 
-class ResetPassword extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { password: '', loading: false };
-  }
+function ResetPassword() {
+  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   resetPassword = () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
-    this.setState({ loading: true });
+    setLoading(true);
     api.auth.updatePasswordWithToken(token, this.state.password, () => {
-      this.setState({ loading: false });
+      setLoading(false);
       toast.info('Password changed successfully.');
-      this.props.history.push('/');
+      navigate('/');
     }, (err) => {
-      this.setState({ loading: false });
+      setLoading(false);
       toast.error(err.message);
     });
   }
 
-  render() {
-    const { password, loading } = this.state;
-    return (
-      <Card.Group centered style={{ marginTop: 50 }}>
-        <Card raised color="yellow">
-          <Card.Content>
-            <Card.Header>Enter a new password</Card.Header>
-            <Card.Meta>Enter a new password below.</Card.Meta>
-            <Divider hidden />
-            <Input fluid type="password" value={password} onChange={e => this.setState({ password: e.target.value })} autoFocus />
-          </Card.Content>
-          <Card.Content extra textAlign="right">
-            <Button color="teal" content="Change password" onClick={this.resetPassword} loading={loading} />
-          </Card.Content>
-        </Card>
-      </Card.Group>
-    );
-  }
+  return (
+    <Card.Group centered style={{ marginTop: 50 }}>
+      <Card raised color="yellow">
+        <Card.Content>
+          <Card.Header>Enter a new password</Card.Header>
+          <Card.Meta>Enter a new password below.</Card.Meta>
+          <Divider hidden />
+          <Input fluid type="password" value={password} onChange={e => setPassword(e.target.value)} autoFocus />
+        </Card.Content>
+        <Card.Content extra textAlign="right">
+          <Button color="teal" content="Change password" onClick={resetPassword} loading={loading} />
+        </Card.Content>
+      </Card>
+    </Card.Group>
+  );
 }
 
 const mapStateToProps = state => ({ });

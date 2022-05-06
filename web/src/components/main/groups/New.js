@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Icon, Form, Grid, Input, Checkbox, Button, Divider } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import actions from 'actions';
 import api from 'api';
@@ -10,13 +10,14 @@ import api from 'api';
 import HelpLink from 'components/includes/HelpLink';
 
 function NewGroup({ user, newGroupName, newGroupDescription, newGroupClosed, onUpdateGroupName, onUpdateGroupDescription, onUpdateGroupClosed, onReceiveGroup, loading, onUpdateGroupLoading, history }) {
+  const navigate = useNavigate();
 
   const createGroup = () => {
     onUpdateGroupLoading(true);
     api.groups.create({ name: newGroupName, description: newGroupDescription, closed: newGroupClosed }, (group) => {
       onReceiveGroup(group);
       onUpdateGroupLoading(false);
-      history.push(`/groups/${group._id}/members`);
+      navigate(`/groups/${group._id}/members`);
     }, (err) => {
       onUpdateGroupLoading(false);
       toast.error(err.message);

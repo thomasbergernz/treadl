@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Message, Form, Divider, Segment, Icon } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { connect } from 'react-redux';
 
@@ -12,6 +12,7 @@ function AccountSettings({ user, onLogout, history, onReceiveUser }) {
   const [existingPassword, setExistingPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [deletePassword, setDeletePassword] = useState('');
+  const navigate = useNavigate();
 
   const updateEmail = () => {
     api.accounts.updateEmail(newEmail, data => {
@@ -33,7 +34,7 @@ function AccountSettings({ user, onLogout, history, onReceiveUser }) {
     if (!confirm) return;
     api.accounts.delete(deletePassword, () => {
       api.auth.logout(onLogout);
-      history.push('/');
+      navigate('/');
       toast.info('Sorry to see you go');
     }, err => toast.error(err.message));
   }

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Switch, Route, Link, withRouter } from 'react-router-dom';
+import { Routes, Route, Link, withRouter } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
@@ -26,8 +26,7 @@ import Settings from './main/settings/Settings.js';
 import NewGroup from './main/groups/New.js';
 import Group from './main/groups/Group.js';
 import Root from './main/root';
-
-
+//import Docs from './docs';
 
 function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseAuthentication, isAuthenticating, isAuthenticatingType, isAuthenticated, onLoginSuccess, onLogout, onReceiveProjects, onReceiveInvitations, onReceiveGroups, onDriftReady, onDriftSynced, helpModalOpen, openHelpModal, searchTerm, updateSearchTerm, searchPopupOpen, openSearchPopup, searchResults, updateSearchResults, searching, updateSearching, history }) {
   const loggedInUserId = user?._id;
@@ -67,25 +66,25 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
       <Helmet defaultTitle={'Treadl'} titleTemplate={`%s | Treadl`} />
       <NavBar />
       <div style={{ flex: '1 0 0' }}>
-        <Switch>
-          <Route exact path="/" render={props => (isAuthenticated
-            ? <Home {...props} />
-            : <MarketingHome {...props} onRegisterClicked={onOpenRegister} />)
+        <Routes>
+          <Route exact path="/" element={isAuthenticated
+            ? <Home />
+            : <MarketingHome onRegisterClicked={onOpenRegister} />
           } />
-          <Route path="/pricing" render={props => <MarketingPricing {...props} onRegisterClicked={onOpenRegister} />} />
-          <Route path="/privacy" component={PrivacyPolicy} />
-          <Route path="/terms-of-use" component={TermsOfUse} />
-          <Route path="/password/forgotten" component={ForgottenPassword} />
-          <Route path="/password/reset" component={ResetPassword} />
-          <Route path="/settings" component={Settings} />
-          <Route path="/projects/new" component={NewProject} />
-          <Route path="/groups/new" component={NewGroup} />
-          <Route path="/groups/:id" component={Group} />
-          <Route path='/root' component={Root} />
-          <Route path="/:username/edit" component={Profile} />
-          <Route path="/:username/:projectPath" component={Project} />
-          <Route path="/:username" component={Profile} />
-        </Switch>
+          <Route path="/pricing" element={<MarketingPricing onRegisterClicked={onOpenRegister} />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/password/forgotten" element={<ForgottenPassword />} />
+          <Route path="/password/reset" element={<ResetPassword />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/projects/new" element={<NewProject />} />
+          <Route path="/groups/new" element={<NewGroup />} />
+          <Route path="/groups/:id" element={<Group />} />
+          <Route path='/root' element={<Root />} />
+          <Route path="/:username/edit" element={<Profile />} />
+          <Route path="/:username/:projectPath" element={<Project />} />
+          <Route path="/:username" element={<Profile />} />
+        </Routes>
         <Login open={isAuthenticating} authType={isAuthenticatingType} onClose={onCloseAuthentication} />
         <ToastContainer position={toast.POSITION.BOTTOM_CENTER} hideProgressBar/>
         <Divider hidden section />

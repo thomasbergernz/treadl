@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Input, Message, Icon, Button, Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -19,6 +19,7 @@ function ObjectViewer({ user, myProjects, project, fullProjectPath, onEditObject
   const [editingName, setEditingName] = useState(false);
   const [editingDescription, setEditingDescription] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const navigate = useNavigate();
   const objectId = object?._id;
 
   useEffect(() => {
@@ -30,7 +31,7 @@ function ObjectViewer({ user, myProjects, project, fullProjectPath, onEditObject
 
   const deleteObject = (object) => {
     utils.confirm('Delete object', 'Really delete this object? This cannot be undone.').then(() => {
-      history.push(`/${fullProjectPath}`);
+      navigate(`/${fullProjectPath}`);
       api.objects.delete(object._id, () => onDeleteObject(object._id), err => toast.error(err.message));
     }, () => {});
   }
@@ -138,7 +139,7 @@ function ObjectViewer({ user, myProjects, project, fullProjectPath, onEditObject
                 <Dropdown.Item onClick={e => deleteObject(object)} content="Delete" icon="trash" />
               </Dropdown.Menu>
             </Dropdown>
-            
+
           </>
         }
       </span>

@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   Confirm, Select, Segment, Accordion, Grid, Icon, Input, Button,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
@@ -35,69 +35,73 @@ const ColourSquare = styled.div`
   }
 `;
 
-class Tools extends Component {
-  state = { colours: [], activeDrawers: ['properties', 'drawing', 'palette'], view: 'interlacement' }
+function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, baseSize, onEditorUpdated, updatePattern, updateObject, saveObject, onObjectDeleted }) {
+  const [colours, setColours] = useState([]);
+  const [activeDrawers, setActiveDrawers] = useState(['properties', 'drawing', 'palette']);
+  const [view, setView] = useState('interlacement');
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { objectId } = useParams();
 
-  enableTool = (tool) => {
-    this.props.onEditorUpdated({ tool, colour: this.props.editor.colour });
-  }
+  const enableTool = (tool) => {
+    onEditorUpdated({ tool, colour: editor.colour });
+  };
 
-  setColour = (colour) => {
-    this.props.onEditorUpdated({ tool: 'colour', colour });
-  }
+  const setColour = (colour) => {
+    onEditorUpdated({ tool: 'colour', colour });
+  };
 
-  setView = (view) => {
-    this.props.onEditorUpdated({ view });
-  }
+  const setView = (view) => {
+    onEditorUpdated({ view });
+  };
 
-  setName = (event) => {
-    this.props.updateObject({ name: event.target.value });
-  }
+  const setName = (event) => {
+    updateObject({ name: event.target.value });
+  };
 
-  setShafts = (event) => {
-    const warp = { ...this.props.warp, shafts: parseInt(event.target.value, 10) || 1 };
-    this.props.updatePattern({ warp });
-  }
+  const setShafts = (event) => {
+    const warp = { ...warp, shafts: parseInt(event.target.value, 10) || 1 };
+    updatePattern({ warp });
+  };
 
-  setTreadles = (event) => {
-    const weft = { ...this.props.weft, treadles: parseInt(event.target.value, 10) || 1 };
-    this.props.updatePattern({ weft });
-  }
+  const setTreadles = (event) => {
+    const weft = { ...weft, treadles: parseInt(event.target.value, 10) || 1 };
+    updatePattern({ weft });
+  };
 
-  onZoomChange = zoom => this.props.updatePattern({ baseSize: zoom || 10 })
+  const onZoomChange = zoom => updatePattern({ baseSize: zoom || 10 });
 
-  drawerIsActive = drawer => this.state.activeDrawers.indexOf(drawer) > -1
+  const drawerIsActive = drawer => activeDrawers.indexOf(drawer) > -1;
 
-  activateDrawer = (drawer) => {
-    const index = this.state.activeDrawers.indexOf(drawer);
-    const drawers = this.state.activeDrawers;
+  const activateDrawer = (drawer) => {
+    const index = activeDrawers.indexOf(drawer);
+    const drawers = activeDrawers;
     if (index === -1) {
       drawers.push(drawer);
     } else {
       drawers.splice(index, 1);
     }
-    this.setState({ activeDrawers: drawers });
-  }
+    setActiveDrawers(drawers);
+  };
 
-  deleteObject = () => {
-    api.objects.delete(this.props.match.params.objectId, () => {
+  const deleteObject = () => {
+    api.objects.delete(objectId, () => {
       toast('🗑️ Pattern deleted');
-      this.props.onObjectDeleted(this.props.match.params.objectId);
-      this.props.history.push(`/${this.props.project.fullName}`);
+      onObjectDeleted(objectId);
+      navigate(`/${project.fullName}`);
     }, err => console.log(err));
   }
 
-  revertChanges = () => {
+  const revertChanges = () => {
     const sure = window.confirm('Really revert your changes to your last save point?\n\nAny updates to your pattern since you last saved will be lost.')
     if (sure) {
       window.location.reload();
     }
-  }
+  };
 
-  changeWidth = () => {
+  const changeWidth = () => {
     const newWidth = parseInt(window.prompt('Enter a new width for your pattern.\n\nIMPORTANT: If your new width is less than the current width, then any shafts selected beyond the new width will be lost.'));
     if (!newWidth) return;
-    const { warp } = this.props;
     if (newWidth > warp.threading.length) {
       let i = warp.threading.length;
       while (i < newWidth) {
@@ -110,14 +114,13 @@ class Tools extends Component {
       warp.threading.splice(newWidth);
       warp.threads = warp.threading.length;
     }
-    this.props.updatePattern({ warp });
-    this.props.onEditorUpdated();
-    this.props.onEditorUpdated({ tool: 'pan' });
-  }
-  changeHeight = () => {
+    updatePattern({ warp });
+    onEditorUpdated();
+    onEditorUpdated({ tool: 'pan' });
+  };
+  const changeHeight = () => {
     const newHeight = parseInt(window.prompt('Enter a new height for your pattern.\n\nIMPORTANT: If your new height is less than the current height, then any treadles selected beyond the new height will be lost.'));
     if (!newHeight) return;
-    const { weft } = this.props;
     if (newHeight > weft.treadling.length) {
       let i = weft.treadling.length;
       while (i < newHeight) {
@@ -130,118 +133,115 @@ class Tools extends Component {
       weft.treadling.splice(newHeight);
       weft.threads = weft.treadling.length;
     }
-    this.props.updatePattern({ weft });
-    this.props.onEditorUpdated();
-  }
+    updatePattern({ weft });
+    onEditorUpdated();
+  };
 
-  render() {
-    const { warp, weft, editor, unsaved, saving } = this.props;
-    return (
-      <div className="pattern-toolbox joyride-tools">
-        {unsaved &&
-          <Segment attached="top">
-            <Button fluid color="teal" icon="save" content="Save pattern" onClick={() => this.props.saveObject(this.refs.canvas)} loading={saving}/>
-            <Button style={{marginTop: 5}} fluid icon='refresh' content='Undo changes' onClick={this.revertChanges} />
-          </Segment>
-        }
-        <Segment attached>
-          <Accordion fluid>
-            <Accordion.Title active={this.drawerIsActive('view')} onClick={e => this.activateDrawer('view')}>
-              <Icon name="dropdown" /> View
-            </Accordion.Title>
-            <Accordion.Content active={this.drawerIsActive('view')}>
-              <small>Drawdown view</small>
-              <Select
-                size="tiny"
-                fluid
-                value={editor.view}
-                onChange={(e, s) => this.setView(s.value)}
-                style={{ fontSize: '11px' }}
-                options={[
-                  { key: 1, value: 'interlacement', text: 'Interlacement' },
-                  { key: 2, value: 'colour', text: 'Colour only' },
-                  { key: 3, value: 'warp', text: 'Warp view' },
-                  { key: 4, value: 'weft', text: 'Weft view' },
-                ]}
-              />
-              <div style={{ marginTop: '5px' }} />
-              <small>Zoom</small>
-              <Slider defaultValue={this.props.baseSize} min={5} max={13} step={1} onAfterChange={this.onZoomChange} />
-            </Accordion.Content>
-
-            <Accordion.Title active={this.drawerIsActive('properties')} onClick={e => this.activateDrawer('properties')}>
-              <Icon name="dropdown" /> Properties
-            </Accordion.Title>
-            <Accordion.Content active={this.drawerIsActive('properties')}>
-              <small>Name</small>
-              <Input type="text" size="small" fluid style={{ marginBottom: '5px' }} value={this.props.object.name} onChange={this.setName} />
-              <Grid columns={2}>
-                <Grid.Row className='joyride-threads'>
-                  <Grid.Column>
-                    <small>Shafts</small>
-                    <Input fluid type="number" value={warp.shafts} onKeyDown={e => false} onChange={this.setShafts} size="mini" />
-                  </Grid.Column>
-                  <Grid.Column>
-                    <small>Treadles</small>
-                    <Input fluid type="number" value={weft.treadles} onKeyDown={e => false} onChange={this.setTreadles} size="mini" />
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row style={{paddingTop: 0}}>
-                  <Grid.Column>
-                    <small>Width</small>
-                    <Input fluid readOnly value={warp.threading?.length || 0} size="mini"
-                      action={{icon: 'edit', onClick: this.changeWidth}}
-                    />
-                  </Grid.Column>
-                  <Grid.Column>
-                    <small>Height</small>
-                    <Input fluid readOnly value={weft.treadling?.length  || 0} size="mini"
-                      action={{icon: 'edit', onClick: this.changeHeight}}
-                    />
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
-            </Accordion.Content>
-
-            <Accordion.Title active={this.drawerIsActive('drawing')} onClick={e => this.activateDrawer('drawing')}>
-              <Icon name="dropdown" /> Tools
-            </Accordion.Title>
-            <Accordion.Content active={this.drawerIsActive('drawing')}>
-              <Button.Group fluid>
-                <Button className='joyride-pan' data-tooltip="Pan (drag to move) pattern" color={this.props.editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => this.enableTool('pan')}><Icon name="move" /></Button>
-                <Button className='joyride-colour' data-tooltip="Paint selected colour" color={this.props.editor.tool === 'colour' && 'blue'} size="tiny" icon onClick={() => this.enableTool('colour')}><Icon name="paint brush" /></Button>
-                <Button className='joyride-straight' data-tooltip="Straight draw" color={this.props.editor.tool === 'straight' && 'blue'} size="tiny" icon onClick={() => this.enableTool('straight')}>/ /</Button>
-                <Button className='joyride-point' data-tooltip="Point draw" color={this.props.editor.tool === 'point' && 'blue'} size="tiny" icon onClick={() => this.enableTool('point')}><Icon name="chevron up" /></Button>
-              </Button.Group>
-            </Accordion.Content>
-
-            <Accordion.Title active={this.drawerIsActive('palette')} onClick={e => this.activateDrawer('palette')}>
-              <Icon name="dropdown" /> Palette
-              <ColourSquare colour={utils.rgb(this.props.editor.colour)} style={{top: 4, marginLeft: 10}}/>
-            </Accordion.Title>
-            <Accordion.Content active={this.drawerIsActive('palette')}>
-              {this.props.pattern.colours && this.props.pattern.colours.map(colour =>
-                <ColourSquare key={colour} colour={utils.rgb(colour)} onClick={() => this.setColour(colour)} />
-              )}
-            </Accordion.Content>
-
-            <Accordion.Title active={this.drawerIsActive('advanced')} onClick={e => this.activateDrawer('advanced')}>
-              <Icon name="dropdown" /> Advanced
-            </Accordion.Title>
-            <Accordion.Content active={this.drawerIsActive('advanced')}>
-              <Button size="small" basic color="red" fluid onClick={e => this.setState({ deleteModalOpen: true })}>Delete pattern</Button>
-              <Confirm
-                open={this.state.deleteModalOpen}
-                content="Really delete this pattern?"
-                onCancel={e => this.setState({ deleteModalOpen: false })}
-                onConfirm={this.deleteObject}
-              />
-            </Accordion.Content>
-          </Accordion>
+  return (
+    <div className="pattern-toolbox joyride-tools">
+      {unsaved &&
+        <Segment attached="top">
+          <Button fluid color="teal" icon="save" content="Save pattern" onClick={() => saveObject(/*this.refs.canvas*/)} loading={saving}/>
+          <Button style={{marginTop: 5}} fluid icon='refresh' content='Undo changes' onClick={revertChanges} />
         </Segment>
-      </div>
-    );
-  }
+      }
+      <Segment attached>
+        <Accordion fluid>
+          <Accordion.Title active={drawerIsActive('view')} onClick={e => activateDrawer('view')}>
+            <Icon name="dropdown" /> View
+          </Accordion.Title>
+          <Accordion.Content active={drawerIsActive('view')}>
+            <small>Drawdown view</small>
+            <Select
+              size="tiny"
+              fluid
+              value={editor.view}
+              onChange={(e, s) => setView(s.value)}
+              style={{ fontSize: '11px' }}
+              options={[
+                { key: 1, value: 'interlacement', text: 'Interlacement' },
+                { key: 2, value: 'colour', text: 'Colour only' },
+                { key: 3, value: 'warp', text: 'Warp view' },
+                { key: 4, value: 'weft', text: 'Weft view' },
+              ]}
+            />
+            <div style={{ marginTop: '5px' }} />
+            <small>Zoom</small>
+            <Slider defaultValue={baseSize} min={5} max={13} step={1} onAfterChange={onZoomChange} />
+          </Accordion.Content>
+
+          <Accordion.Title active={drawerIsActive('properties')} onClick={e => activateDrawer('properties')}>
+            <Icon name="dropdown" /> Properties
+          </Accordion.Title>
+          <Accordion.Content active={drawerIsActive('properties')}>
+            <small>Name</small>
+            <Input type="text" size="small" fluid style={{ marginBottom: '5px' }} value={object.name} onChange={setName} />
+            <Grid columns={2}>
+              <Grid.Row className='joyride-threads'>
+                <Grid.Column>
+                  <small>Shafts</small>
+                  <Input fluid type="number" value={warp.shafts} onKeyDown={e => false} onChange={setShafts} size="mini" />
+                </Grid.Column>
+                <Grid.Column>
+                  <small>Treadles</small>
+                  <Input fluid type="number" value={weft.treadles} onKeyDown={e => false} onChange={setTreadles} size="mini" />
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row style={{paddingTop: 0}}>
+                <Grid.Column>
+                  <small>Width</small>
+                  <Input fluid readOnly value={warp.threading?.length || 0} size="mini"
+                    action={{icon: 'edit', onClick: changeWidth}}
+                  />
+                </Grid.Column>
+                <Grid.Column>
+                  <small>Height</small>
+                  <Input fluid readOnly value={weft.treadling?.length  || 0} size="mini"
+                    action={{icon: 'edit', onClick: changeHeight}}
+                  />
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Accordion.Content>
+
+          <Accordion.Title active={drawerIsActive('drawing')} onClick={e => activateDrawer('drawing')}>
+            <Icon name="dropdown" /> Tools
+          </Accordion.Title>
+          <Accordion.Content active={drawerIsActive('drawing')}>
+            <Button.Group fluid>
+              <Button className='joyride-pan' data-tooltip="Pan (drag to move) pattern" color={editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => enableTool('pan')}><Icon name="move" /></Button>
+              <Button className='joyride-colour' data-tooltip="Paint selected colour" color={editor.tool === 'colour' && 'blue'} size="tiny" icon onClick={() => enableTool('colour')}><Icon name="paint brush" /></Button>
+              <Button className='joyride-straight' data-tooltip="Straight draw" color={editor.tool === 'straight' && 'blue'} size="tiny" icon onClick={() => enableTool('straight')}>/ /</Button>
+              <Button className='joyride-point' data-tooltip="Point draw" color={editor.tool === 'point' && 'blue'} size="tiny" icon onClick={() => enableTool('point')}><Icon name="chevron up" /></Button>
+            </Button.Group>
+          </Accordion.Content>
+
+          <Accordion.Title active={drawerIsActive('palette')} onClick={e => activateDrawer('palette')}>
+            <Icon name="dropdown" /> Palette
+            <ColourSquare colour={utils.rgb(editor.colour)} style={{top: 4, marginLeft: 10}}/>
+          </Accordion.Title>
+          <Accordion.Content active={drawerIsActive('palette')}>
+            {pattern.colours && pattern.colours.map(colour =>
+              <ColourSquare key={colour} colour={utils.rgb(colour)} onClick={() => setColour(colour)} />
+            )}
+          </Accordion.Content>
+
+          <Accordion.Title active={drawerIsActive('advanced')} onClick={e => activateDrawer('advanced')}>
+            <Icon name="dropdown" /> Advanced
+          </Accordion.Title>
+          <Accordion.Content active={drawerIsActive('advanced')}>
+            <Button size="small" basic color="red" fluid onClick={e => setDeleteModalOpen(true)}>Delete pattern</Button>
+            <Confirm
+              open={deleteModalOpen}
+              content="Really delete this pattern?"
+              onCancel={e => setDeleteModalOpen(false)}
+              onConfirm={deleteObject}
+            />
+          </Accordion.Content>
+        </Accordion>
+      </Segment>
+    </div>
+  );
 }
 
 const mapStateToProps = (state, ownProps) => {

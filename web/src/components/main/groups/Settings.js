@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header, Button, Divider, Segment, Form,  } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import utils from 'utils/utils.js';
@@ -8,16 +8,17 @@ import actions from 'actions';
 import api from 'api';
 
 function Settings({ user, group, loading, onUpdateGroupLoading, onUpdateGroup, onDeleteGroup, history }) {
-  
+  const navigate = useNavigate();
+
   const saveGroup = () => {
-    onUpdateGroupLoading(true); 
+    onUpdateGroupLoading(true);
     const { _id, name, description, closed } = group;
     api.groups.update(_id, { name, description, closed }, () => {
-      onUpdateGroupLoading(false); 
+      onUpdateGroupLoading(false);
       toast.info('Group updated');
     }, err => {
       toast.error(err.message);
-      onUpdateGroupLoading(false); 
+      onUpdateGroupLoading(false);
     });
   }
   const deleteGroup = () => {
@@ -25,7 +26,7 @@ function Settings({ user, group, loading, onUpdateGroupLoading, onUpdateGroup, o
       api.groups.delete(group._id, () => {
         toast.info('Group deleted');
         onDeleteGroup(group._id);
-        history.push(`/`);
+        navigate(`/`);
       }, err => toast.error(err.message));
     }, () => {});
   }

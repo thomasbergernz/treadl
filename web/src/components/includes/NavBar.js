@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Loader, List, Popup, Modal, Grid, Icon, Button, Container, Dropdown } from 'semantic-ui-react';
@@ -75,7 +75,7 @@ const SearchBar = styled.div`
 `;
 
 function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, onLogout, onDriftSynced, helpModalOpen, openHelpModal, searchTerm, updateSearchTerm, searchPopupOpen, openSearchPopup, searchResults, updateSearchResults, searching, updateSearching, history }) {
-
+  const navigate = useNavigate();
   useEffect(() => {
     openSearchPopup(false);
   }, [history.location.pathname, openSearchPopup]);
@@ -84,7 +84,7 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
     onLogout();
     onDriftSynced(false);
     if (window.drift) window.drift.reset();
-    history.push('/');
+    navigate('/');
   });
 
   const search = () => {
