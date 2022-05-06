@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Message, Input, Segment, Button } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { connect } from 'react-redux';
 
@@ -49,8 +48,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => ({
   onUpdateUsername: (id, username) => dispatch(actions.users.updateUsername(id, username)),
 });
-const IdentitySettingsContainer = withRouter(connect(
+const IdentitySettingsContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(IdentitySettings));
+)(IdentitySettings);
 
 export default IdentitySettingsContainer;

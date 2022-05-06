@@ -3,7 +3,7 @@ import {
   Message, Modal, Grid, Form, Input, Button,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import actions from 'actions';
 import { api } from 'api';
@@ -185,9 +185,9 @@ const mapDispatchToProps = dispatch => ({
   onLoginFailure: error => dispatch(actions.auth.loginError(error)),
 });
 
-const LoginContainer = withRouter(connect(
+const LoginContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Login));
+)(Login);
 
 export default LoginContainer;

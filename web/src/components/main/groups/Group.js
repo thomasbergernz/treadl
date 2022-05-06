@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Segment, Loader, Menu, Message, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Switch, Route, Link, withRouter } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import utils from 'utils/utils.js';
@@ -169,7 +169,7 @@ function Group({ user, group, requests, myRequests, loading, errorMessage, onRec
                     </Segment>
                   }
                   <Switch>
-                    <Route path='/groups/:id' exact render={() => <Feed group={group} />} />
+                    <Route path='/groups/:id' end render={() => <Feed group={group} />} />
                     <Route path='/groups/:id/feed' render={() => <Feed group={group} />} />
                     <Route path='/groups/:id/members' render={() => <Members group={group} />} />
                     <Route path='/groups/:id/projects' render={() => <Projects group={group} />} />
@@ -210,8 +210,8 @@ const mapDispatchToProps = dispatch => ({
   onReceiveInvitations: i => dispatch(actions.invitations.receiveInvitations(i)),
   onDismissInvitation: id => dispatch(actions.invitations.dismiss(id)),
 });
-const GroupContainer = withRouter(connect(
+const GroupContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Group));
+)(Group);
 
 export default GroupContainer;

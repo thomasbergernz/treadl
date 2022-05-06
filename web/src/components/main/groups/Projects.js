@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Divider, Loader, Segment, Card, Dropdown, Button } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import actions from 'actions';
@@ -63,7 +62,7 @@ function Projects({ group, myProjects, onReceiveProject, projectFilter, updatePr
         <p>This tab lists projects that members have made available to this group.</p>
 
         {myProjects?.length > 0 && <>
-          <AddProject style={{float:'right'}} />     
+          <AddProject style={{float:'right'}} />
         </>}
         {projects?.length > 0 &&
           <Input autoFocus style={{float:'right', marginRight: 5}} size='small' icon='search' value={projectFilter} onChange={e => updateProjectFilter(e.target.value)} placeholder='Filter projects...' />
@@ -103,8 +102,8 @@ const mapDispatchToProps = dispatch => ({
   onReceiveProject: project => dispatch(actions.projects.receiveProject(project)),
   updateProjectFilter: f => dispatch(actions.groups.updateProjectFilter(f)),
 });
-const ProjectsContainer = withRouter(connect(
+const ProjectsContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Projects));
+)(Projects);
 
 export default ProjectsContainer;

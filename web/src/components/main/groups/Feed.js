@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Loader, Button, Segment } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -22,12 +21,12 @@ function Feed({ user, group, entries, onReceiveEntry, onDeleteEntry, newEntry, o
   }, [match.params.id, myGroups.length, onReceiveEntry, updateLoadingEntries]);
 
   const mainEntries = entries && entries.filter(e => !e.inReplyTo);
-  
+
   return (
     <div>
       {utils.isInGroup(user, group._id) && <>
         {replyingTo ?
-          <Button style={{marginBottom: 20}} color='teal' content='Write a new post' onClick={() => updateReplyingTo(null)} /> 
+          <Button style={{marginBottom: 20}} color='teal' content='Write a new post' onClick={() => updateReplyingTo(null)} />
         :
           <NewFeedMessage user={user} group={group} forType='group' onPosted={onReceiveEntry}/>
         }
@@ -40,11 +39,11 @@ function Feed({ user, group, entries, onReceiveEntry, onDeleteEntry, newEntry, o
         {!loadingEntries && !mainEntries?.length &&
           <Segment placeholder textAlign='center'>
             <img src={MessagesImage} alt='Messages' style={{display:'block', margin: '0px auto', maxWidth: 300}} />
-            <h2>No posts yet</h2> 
+            <h2>No posts yet</h2>
             <p>Be the first here by writing a new post.</p>
           </Segment>
         }
-        {mainEntries?.map(e => 
+        {mainEntries?.map(e =>
           <FeedMessage key={e._id} user={user} forType='group' group={group} post={e} replies={entries.filter(r => r.inReplyTo === e._id)} onDeleted={onDeleteEntry} onReplyPosted={onReceiveEntry} />
         )}
       </>}
@@ -72,8 +71,8 @@ const mapDispatchToProps = dispatch => ({
   updateReplyingTo: entryId => dispatch(actions.posts.updateReplyingTo(entryId)),
   updateLoadingEntries: l => dispatch(actions.groups.updateLoadingEntries(l)),
 });
-const FeedContainer = withRouter(connect(
+const FeedContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Feed));
+)(Feed);
 
 export default FeedContainer;

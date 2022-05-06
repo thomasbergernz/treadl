@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter, Prompt } from 'react-router-dom';
+import {  Prompt } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -121,8 +121,8 @@ const mapStateToProps = (state, ownProps) => ({ editor: state.objects.editor });
 const mapDispatchToProps = dispatch => ({
   onReceiveObject: object => dispatch(actions.objects.receive(object)),
 });
-const DraftContainer = withRouter(connect(
+const DraftContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Draft));
+)(Draft);
 
 export default DraftContainer;

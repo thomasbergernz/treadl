@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Table, Button, Input, Label, Header, Loader, Segment, Dropdown, Card } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import moment from 'moment';
@@ -179,8 +178,8 @@ const mapDispatchToProps = dispatch => ({
   onLeaveGroup: (userId, groupId) => dispatch(actions.users.leaveGroup(userId, groupId)),
   onUpdateGroupLoading: l => dispatch(actions.users.request(l)),
 });
-const MembersContainer = withRouter(connect(
+const MembersContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Members));
+)(Members);
 
 export default MembersContainer;

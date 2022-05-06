@@ -67,8 +67,8 @@ const mapDispatchToProps = dispatch => ({
   onCreateObject: name => dispatch(actions.objects.create(name)),
   onSelectObject: id => dispatch(actions.objects.select(id)),
 });
-const ObjectCreatorContainer = withRouter(connect(
+const ObjectCreatorContainer = connect(
   null, mapDispatchToProps,
-)(ObjectCreator));
+)(ObjectCreator);
 
 export default ObjectCreatorContainer;

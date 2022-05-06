@@ -111,8 +111,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onReceiveProject: project => dispatch(actions.projects.receiveProject(project)),
 });
-const NewProjectContainer = withRouter(connect(
+const NewProjectContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(NewProject));
+)(NewProject);
 
 export default NewProjectContainer;

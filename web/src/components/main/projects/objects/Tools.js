@@ -256,8 +256,8 @@ const mapDispatchToProps = dispatch => ({
   onEditorUpdated: editor => dispatch(actions.objects.updateEditor(editor)),
   onObjectDeleted: id => dispatch(actions.objects.delete(id)),
 });
-const ToolsContainer = withRouter(connect(
+const ToolsContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Tools));
+)(Tools);
 
 export default ToolsContainer;

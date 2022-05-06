@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Segment, Label, Input, Icon, Card, Loader } from 'semantic-ui-react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import utils from 'utils/utils.js';
@@ -175,8 +175,8 @@ const mapDispatchToProps = dispatch => ({
   onEditObject: (id, field, value) => dispatch(actions.objects.update(id, field, value)),
   onDeleteObject: id => dispatch(actions.objects.delete(id)),
 });
-const ObjectListContainer = withRouter(connect(
+const ObjectListContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(ObjectList));
+)(ObjectList);
 
 export default ObjectListContainer;

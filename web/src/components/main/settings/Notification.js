@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Label, Table, Checkbox, Divider, Segment } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { connect } from 'react-redux';
 
@@ -45,7 +44,7 @@ class NotificationSettings extends Component {
           <Table.Body>
             <Table.Row>
               <Table.Cell><Label color='orange' size='small'>Required</Label> Important account emails<br /><small>For example, password-resets, email address change warnings, and so on.</small>
-              
+
               </Table.Cell>
               <Table.Cell><Checkbox toggle disabled checked={true}/></Table.Cell>
             </Table.Row>
@@ -76,8 +75,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => ({
   onSubsUpdated: (id, subs) => dispatch(actions.users.updateSubscriptions(id, subs)),
 });
-const NotificationSettingsContainer = withRouter(connect(
+const NotificationSettingsContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(NotificationSettings));
+)(NotificationSettings);
 
 export default NotificationSettingsContainer;

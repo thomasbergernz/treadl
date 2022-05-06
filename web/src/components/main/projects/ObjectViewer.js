@@ -237,8 +237,8 @@ const mapDispatchToProps = dispatch => ({
   onReceiveComment: c => dispatch(actions.objects.receiveComment(c)),
   onDeleteComment: id => dispatch(actions.objects.deleteComment(id)),
 });
-const ObjectViewerContainer = withRouter(connect(
+const ObjectViewerContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(ObjectViewer));
+)(ObjectViewer);
 
 export default ObjectViewerContainer;

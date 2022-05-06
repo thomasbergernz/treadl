@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Loader, Dropdown, Modal, Icon, Message, Divider, Segment, Button, Card } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { connect } from 'react-redux';
 import utils from 'utils/utils.js';
@@ -200,15 +199,15 @@ class BillingSettings extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => { 
+const mapStateToProps = (state, ownProps) => {
   const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
   return { user };
 };
 const mapDispatchToProps = dispatch => ({
   onUpdatePlan: plan => dispatch(actions.auth.updatePlan(plan)),
 });
-const BillingSettingsContainer = withRouter(connect(
+const BillingSettingsContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(BillingSettings));
+)(BillingSettings);
 
 export default BillingSettingsContainer;

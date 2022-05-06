@@ -275,9 +275,9 @@ const mapDispatchToProps = dispatch => ({
   updateSearching: s => dispatch(actions.app.updateSearching(s)),
 });
 
-const NavBarContainer = withRouter(connect(
+const NavBarContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(NavBar));
+)(NavBar);
 
 export default NavBarContainer;

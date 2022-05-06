@@ -90,8 +90,8 @@ const mapDispatchToProps = dispatch => ({
   onReceiveUser: user => dispatch(actions.users.receive(user)),
   onLogout: () => dispatch(actions.auth.logout()),
 });
-const AccountSettingsContainer = withRouter(connect(
+const AccountSettingsContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(AccountSettings));
+)(AccountSettings);
 
 export default AccountSettingsContainer;

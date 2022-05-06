@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, Link, withRouter } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
@@ -67,7 +67,7 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
       <NavBar />
       <div style={{ flex: '1 0 0' }}>
         <Routes>
-          <Route exact path="/" element={isAuthenticated
+          <Route end path="/" element={isAuthenticated
             ? <Home />
             : <MarketingHome onRegisterClicked={onOpenRegister} />
           } />
@@ -155,9 +155,9 @@ const mapDispatchToProps = dispatch => ({
   updateSearching: s => dispatch(actions.app.updateSearching(s)),
 });
 
-const AppContainer = withRouter(connect(
+const AppContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(App));
+)(App);
 
 export default AppContainer;

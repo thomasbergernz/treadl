@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Container } from 'semantic-ui-react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import api from 'api';
@@ -67,8 +67,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => ({
 
 });
-const RootContainer = withRouter(connect(
+const RootContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Root));
+)(Root);
 
 export default RootContainer;

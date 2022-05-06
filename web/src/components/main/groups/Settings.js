@@ -66,8 +66,8 @@ const mapDispatchToProps = dispatch => ({
   onUpdateGroupLoading: l => dispatch(actions.groups.request(l)),
   onDeleteGroup: id => dispatch(actions.groups.deleteGroup(id)),
 });
-const SettingsContainer = withRouter(connect(
+const SettingsContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Settings));
+)(Settings);
 
 export default SettingsContainer;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Message, Form, TextArea, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Switch, Route, Link, withRouter } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -154,8 +154,8 @@ const mapDispatchToProps = dispatch => ({
   onSelectObject: id => dispatch(actions.objects.select(id)),
   onUpdateProject: (id, update) => dispatch(actions.projects.updateProject(id, update)),
 });
-const ProjectContainer = withRouter(connect(
+const ProjectContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(Project));
+)(Project);
 
 export default ProjectContainer;

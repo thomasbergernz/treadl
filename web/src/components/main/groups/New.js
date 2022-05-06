@@ -72,8 +72,8 @@ const mapDispatchToProps = dispatch => ({
   onUpdateGroupDescription: d => dispatch(actions.groups.updateNewGroupDescription(d)),
   onUpdateGroupClosed: c => dispatch(actions.groups.updateNewGroupClosed(c)),
 });
-const NewGroupContainer = withRouter(connect(
+const NewGroupContainer = connect(
   mapStateToProps, mapDispatchToProps,
-)(NewGroup));
+)(NewGroup);
 
 export default NewGroupContainer;
