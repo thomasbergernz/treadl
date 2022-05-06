@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Dropdown } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
@@ -11,10 +11,11 @@ import FileChooser from 'components/includes/FileChooser';
 function ObjectCreator({ project, onCreateObject, onError, fluid }) {
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const createNewPattern = () => {
     api.projects.createObject(project.fullName, { name: 'Untitled pattern', type: 'pattern' }, (object) => {
-      onCreateObject(object);
+      dispatch(actions.objects.create(object));
       navigate(`/${project.fullName}/${object._id}/edit`);
     });
   };
@@ -25,7 +26,7 @@ function ObjectCreator({ project, onCreateObject, onError, fluid }) {
       name: file.name, storedName: file.storedName, type: file.type, wif: file.wif,
     }, (object) => {
       setIsUploading(false);
-      onCreateObject(object);
+      dispatch(actions.objects.create(object));
       navigate(`/${project.fullName}/${object._id}`);
     }, (err) => {
       toast.error(err.message);
@@ -63,12 +64,5 @@ function ObjectCreator({ project, onCreateObject, onError, fluid }) {
     </Dropdown>
   );
 }
-const mapDispatchToProps = dispatch => ({
-  onCreateObject: name => dispatch(actions.objects.create(name)),
-  onSelectObject: id => dispatch(actions.objects.select(id)),
-});
-const ObjectCreatorContainer = connect(
-  null, mapDispatchToProps,
-)(ObjectCreator);
 
-export default ObjectCreatorContainer;
+export default ObjectCreator;
