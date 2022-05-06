@@ -32,7 +32,7 @@ function Project() {
     api.projects.get(fullName, p => dispatch(actions.projects.receiveProject(p)), err => dispatch(actions.projects.requestFailed(err)));
   }, [user, dispatch, fullName]);
 
-  const wideBody = () => true;/*!match.isExact*/
+  const wideBody = () => false;/*!match.isExact*/
 
   const saveDescription = () => {
     dispatch(actions.projects.editDescription(false));

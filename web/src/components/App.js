@@ -18,9 +18,14 @@ import ForgottenPassword from './ForgottenPassword';
 import ResetPassword from './ResetPassword';
 import Home from './main/Home.js';
 import Profile from './main/users/Profile.js';
+import ProfileEdit from './main/users/EditProfile';
+import ProfileProjects from './main/users/ProfileProjects';
 import NewProject from './main/projects/New.js';
 import Project from './main/projects/Project.js';
 import Settings from './main/settings/Settings.js';
+import SettingsIdentity from './main/settings/Identity';
+import SettingsNotification from './main/settings/Notification';
+import SettingsAccount from './main/settings/Account';
 import NewGroup from './main/groups/New.js';
 import Group from './main/groups/Group.js';
 import Root from './main/root';
@@ -80,14 +85,21 @@ function App() {
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/password/forgotten" element={<ForgottenPassword />} />
           <Route path="/password/reset" element={<ResetPassword />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/settings" element={<Settings />}>
+            <Route path='identity' element={<SettingsIdentity />} />
+            <Route path='notifications' element={<SettingsNotification />} />
+            <Route path='account' element={<SettingsAccount />} />
+            <Route path='' element={<SettingsIdentity />} />
+          </Route>
           <Route path="/projects/new" element={<NewProject />} />
           <Route path="/groups/new" element={<NewGroup />} />
           <Route path="/groups/:id" element={<Group />} />
           <Route path='/root' element={<Root />} />
-          <Route path="/:username/edit" element={<Profile />} />
-          <Route path="/:username/:projectPath" element={<Project />} />
-          <Route path="/:username" element={<Profile />} />
+          <Route path='/:username/:projectPath' element={<Project />} />
+          <Route path="/:username" element={<Profile />}>
+            <Route path="edit" element={<ProfileEdit />} />
+            <Route path='' element={<ProfileProjects />} />
+          </Route>
         </Routes>
         <Login open={isAuthenticating} authType={isAuthenticatingType} onClose={() => dispatch(actions.auth.closeAuthentication())} />
         <ToastContainer position={toast.POSITION.BOTTOM_CENTER} hideProgressBar/>

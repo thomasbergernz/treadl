@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Loader, Icon, List, Container, Card, Grid, Message } from 'semantic-ui-react';
-import { Link, Routes, Route, useParams } from 'react-router-dom';
+import { Link, Outlet, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import utils from 'utils/utils';
@@ -164,10 +164,7 @@ function Profile() {
           </Grid.Column>
 
           <Grid.Column computer={11}>
-            <Routes>
-              <Route path='/edit' end element={<EditProfile />} />
-              <Route path='/' element={<ProfileProjects />} />
-            </Routes>
+            <Outlet />
           </Grid.Column>
         </Grid>
         )
