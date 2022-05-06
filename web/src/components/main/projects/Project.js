@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Message, Form, TextArea, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Routes, Route, Link, useParams } from 'react-router-dom';
+import { Outlet, Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -129,14 +129,7 @@ function Project() {
             )}
 
             <Grid.Column computer={wideBody() ? 16 : 12} tablet={wideBody() ? 16 : 10}>
-              {project && (
-                <Routes>
-                  <Route path="/settings" element={<ProjectSettings />} />
-                  <Route path="/:objectId/edit" element={<Draft />} />
-                  <Route path="/:objectId" element={<ProjectObjects />} />
-                  <Route path="/" element={<ObjectList />} />
-                </Routes>
-              ) }
+              {project && <Outlet />}
             </Grid.Column>
           </Grid>
 

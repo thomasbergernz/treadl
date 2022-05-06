@@ -8,30 +8,41 @@ import { Grid, Divider, Icon, Container } from 'semantic-ui-react';
 import api from 'api';
 import actions from 'actions';
 import NavBar from 'components/includes/NavBar';
-
 import logo from 'images/logo/main.png';
+
 import MarketingHome from './marketing/Home.js';
 import PrivacyPolicy from './marketing/PrivacyPolicy';
 import TermsOfUse from './marketing/TermsOfUse';
+
 import Login from './Login.js';
 import ForgottenPassword from './ForgottenPassword';
 import ResetPassword from './ResetPassword';
+
 import Home from './main/Home.js';
+
 import Profile from './main/users/Profile.js';
 import ProfileEdit from './main/users/EditProfile';
 import ProfileProjects from './main/users/ProfileProjects';
+
 import NewProject from './main/projects/New.js';
 import Project from './main/projects/Project.js';
+import ProjectObjects from './main/projects/ProjectObjects.js';
+import ProjectSettings from './main/projects/Settings.js';
+import ObjectDraft from './main/projects/objects/Draft.js';
+import ObjectList from './main/projects/ObjectList.js';
+
 import Settings from './main/settings/Settings.js';
 import SettingsIdentity from './main/settings/Identity';
 import SettingsNotification from './main/settings/Notification';
 import SettingsAccount from './main/settings/Account';
+
 import NewGroup from './main/groups/New.js';
 import Group from './main/groups/Group.js';
 import GroupFeed from './main/groups/Feed.js';
 import GroupMembers from './main/groups/Members.js';
 import GroupProjects from './main/groups/Projects.js';
 import GroupSettings from './main/groups/Settings.js';
+
 import Root from './main/root';
 //import Docs from './docs';
 
@@ -98,14 +109,19 @@ function App() {
           <Route path="/projects/new" element={<NewProject />} />
           <Route path="/groups/new" element={<NewGroup />} />
           <Route path="/groups/:id" element={<Group />}>
-            <Route path='' end element={<GroupFeed />} />
             <Route path='feed' element={<GroupFeed />} />
             <Route path='members' element={<GroupMembers />} />
             <Route path='projects' element={<GroupProjects />} />
             <Route path='settings' element={<GroupSettings />} />
+            <Route path='' end element={<GroupFeed />} />
           </Route>
           <Route path='/root' element={<Root />} />
-          <Route path='/:username/:projectPath' element={<Project />} />
+          <Route path='/:username/:projectPath' element={<Project />}>
+            <Route path="settings" element={<ProjectSettings />} />
+            <Route path=":objectId/edit" element={<ObjectDraft />} />
+            <Route path=":objectId" element={<ProjectObjects />} />
+            <Route path='' element={<ObjectList />} />
+          </Route>
           <Route path="/:username" element={<Profile />}>
             <Route path="edit" element={<ProfileEdit />} />
             <Route path='' element={<ProfileProjects />} />
