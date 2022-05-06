@@ -10,10 +10,6 @@ import api from 'api';
 
 import UserChip from 'components/includes/UserChip';
 import HelpLink from 'components/includes/HelpLink';
-import Feed from './Feed.js';
-import Members from './Members.js';
-import Projects from './Projects.js';
-import Settings from './Settings.js';
 
 function Group() {
   const { id } = useParams();

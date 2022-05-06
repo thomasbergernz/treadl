@@ -14,7 +14,7 @@ function Projects() {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const { user, group, myProjects, projectFilter, loading, errorMessage } = useSelector(state => {
+  const { group, myProjects, projectFilter } = useSelector(state => {
     let group;
     state.groups.groups.forEach((g) => {
       if (g._id === id) group = g;
@@ -22,7 +22,7 @@ function Projects() {
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     const myProjects = state.projects.projects.filter(p => p.user === user?._id);
     const projectFilter = state.groups.projectFilter;
-    return { user, group, myProjects, projectFilter, loading: state.groups.loading, errorMessage: state.groups.errorMessage };
+    return { group, myProjects, projectFilter };
   });
 
   useEffect(() => {

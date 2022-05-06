@@ -11,10 +11,6 @@ import UserChip from 'components/includes/UserChip';
 import HelpLink from 'components/includes/HelpLink';
 import ObjectCreator from 'components/includes/ObjectCreator';
 import FormattedMessage from 'components/includes/FormattedMessage';
-import Draft from './objects/Draft.js';
-import ObjectList from './ObjectList.js';
-import ProjectObjects from './ProjectObjects.js';
-import ProjectSettings from './Settings.js';
 
 function Project() {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);

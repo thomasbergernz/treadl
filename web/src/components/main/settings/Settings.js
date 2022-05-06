@@ -1,6 +1,6 @@
 import React from 'react';
 import { Divider, Container, Grid, Menu } from 'semantic-ui-react';
-import { Link, Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 
 function Settings() {
   return (

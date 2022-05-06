@@ -13,9 +13,9 @@ function NewGroup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user, newGroupName, newGroupDescription, newGroupClosed, loading } = useSelector(state => {
+  const { newGroupName, newGroupDescription, newGroupClosed, loading } = useSelector(state => {
     const { loading, newGroupName, newGroupDescription, newGroupClosed } = state.groups;
-    return { user: state.users.users.filter(u => state.auth.currentUserId === u._id)[0], newGroupName, newGroupDescription, newGroupClosed, loading };
+    return { newGroupName, newGroupDescription, newGroupClosed, loading };
   });
 
   const createGroup = () => {

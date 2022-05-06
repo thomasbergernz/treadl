@@ -23,7 +23,7 @@ function ObjectViewer() {
   const { username, projectPath, objectId } = useParams();
   const dispatch = useDispatch();
 
-  const { user, myProjects, project, objects, fullProjectPath, object, comments } = useSelector(state => {
+  const { user, myProjects, project, fullProjectPath, object, comments } = useSelector(state => {
     const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
     const objects = [];
     state.objects.objects.forEach((d) => {
@@ -37,7 +37,7 @@ function ObjectViewer() {
     });
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     const myProjects = state.projects.projects.filter(p => p.owner?.username === user?.username);
-    return { user, myProjects, project, objects, fullProjectPath: `${username}/${projectPath}`, object, comments };
+    return { user, myProjects, project, fullProjectPath: `${username}/${projectPath}`, object, comments };
   });
 
   //const objectId = object?._id;

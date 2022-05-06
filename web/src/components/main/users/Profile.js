@@ -8,8 +8,6 @@ import utils from 'utils/utils';
 import actions from 'actions';
 import api from 'api';
 
-import EditProfile from './EditProfile';
-import ProfileProjects from './ProfileProjects';
 import BlurrableImage from 'components/includes/BlurrableImage';
 
 function Profile() {
