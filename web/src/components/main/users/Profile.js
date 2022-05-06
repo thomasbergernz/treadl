@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
 import { Loader, Icon, List, Container, Card, Grid, Message } from 'semantic-ui-react';
-import { Link, Switch, Route } from 'react-router-dom';
+import { Link, Routes, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import utils from 'utils/utils';
@@ -40,7 +40,7 @@ class Profile extends Component {
     return (
       <Container style={{ marginTop: '40px' }}>
         <Helmet title={profileUser?.username ? `${profileUser.username}'s Profile` : 'Profile'} />
-        {loading && !profileUser && 
+        {loading && !profileUser &&
           <div style={{textAlign: 'center'}}>
             <h4>Loading {this.props.match.params.username}'s profile...</h4>
             <Loader active inline="centered" />
@@ -166,10 +166,10 @@ class Profile extends Component {
             </Grid.Column>
 
             <Grid.Column computer={11}>
-              <Switch>
-                <Route path="/:username/edit" component={EditProfile} />
-                <Route component={ProfileProjects} />
-              </Switch>
+              <Routes>
+                <Route path="/:username/edit" element={<EditProfile />} />
+                <Route element={<ProfileProjects />} />
+              </Routes>
             </Grid.Column>
           </Grid>
           )

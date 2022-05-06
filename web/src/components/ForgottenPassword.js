@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   Card, Input, Divider, Button,
 } from 'semantic-ui-react';
@@ -12,7 +12,7 @@ function ForgottenPassword() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  sendEmail = () => {
+  const sendEmail = () => {
     setLoading(true);
     api.auth.sendPasswordResetEmail(email, () => {
       setLoading(false);
@@ -22,7 +22,7 @@ function ForgottenPassword() {
       setLoading(false);
       toast.error(err.message);
     });
-  }
+  };
 
   return (
     <Card.Group centered style={{ marginTop: 50 }}>
@@ -34,7 +34,7 @@ function ForgottenPassword() {
           <Input fluid type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="mary@example.com" autoFocus />
         </Card.Content>
         <Card.Content extra textAlign="right">
-          <Button basic onClick={() => navigate('/'))} content="Cancel" />
+          <Button basic onClick={() => navigate('/')} content="Cancel" />
           <Button color="teal" content="Send email" onClick={sendEmail} loading={loading} />
         </Card.Content>
       </Card>

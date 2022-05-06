@@ -36,9 +36,7 @@ const ColourSquare = styled.div`
 `;
 
 function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, baseSize, onEditorUpdated, updatePattern, updateObject, saveObject, onObjectDeleted }) {
-  const [colours, setColours] = useState([]);
   const [activeDrawers, setActiveDrawers] = useState(['properties', 'drawing', 'palette']);
-  const [view, setView] = useState('interlacement');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
   const { objectId } = useParams();
@@ -51,7 +49,7 @@ function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, 
     onEditorUpdated({ tool: 'colour', colour });
   };
 
-  const setView = (view) => {
+  const setEditorView = (view) => {
     onEditorUpdated({ view });
   };
 
@@ -60,13 +58,11 @@ function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, 
   };
 
   const setShafts = (event) => {
-    const warp = { ...warp, shafts: parseInt(event.target.value, 10) || 1 };
-    updatePattern({ warp });
+    updatePattern({ warp: { ...warp, shafts: parseInt(event.target.value, 10) || 1 } });
   };
 
   const setTreadles = (event) => {
-    const weft = { ...weft, treadles: parseInt(event.target.value, 10) || 1 };
-    updatePattern({ weft });
+    updatePattern({ weft: { ...weft, treadles: parseInt(event.target.value, 10) || 1 } });
   };
 
   const onZoomChange = zoom => updatePattern({ baseSize: zoom || 10 });
@@ -156,7 +152,7 @@ function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, 
               size="tiny"
               fluid
               value={editor.view}
-              onChange={(e, s) => setView(s.value)}
+              onChange={(e, s) => setEditorView(s.value)}
               style={{ fontSize: '11px' }}
               options={[
                 { key: 1, value: 'interlacement', text: 'Interlacement' },

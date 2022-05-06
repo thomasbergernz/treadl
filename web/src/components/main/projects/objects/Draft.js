@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
-import {  Prompt } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -76,10 +75,6 @@ class Draft extends Component {
     return (
       <div>
         <Helmet title={`${this.state?.name || 'Weaving Draft'}`} />
-        <Prompt
-          when={unsaved ? true : false}
-          message='You have unsaved changes. Are you sure you want to leave tnis page?'
-        />
         <Tour id='pattern' run={true} />
         <div style={{display: 'flex'}}>
 

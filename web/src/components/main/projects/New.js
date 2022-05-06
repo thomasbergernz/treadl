@@ -42,6 +42,7 @@ function NewProject({ onReceiveProject, user, groups }) {
     }, (err) => {
       setLoading(false);
       toast.error(err.message);
+      setError(err.message);
     });
   };
 
@@ -95,7 +96,7 @@ Create a new project
 
         {error && <Message color="orange" content={error} />}
         <div style={{textAlign:'right'}}>
-          <Button basic onClick={() => navigate('/'))}>Cancel</Button>
+          <Button basic onClick={() => navigate(-1)}>Cancel</Button>
           <Button color="teal" icon="check" content="Create project" onClick={createProject} loading={loading} />
         </div>
       </Grid.Column>

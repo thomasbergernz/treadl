@@ -9,11 +9,11 @@ import api from 'api';
 
 import HelpLink from 'components/includes/HelpLink';
 
-function ProjectSettings({ project, fullProjectPath, onReceiveProject, onDeleteProject }) {
+function ProjectSettings({ project, groups, fullProjectPath, onReceiveProject, onDeleteProject }) {
   const [name, setName] = useState(project.name);
   const [visibility, setVisibility] = useState(project.visibility || 'public');
   const [groupVisibility, setGroupVisibility] = useState(project.groupVisibility || []);
-  const [openSource, setOpenSource] = useState(propject.openSource || true);
+  const [openSource, setOpenSource] = useState(project.openSource || true);
   const navigate = useNavigate();
 
   const changeVisibility = (event, r) => {

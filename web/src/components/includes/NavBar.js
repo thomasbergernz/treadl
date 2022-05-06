@@ -78,7 +78,7 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
   const navigate = useNavigate();
   useEffect(() => {
     openSearchPopup(false);
-  }, [history.location.pathname, openSearchPopup]);
+  }, [openSearchPopup]);
 
   const logout = () => api.auth.logout(() => {
     onLogout();

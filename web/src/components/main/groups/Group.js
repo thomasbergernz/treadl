@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Segment, Loader, Menu, Message, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import utils from 'utils/utils.js';
@@ -168,13 +168,13 @@ function Group({ user, group, requests, myRequests, loading, errorMessage, onRec
                       }
                     </Segment>
                   }
-                  <Switch>
-                    <Route path='/groups/:id' end render={() => <Feed group={group} />} />
-                    <Route path='/groups/:id/feed' render={() => <Feed group={group} />} />
-                    <Route path='/groups/:id/members' render={() => <Members group={group} />} />
-                    <Route path='/groups/:id/projects' render={() => <Projects group={group} />} />
-                    <Route path='/groups/:id/settings' render={() => <Settings group={group} />} />
-                  </Switch>
+                  <Routes>
+                    <Route path='/groups/:id' end element={<Feed group={group} />} />
+                    <Route path='/groups/:id/feed' element={<Feed group={group} />} />
+                    <Route path='/groups/:id/members' element={<Members group={group} />} />
+                    <Route path='/groups/:id/projects' element={<Projects group={group} />} />
+                    <Route path='/groups/:id/settings' element={<Settings group={group} />} />
+                  </Routes>
                 </>
               :
                 <Message>Please login to view or join this group.</Message>

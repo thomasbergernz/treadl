@@ -12,7 +12,7 @@ function ResetPassword() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  resetPassword = () => {
+  const resetPassword = () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     setLoading(true);
@@ -24,7 +24,7 @@ function ResetPassword() {
       setLoading(false);
       toast.error(err.message);
     });
-  }
+  };
 
   return (
     <Card.Group centered style={{ marginTop: 50 }}>

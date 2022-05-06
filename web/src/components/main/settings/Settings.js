@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   Divider, Container, Grid, Menu,
 } from 'semantic-ui-react';
-import { Link, Switch, Route } from 'react-router-dom';
+import { Link, Routes, Route } from 'react-router-dom';
 
 import Identity from './Identity';
 import Notification from './Notification';
@@ -26,12 +26,12 @@ class Settings extends Component {
           </Grid.Column>
 
           <Grid.Column stretched width={12}>
-            <Switch>
-              <Route path="/settings/notifications" component={Notification} />
-              <Route path="/settings/account" component={Account} />
-              <Route path="/settings/billing" component={Billing} />
-              <Route path="/settings" component={Identity} />
-            </Switch>
+            <Routes>
+              <Route path="/settings/notifications" element={<Notification />} />
+              <Route path="/settings/account" element={<Account />} />
+              <Route path="/settings/billing" element={<Billing />} />
+              <Route path="/settings" element={<Identity />} />
+            </Routes>
 
           </Grid.Column>
         </Grid>

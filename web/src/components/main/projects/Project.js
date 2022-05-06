@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Message, Form, TextArea, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -122,12 +122,12 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
 
             <Grid.Column computer={wideBody() ? 16 : 12} tablet={wideBody() ? 16 : 10}>
               {project && (
-                <Switch>
-                  <Route path="/:username/:projectPath/settings" component={ProjectSettings} />
-                  <Route path="/:username/:projectPath/:objectId/edit" component={Draft} />
-                  <Route path="/:username/:projectPath/:objectId" component={ProjectObjects} />
-                  <Route path="/:username/:projectPath" component={ObjectList} />
-                </Switch>
+                <Routes>
+                  <Route path="/:username/:projectPath/settings" element={<ProjectSettings />} />
+                  <Route path="/:username/:projectPath/:objectId/edit" element={<Draft />} />
+                  <Route path="/:username/:projectPath/:objectId" element={<ProjectObjects />} />
+                  <Route path="/:username/:projectPath" element={<ObjectList />} />
+                </Routes>
               ) }
             </Grid.Column>
           </Grid>
