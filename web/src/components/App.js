@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { Grid, Divider, Icon, Container } from 'semantic-ui-react';
 
 import api from 'api';
 import actions from 'actions';
-import utils from 'utils/utils.js';
 import NavBar from 'components/includes/NavBar';
 
 import logo from 'images/logo/main.png';
@@ -28,27 +27,34 @@ import Group from './main/groups/Group.js';
 import Root from './main/root';
 //import Docs from './docs';
 
-function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseAuthentication, isAuthenticating, isAuthenticatingType, isAuthenticated, onLoginSuccess, onLogout, onReceiveProjects, onReceiveInvitations, onReceiveGroups, onDriftReady, onDriftSynced, helpModalOpen, openHelpModal, searchTerm, updateSearchTerm, searchPopupOpen, openSearchPopup, searchResults, updateSearchResults, searching, updateSearching, history }) {
+function App() {
+  const dispatch = useDispatch();
+  const { isAuthenticated, isAuthenticating, isAuthenticatingType, user, driftReady, syncedToDrift } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const { isAuthenticated, isAuthenticating, isAuthenticatingType } = state.auth;
+    const { driftReady, syncedToDrift } = state.users;
+    return { isAuthenticated, isAuthenticating, isAuthenticatingType, user, driftReady, syncedToDrift };
+  });
   const loggedInUserId = user?._id;
 
   useEffect(() => {
-    api.auth.autoLogin(onLoginSuccess);
-  }, [onLoginSuccess]);
+    api.auth.autoLogin(token => dispatch(actions.auth.receiveLogin(token)));
+  }, [dispatch]);
 
   useEffect(() => {
     if (!loggedInUserId) return;
-    api.users.getMyProjects(onReceiveProjects);
-    api.groups.getMine(onReceiveGroups);
+    api.users.getMyProjects(p => dispatch(actions.projects.receiveProjects(p)));
+    api.groups.getMine(g => dispatch(actions.groups.receiveGroups(g)));
     api.invitations.get(({ invitations, sentInvitations}) => {
-      onReceiveInvitations(invitations.concat(sentInvitations));
+      dispatch(actions.invitations.receiveInvitations(invitations.concat(sentInvitations)));
     });
-  }, [loggedInUserId, onReceiveProjects, onReceiveGroups, onReceiveInvitations]);
+  }, [dispatch, loggedInUserId]);
 
   useEffect(() => {
     window.drift && window.drift.on('ready', () => {
-      onDriftReady();
+      dispatch(actions.users.initDrift());
     });
-  }, [onDriftReady]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (user && driftReady && !syncedToDrift && window.drift) {
@@ -57,9 +63,9 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
         username: user.username,
         createdAt: user.createdAt,
       });
-      onDriftSynced();
+      dispatch(actions.users.syncDrift(null));
     }
-  }, [user, driftReady, syncedToDrift, onDriftSynced]);
+  }, [dispatch, user, driftReady, syncedToDrift]);
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
@@ -69,9 +75,9 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
         <Routes>
           <Route end path="/" element={isAuthenticated
             ? <Home />
-            : <MarketingHome onRegisterClicked={onOpenRegister} />
+            : <MarketingHome onRegisterClicked={() => dispatch(actions.auth.openRegister())} />
           } />
-          <Route path="/pricing" element={<MarketingPricing onRegisterClicked={onOpenRegister} />} />
+          <Route path="/pricing" element={<MarketingPricing onRegisterClicked={() => dispatch(actions.auth.openRegister())} />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/password/forgotten" element={<ForgottenPassword />} />
@@ -85,7 +91,7 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
           <Route path="/:username/:projectPath" element={<Project />} />
           <Route path="/:username" element={<Profile />} />
         </Routes>
-        <Login open={isAuthenticating} authType={isAuthenticatingType} onClose={onCloseAuthentication} />
+        <Login open={isAuthenticating} authType={isAuthenticatingType} onClose={() => dispatch(actions.auth.closeAuthentication())} />
         <ToastContainer position={toast.POSITION.BOTTOM_CENTER} hideProgressBar/>
         <Divider hidden section />
       </div>
@@ -130,34 +136,4 @@ function App({ user, groups, syncedToDrift, driftReady, onOpenRegister, onCloseA
   );
 }
 
-const mapStateToProps = (state) => {
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
-  const { isAuthenticated, isAuthenticating, isAuthenticatingType } = state.auth;
-  const { driftReady, syncedToDrift } = state.users;
-  const { helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching } = state.app;
-  return { isAuthenticated, isAuthenticating, isAuthenticatingType, user, groups, driftReady, syncedToDrift, helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching };
-};
-const mapDispatchToProps = dispatch => ({
-  onOpenRegister: () => dispatch(actions.auth.openRegister()),
-  onCloseAuthentication: () => dispatch(actions.auth.closeAuthentication()),
-  onLoginSuccess: token => dispatch(actions.auth.receiveLogin(token)),
-  onLogout: () => dispatch(actions.auth.logout()),
-  onReceiveProjects: p => dispatch(actions.projects.receiveProjects(p)),
-  onReceiveGroups: g => dispatch(actions.groups.receiveGroups(g)),
-  onReceiveInvitations: i => dispatch(actions.invitations.receiveInvitations(i)),
-  onDriftSynced: (s) => dispatch(actions.users.syncDrift(s)),
-  onDriftReady: () => dispatch(actions.users.initDrift()),
-  openHelpModal: o => dispatch(actions.app.openHelpModal(o)),
-  openSearchPopup: o => dispatch(actions.app.openSearchPopup(o)),
-  updateSearchTerm: t => dispatch(actions.app.updateSearchTerm(t)),
-  updateSearchResults: r => dispatch(actions.app.updateSearchResults(r)),
-  updateSearching: s => dispatch(actions.app.updateSearching(s)),
-});
-
-const AppContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(App);
-
-export default AppContainer;
+export default App;

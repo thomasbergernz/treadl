@@ -4,7 +4,6 @@ import {
 } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { connect } from 'react-redux';
 import api from 'api';
 
 function ResetPassword() {
@@ -16,7 +15,7 @@ function ResetPassword() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     setLoading(true);
-    api.auth.updatePasswordWithToken(token, this.state.password, () => {
+    api.auth.updatePasswordWithToken(token, password, () => {
       setLoading(false);
       toast.info('Password changed successfully.');
       navigate('/');
@@ -43,12 +42,4 @@ function ResetPassword() {
   );
 }
 
-const mapStateToProps = state => ({ });
-const mapDispatchToProps = dispatch => ({
-});
-const ResetPasswordContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ResetPassword);
-
-export default ResetPasswordContainer;
+export default ResetPassword;

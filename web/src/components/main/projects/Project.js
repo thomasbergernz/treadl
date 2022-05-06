@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Message, Form, TextArea, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Routes, Route, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Routes, Route, Link, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
 import api from 'api';
@@ -16,19 +16,27 @@ import ObjectList from './ObjectList.js';
 import ProjectObjects from './ProjectObjects.js';
 import ProjectSettings from './Settings.js';
 
-function Project({ user, project, fullName, errorMessage, editingDescription, onUpdateProject, onReceiveProject, onEditDescription, onRequest, onRequestFailed, match, history }) {
+function Project() {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const { username, projectPath } = useParams();
+  console.log(username, projectPath);
+  const dispatch = useDispatch();
+  const { user, project, fullName, errorMessage, editingDescription } = useSelector(state => {
+    const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    return { user, project, fullName: `${username}/${projectPath}`, errorMessage: state.projects.errorMessage, editingDescription: state.projects.editingDescription };
+  });
 
   useEffect(() => {
-    onRequest();
-    api.projects.get(fullName, onReceiveProject, onRequestFailed);
-  }, [user, onRequest, fullName, onReceiveProject, onRequestFailed]);
+    dispatch(actions.projects.request());
+    api.projects.get(fullName, p => dispatch(actions.projects.receiveProject(p)), err => dispatch(actions.projects.requestFailed(err)));
+  }, [user, dispatch, fullName]);
 
-  const wideBody = () => !match.isExact
+  const wideBody = () => true;/*!match.isExact*/
 
   const saveDescription = () => {
-    onEditDescription(false);
-    api.projects.update(fullName, { description: project.description }, onReceiveProject);
+    dispatch(actions.projects.editDescription(false));
+    api.projects.update(fullName, { description: project.description }, p => dispatch(actions.projects.receiveProject(p)));
   }
 
   const getDescription = () => {
@@ -50,11 +58,11 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
       {project
         && (
         <div>
-          {history.location?.state?.prevPath &&
+          {/*history.location?.state?.prevPath &&
             <div style={{marginBottom:15}}>
               <Button basic secondary onClick={e => history.goBack()} icon='arrow left' content='Go back' />
             </div>
-          }
+          */}
 
           {wideBody() && project.owner &&
             <>
@@ -85,7 +93,7 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
                   {editingDescription
                     ? (
                       <Form>
-                        <TextArea style={{ marginBottom: '5px' }} placeholder="Describe this project..." value={project.description} onChange={e => onUpdateProject(project._id, { description: e.target.value })} />
+                        <TextArea style={{ marginBottom: '5px' }} placeholder="Describe this project..." value={project.description} onChange={e => dispatch(actions.projects.updateProject(project._id, { description: e.target.value }))} />
                         <Button size="tiny" color="green" fluid onClick={saveDescription}>Save description</Button>
                       </Form>
                     )
@@ -100,7 +108,7 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
                           </div>
                         }
                         {utils.canEditProject(user, project) && (
-                          <Button size='mini' fluid className="right floated" onClick={e => onEditDescription(true)}>
+                          <Button size='mini' fluid className="right floated" onClick={e => dispatch(actions.projects.editDescription(true))}>
                             <Icon name="pencil" /> {project.description ? 'Edit' : 'Add a project'} description
                           </Button>
                           )
@@ -123,10 +131,10 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
             <Grid.Column computer={wideBody() ? 16 : 12} tablet={wideBody() ? 16 : 10}>
               {project && (
                 <Routes>
-                  <Route path="/:username/:projectPath/settings" element={<ProjectSettings />} />
-                  <Route path="/:username/:projectPath/:objectId/edit" element={<Draft />} />
-                  <Route path="/:username/:projectPath/:objectId" element={<ProjectObjects />} />
-                  <Route path="/:username/:projectPath" element={<ObjectList />} />
+                  <Route path="/settings" element={<ProjectSettings />} />
+                  <Route path="/:objectId/edit" element={<Draft />} />
+                  <Route path="/:objectId" element={<ProjectObjects />} />
+                  <Route path="/" element={<ObjectList />} />
                 </Routes>
               ) }
             </Grid.Column>
@@ -140,22 +148,4 @@ function Project({ user, project, fullName, errorMessage, editingDescription, on
   );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { username, projectPath } = ownProps.match.params;
-  const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  return { user, project, fullName: `${username}/${projectPath}`, loading: state.projects.loading, errorMessage: state.projects.errorMessage, editingDescription: state.projects.editingDescription };
-};
-const mapDispatchToProps = dispatch => ({
-  onRequest: () => dispatch(actions.projects.request()),
-  onRequestFailed: err => dispatch(actions.projects.requestFailed(err)),
-  onEditDescription: e => dispatch(actions.projects.editDescription(e)),
-  onReceiveProject: project => dispatch(actions.projects.receiveProject(project)),
-  onSelectObject: id => dispatch(actions.objects.select(id)),
-  onUpdateProject: (id, update) => dispatch(actions.projects.updateProject(id, update)),
-});
-const ProjectContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Project);
-
-export default ProjectContainer;
+export default Project;

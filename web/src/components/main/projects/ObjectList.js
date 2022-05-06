@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Segment, Label, Input, Icon, Card, Loader } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -22,17 +22,31 @@ const CompactObject = styled(Link)`
   }
 `;
 
-function ObjectList({ user, objects, currentObject, project, fullProjectPath, onReceiveObjects, compact }) {
+function ObjectList({ compact }) {
   const [loading, setLoading] = useState(false);
   const [objectFilter, setObjectFilter] = useState('');
+  const { username, projectPath, objectId } = useParams();
+  const dispatch = useDispatch();
+
+  const { user, project, objects, currentObject, fullProjectPath } = useSelector(state => {
+    const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
+    const objects = [];
+    let currentObject;
+    state.objects.objects.forEach((d) => {
+      if (d.project === project._id) objects.push(d);
+      if (d._id === objectId) currentObject = d;
+    });
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    return { user, project, objects, currentObject, fullProjectPath: `${username}/${projectPath}` };
+  });
 
   useEffect(() => {
     setLoading(true);
-    api.projects.getObjects(fullProjectPath, projects => {
-      onReceiveObjects(projects);
+    api.projects.getObjects(fullProjectPath, o => {
+      dispatch(actions.objects.receiveMultiple(o));
       setLoading(false);
     }, err => setLoading(false));
-  }, [fullProjectPath, onReceiveObjects]);
+  }, [fullProjectPath, dispatch]);
 
   let filteredObjects = objects;
   if (objectFilter) {
@@ -157,26 +171,4 @@ function ObjectList({ user, objects, currentObject, project, fullProjectPath, on
   );
 }
 
-
-const mapStateToProps = (state, ownProps) => {
-  const { username, projectPath, objectId } = ownProps.match.params;
-  const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
-  const objects = [];
-  let currentObject;
-  state.objects.objects.forEach((d) => {
-    if (d.project === project._id) objects.push(d);
-    if (d._id === objectId) currentObject = d;
-  });
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  return { user, project, objects, currentObject, fullProjectPath: `${username}/${projectPath}` };
-};
-const mapDispatchToProps = dispatch => ({
-  onReceiveObjects: objects => dispatch(actions.objects.receiveMultiple(objects)),
-  onEditObject: (id, field, value) => dispatch(actions.objects.update(id, field, value)),
-  onDeleteObject: id => dispatch(actions.objects.delete(id)),
-});
-const ObjectListContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(ObjectList);
-
-export default ObjectListContainer;
+export default ObjectList;

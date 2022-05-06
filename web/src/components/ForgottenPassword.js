@@ -4,7 +4,6 @@ import {
 } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { connect } from 'react-redux';
 import api from 'api';
 
 function ForgottenPassword() {
@@ -42,12 +41,4 @@ function ForgottenPassword() {
   );
 }
 
-const mapStateToProps = state => ({ });
-const mapDispatchToProps = dispatch => ({
-});
-const ForgottenPasswordContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ForgottenPassword);
-
-export default ForgottenPasswordContainer;
+export default ForgottenPassword;

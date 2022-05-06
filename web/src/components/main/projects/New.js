@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Icon, Form, Message, Grid, Input, Button, Divider } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
 import api from 'api';
@@ -11,7 +11,7 @@ import api from 'api';
 import UserChip from 'components/includes/UserChip';
 import HelpLink from 'components/includes/HelpLink';
 
-function NewProject({ onReceiveProject, user, groups }) {
+function NewProject() {
   const [name, setName] = useState('My new project');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState('public');
@@ -20,6 +20,13 @@ function NewProject({ onReceiveProject, user, groups }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, groups } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
+    return { user, groups };
+  });
 
   const updateName = (event) => {
    setName(event.target.value);
@@ -36,7 +43,7 @@ function NewProject({ onReceiveProject, user, groups }) {
   const createProject = () => {
     setLoading(true);
     api.projects.create({ name, description, visibility, openSource, groupVisibility }, (project) => {
-      onReceiveProject(project);
+      dispatch(actions.projects.receiveProject(project));
       setLoading(false);
       navigate(`/${user.username}/${project.path}`);
     }, (err) => {
@@ -103,17 +110,4 @@ Create a new project
     </Grid>
   );
 }
-
-const mapStateToProps = state => {
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
-  return { user, groups };
-};
-const mapDispatchToProps = dispatch => ({
-  onReceiveProject: project => dispatch(actions.projects.receiveProject(project)),
-});
-const NewProjectContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(NewProject);
-
-export default NewProjectContainer;
+export default NewProject;

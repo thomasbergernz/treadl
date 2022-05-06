@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Container } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import api from 'api';
 
-function Root({ user }) {
+function Root() {
   const [users, setUsers] = useState([]);
+
+  const { user } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    return { user };
+  });
 
   useEffect(() => {
     if (!(user?.roles?.indexOf('root') > -1)) return;
@@ -60,15 +65,4 @@ function Root({ user }) {
   );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  return { user };
-};
-const mapDispatchToProps = dispatch => ({
-
-});
-const RootContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Root);
-
-export default RootContainer;
+export default Root;
