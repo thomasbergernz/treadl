@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Loader, List, Popup, Modal, Grid, Icon, Button, Container, Dropdown } from 'semantic-ui-react';
 import api from 'api';
@@ -74,22 +74,31 @@ const SearchBar = styled.div`
   }
 `;
 
-function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, onLogout, onDriftSynced, helpModalOpen, openHelpModal, searchTerm, updateSearchTerm, searchPopupOpen, openSearchPopup, searchResults, updateSearchResults, searching, updateSearching, history }) {
+function NavBar() {
+  const dispatch = useDispatch();
+  const { isAuthenticated, user, groups, helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
+    const { isAuthenticated } = state.auth;
+    const { helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching } = state.app;
+    return { isAuthenticated, user, groups, helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching };
+  });
+
   const navigate = useNavigate();
   useEffect(() => {
-    openSearchPopup(false);
-  }, [openSearchPopup]);
+    dispatch(actions.app.openSearchPopup(false));
+  }, [dispatch]);
 
   const logout = () => api.auth.logout(() => {
-    onLogout();
-    onDriftSynced(false);
+    dispatch(actions.auth.logout());
+    dispatch(actions.users.syncDrift(false))
     if (window.drift) window.drift.reset();
     navigate('/');
   });
 
   const search = () => {
-    updateSearching(true);
-    api.search.all(searchTerm, updateSearchResults);
+    dispatch(actions.app.updateSearching(true));
+    api.search.all(searchTerm, r => dispatch(actions.app.updateSearchResults(r)));
   };
 
   return (
@@ -99,8 +108,9 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
         {isAuthenticated
           ? (
             <div className='nav-links'>
-              <Popup basic on='focus' open={searchPopupOpen} onOpen={e => openSearchPopup(true)} onClose={e => openSearchPopup(false)}
-                trigger={<SearchBar><input placeholder='Click to search...' value={searchTerm} onChange={e => updateSearchTerm(e.target.value)} onKeyDown={e => e.keyCode === 13 && search()} /></SearchBar>}
+              <Popup basic on='focus' open={searchPopupOpen}
+                onOpen={e => dispatch(actions.app.openSearchPopup(true))} onClose={e => dispatch(actions.app.openSearchPopup(false))}
+                trigger={<SearchBar><input placeholder='Click to search...' value={searchTerm} onChange={e => dispatch(actions.app.updateSearchTerm(e.target.value))} onKeyDown={e => e.keyCode === 13 && search()} /></SearchBar>}
                 content={<div style={{width: 300}} className='joyride-search'>
                   {!searchResults?.users && !searchResults?.groups ?
                     <small>
@@ -171,7 +181,7 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
               }
 
               <span className='above-mobile'>
-                <Button size='small' icon='help' basic inverted onClick={e => openHelpModal(true)}/>
+                <Button size='small' icon='help' basic inverted onClick={e => dispatch(actions.app.openHelpModal(true))}/>
               </span>
 
               <Dropdown direction="left" pointing="top right" icon={null} style={{marginLeft: 10}}
@@ -213,20 +223,20 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
                   trigger=<Button basic inverted icon="bars" />
                 >
                   <Dropdown.Menu direction="left">
-                    <Dropdown.Item onClick={onOpenLogin}>Login</Dropdown.Item>
+                    <Dropdown.Item onClick={() => dispatch(actions.auth.openLogin())}>Login</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </span>
               <span className="above-mobile">
-                <Button inverted basic onClick={onOpenLogin}>Login</Button>
+                <Button inverted basic onClick={() => dispatch(actions.auth.openLogin())}>Login</Button>
               </span>
-              <Button color="teal" onClick={onOpenRegister}>
+              <Button color="teal" onClick={() => dispatch(actions.auth.openRegister())}>
                 <span role="img" aria-label="wave">👋</span> Sign-up
               </Button>
             </div>
           )
         }
-        <Modal open={helpModalOpen} onClose={e => openHelpModal(false)}>
+        <Modal open={helpModalOpen} onClose={e => dispatch(actions.app.openHelpModal(false))}>
           <Modal.Header>Welcome to Treadl!</Modal.Header>
           <Modal.Content>
             <h3>Introduction</h3>
@@ -247,7 +257,7 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
             <p>If you have any comments or feedback please tell us by emailing <a href="mailto:hello@treadl.com">hello@treadl.com</a>!</p>
           </Modal.Content>
           <Modal.Actions>
-            <Button onClick={e => openHelpModal(false)} color='teal' icon='check' content='OK' />
+            <Button onClick={e => dispatch(actions.app.openHelpModal(false))} color='teal' icon='check' content='OK' />
           </Modal.Actions>
         </Modal>
       </Container>
@@ -255,29 +265,4 @@ function NavBar({ user, groups, onOpenLogin, onOpenRegister, isAuthenticated, on
   );
 }
 
-const mapStateToProps = (state) => {
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
-  const { isAuthenticated } = state.auth;
-  const { helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching } = state.app;
-  return { isAuthenticated, user, groups, helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching };
-};
-const mapDispatchToProps = dispatch => ({
-  onOpenLogin: () => dispatch(actions.auth.openLogin()),
-  onOpenRegister: () => dispatch(actions.auth.openRegister()),
-  onLogout: () => dispatch(actions.auth.logout()),
-  onReceiveUser: user => dispatch(actions.users.receive(user)),
-  onDriftSynced: (s) => dispatch(actions.users.syncDrift(s)),
-  openHelpModal: o => dispatch(actions.app.openHelpModal(o)),
-  openSearchPopup: o => dispatch(actions.app.openSearchPopup(o)),
-  updateSearchTerm: t => dispatch(actions.app.updateSearchTerm(t)),
-  updateSearchResults: r => dispatch(actions.app.updateSearchResults(r)),
-  updateSearching: s => dispatch(actions.app.updateSearching(s)),
-});
-
-const NavBarContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(NavBar);
-
-export default NavBarContainer;
+export default NavBar;
