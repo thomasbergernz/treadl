@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Loader, Divider, Button, Message, Container, Segment, Grid, Card, Icon, List } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import actions from 'actions';
 import api from 'api';
@@ -13,29 +13,37 @@ import HelpLink from 'components/includes/HelpLink';
 import ProjectCard from 'components/includes/ProjectCard';
 import Tour from 'components/includes/Tour';
 
-function Home({ user, groups, projects, invitations, loadingProjects, onReceiveProjects, onReceiveInvitations, onDismissInvitation, onReceiveGroup, onJoinGroup }) {
+function Home() {
   const [runJoyride, setRunJoyride] = useState(false);
+  const dispatch = useDispatch();
+  const { user, projects, groups, invitations, loadingProjects } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
+    const invitations = state.invitations.invitations.filter(i => i.recipient === user?._id);
+    const projects = state.projects.projects.filter(p => p.user === user?._id);
+    return { user, projects, groups, invitations, loadingProjects: state.projects.loading };
+  });
 
   useEffect(() => {
     api.invitations.get(({ invitations, sentInvitations}) => {
-      onReceiveInvitations(invitations.concat(sentInvitations));
+      dispatch(actions.invitations.receiveInvitations(invitations.concat(sentInvitations)));
     });
-  }, [onReceiveInvitations]);
+  }, [dispatch]);
   useEffect(() => {
-    api.users.getMyProjects(onReceiveProjects);
+    api.users.getMyProjects(p => dispatch(actions.projects.receiveProjects(p)));
     setTimeout(() =>
     setRunJoyride(true), 2000);
-  }, [onReceiveProjects]);
+  }, [dispatch]);
 
   const declineInvite = (invite) => {
-    api.invitations.decline(invite._id, () => onDismissInvitation(invite._id), err => toast.error(err.message));
+    api.invitations.decline(invite._id, () => dispatch(actions.invitations.dismiss(invite._id)), err => toast.error(err.message));
   }
   const acceptInvite = (invite) => {
     api.invitations.accept(invite._id, (result) => {
-      onDismissInvitation(invite._id);
+      dispatch(actions.invitations.dismiss(invite._id));
       if (result.group) {
-        onReceiveGroup(result.group);
-        onJoinGroup(user._id, result.group._id);
+        dispatch(actions.groups.receiveGroup(result.group));
+        dispatch(actions.users.joinGroup(user._id, result.group._id));
       }
     }, err => toast.error(err.message));
   }
@@ -170,23 +178,4 @@ function Home({ user, groups, projects, invitations, loadingProjects, onReceiveP
   );
 }
 
-const mapStateToProps = state => {
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
-  const invitations = state.invitations.invitations.filter(i => i.recipient === user?._id);
-  const projects = state.projects.projects.filter(p => p.user === user?._id);
-  return { user, projects, groups, invitations, loadingProjects: state.projects.loading };
-}
-const mapDispatchToProps = dispatch => ({
-  onReceiveGroup: group => dispatch(actions.groups.receiveGroup(group)),
-  onJoinGroup: (userId, groupId) => dispatch(actions.users.joinGroup(userId, groupId)),
-  onReceiveProjects: p => dispatch(actions.projects.receiveProjects(p)),
-  onDismissInvitation: id => dispatch(actions.invitations.dismiss(id)),
-  onReceiveInvitations: i => dispatch(actions.invitations.receiveInvitations(i)),
-});
-const HomeContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Home);
-
-export default HomeContainer;
+export default Home;

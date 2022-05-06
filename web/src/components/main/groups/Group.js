@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Segment, Loader, Menu, Message, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Routes, Route, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Routes, Route, Link, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -15,48 +15,61 @@ import Members from './Members.js';
 import Projects from './Projects.js';
 import Settings from './Settings.js';
 
-function Group({ user, group, requests, myRequests, loading, errorMessage, onReceiveGroup, onRequest, onRequestFailed, onJoinGroup, onLeaveGroup, onSubsUpdated, onReceiveInvitations, invitations, onDismissInvitation, match }) {
+function Group() {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { user, group, loading, errorMessage, requests, myRequests, invitations } = useSelector(state => {
+    let group;
+    state.groups.groups.forEach((g) => {
+      if (g._id === id) group = g;
+    });
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    const requests = state.invitations.invitations.filter(i => i.recipientGroup === group?._id);
+    const myRequests = state.invitations.invitations.filter(i => i.recipientGroup === group?._id && i.user === user?._id);
+    const invitations = state.invitations.invitations.filter(i => i.recipient === user?._id && i.typeId === group?._id);
+    return { user, group, loading: state.groups.loading, errorMessage: state.groups.errorMessage, requests, myRequests, invitations };
+  });
 
   useEffect(() => {
-    onRequest();
-    api.groups.get(match.params.id, onReceiveGroup, onRequestFailed);
-  }, [match.params.id, onRequest, onReceiveGroup, onRequestFailed]);
+    dispatch(actions.groups.request());
+    api.groups.get(id, g => dispatch(actions.groups.receiveGroup(g)), err => dispatch(actions.groups.requestFailed(err)));
+  }, [dispatch, id]);
 
   const join = () => {
     if (!user) return toast.warning('Please login or sign-up first');
-    api.groups.createMember(match.params.id, user._id, () => {
-      onJoinGroup(user._id, match.params.id);
+    api.groups.createMember(id, user._id, () => {
+      dispatch(actions.users.joingGroup(user._id, id));
     }, err => toast.error(err.message));
   }
   const leave = () => {
     utils.confirm('Really leave this group?', 'You may not be able to re-join the group yourself.').then(() => {
-      api.groups.deleteMember(match.params.id, user._id, () => {
-        onLeaveGroup(user._id, match.params.id);
+      api.groups.deleteMember(id, user._id, () => {
+        dispatch(actions.users.leaveGroup(user._id, id));
       }, err => toast.error(err.message));
     }, () => {});
   }
   const toggleEmailSub = (key, enable) => {
     if (enable)
-      api.users.createEmailSubscription(user.username, key, ({ subscriptions }) => onSubsUpdated(user._id, subscriptions), err => toast.error(err.message));
+      api.users.createEmailSubscription(user.username, key, ({ subscriptions }) => dispatch(actions.users.updateSubscriptions(user._id, subscriptions)), err => toast.error(err.message));
     else
-      api.users.deleteEmailSubscription(user.username, key, ({ subscriptions }) => onSubsUpdated(user._id, subscriptions), err => toast.error(err.message));
+      api.users.deleteEmailSubscription(user.username, key, ({ subscriptions }) => dispatch(actions.users.updateSubscriptions(user._id, subscriptions)), err => toast.error(err.message));
   }
 
   const requestToJoin = () => {
     api.groups.createJoinRequest(group._id, invitation => {
       toast.success('Request to join sent');
-      onReceiveInvitations([invitation]);
+      dispatch(actions.invitations.receiveInvitations([invitation]));
     }, err => toast.error(err.message));
   }
 
   const declineInvite = (invite) => {
-    api.invitations.decline(invite._id, () => onDismissInvitation(invite._id), err => toast.error(err.message));
+    api.invitations.decline(invite._id, () => dispatch(actions.invitations.dismiss(invite._id)), err => toast.error(err.message));
   }
   const acceptInvite = (invite) => {
     api.invitations.accept(invite._id, (result) => {
-      onDismissInvitation(invite._id);
+      dispatch(actions.invitations.dismiss(invite._id));
       if (result.group) {
-        onJoinGroup(user._id, result.group._id);
+        dispatch(actions.users.joinGroup(user._id, result.group._id));
       }
     }, err => toast.error(err.message));
   }
@@ -187,31 +200,4 @@ function Group({ user, group, requests, myRequests, loading, errorMessage, onRec
   );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
-  let group;
-  state.groups.groups.forEach((g) => {
-    if (g._id === id) group = g;
-  });
-  const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-  const requests = state.invitations.invitations.filter(i => i.recipientGroup === group?._id);
-  const myRequests = state.invitations.invitations.filter(i => i.recipientGroup === group?._id && i.user === user?._id);
-  const invitations = state.invitations.invitations.filter(i => i.recipient === user?._id && i.typeId === group?._id);
-  return { user, group, loading: state.groups.loading, errorMessage: state.groups.errorMessage, requests, myRequests, invitations };
-};
-const mapDispatchToProps = dispatch => ({
-  onRequest: () => dispatch(actions.groups.request()),
-  onRequestFailed: err => dispatch(actions.groups.requestFailed(err)),
-  onReceiveGroup: group => dispatch(actions.groups.receiveGroup(group)),
-  onUpdateGroup: (id, update) => dispatch(actions.groups.updateGroup(id, update)),
-  onJoinGroup: (userId, groupId) => dispatch(actions.users.joinGroup(userId, groupId)),
-  onLeaveGroup: (userId, groupId) => dispatch(actions.users.leaveGroup(userId, groupId)),
-  onSubsUpdated: (id, subs) => dispatch(actions.users.updateSubscriptions(id, subs)),
-  onReceiveInvitations: i => dispatch(actions.invitations.receiveInvitations(i)),
-  onDismissInvitation: id => dispatch(actions.invitations.dismiss(id)),
-});
-const GroupContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Group);
-
-export default GroupContainer;
+export default Group;
