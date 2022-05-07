@@ -30,7 +30,7 @@ function Draft() {
   const [saving, setSaving] = useState(false);
   const [object, setObject] = useState();
   const [pattern, setPattern] = useState();
-  const [name, setName] = useState();
+  const [name] = useState();
   const { objectId } = useParams();
   const dispatch = useDispatch();
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));

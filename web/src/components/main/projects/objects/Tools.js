@@ -42,12 +42,12 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const dispatch = useDispatch();
   const { objectId, username, projectPath } = useParams();
 
-  const { project, fullName, editor } = useSelector(state => {
+  const { project, editor } = useSelector(state => {
     let project = {};
     state.projects.projects.forEach((p) => {
       if (p.path === projectPath && p.owner && p.owner.username === username) project = p;
     });
-    return { project, fullName: `${username}/${projectPath}`, editor: state.objects.editor };
+    return { project, editor: state.objects.editor };
   });
 
   const enableTool = (tool) => {

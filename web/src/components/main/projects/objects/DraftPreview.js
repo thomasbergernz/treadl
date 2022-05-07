@@ -27,7 +27,7 @@ function DraftPreview({ object, onImageLoaded }) {
         });
       }
     }, 1000);
-  }, [dispatch]);
+  }, [dispatch, objectId]);
 
   useEffect(() => {
     dispatch(actions.objects.updateEditor({ tool: 'pan' }));
@@ -39,7 +39,7 @@ function DraftPreview({ object, onImageLoaded }) {
         if (!o.preview) generatePreview();
       }
     }, err => setLoading(false));
-  }, [objectId]);
+  }, [dispatch, objectId, generatePreview]);
 
   const unifyCanvas = useCallback(({ warp, weft }) => {
     setTimeout(() => {
