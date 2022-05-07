@@ -43,7 +43,6 @@ function DraftPreview({ object, onImageLoaded }) {
 
   const unifyCanvas = useCallback(({ warp, weft }) => {
     setTimeout(() => {
-      //const { warp, weft } = pattern;
       const baseSize = 6;
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');

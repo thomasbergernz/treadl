@@ -1,16 +1,20 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import pell from 'pell';
 
-class RichText extends Component {
-  ensureHTTP(url) {
+function RichText({ value, onChange }) {
+  const [completedInit, setCompletedInit] = useState(false);
+  const textboxRef = useRef();
+
+  const ensureHTTP = (url) => {
     if (url.trim().toLowerCase().indexOf('http') !== 0) return `http://${url}`;
     return url;
-  }
+  };
 
-  componentDidMount() {
+  useEffect(() => {
+    if (completedInit) return;
     pell.init({
-      element: this.refs.textbox,
-      onChange: this.props.onChange,
+      element: textboxRef.current,
+      onChange: onChange,
       actions: [
         {
           icon: '<i class="italic icon"></i>',
@@ -54,7 +58,7 @@ class RichText extends Component {
           title: 'Insert an image using a direct URL link',
           result: () => {
             const url = window.prompt('Enter the image URL'); // eslint-disable-line no-alert
-            if (url) pell.exec('insertImage', this.ensureHTTP(url));
+            if (url) pell.exec('insertImage', ensureHTTP(url));
           },
         },
         {
@@ -63,17 +67,16 @@ class RichText extends Component {
           title: 'Add hyperlink to selected text',
           result: () => {
             const url = window.prompt('Enter the link URL'); // eslint-disable-line no-alert
-            if (url) pell.exec('createLink', this.ensureHTTP(url));
+            if (url) pell.exec('createLink', ensureHTTP(url));
           },
         },
       ],
       defaultParagraphSeparator: 'p',
-    }).content.innerHTML = this.props.value || '';
-  }
+    }).content.innerHTML = value || '';
+    setCompletedInit(true);
+  }, [completedInit, value, onChange]);
 
-  render() {
-    return <div ref="textbox" />;
-  }
+  return <div ref={textboxRef} />;
 }
 
 export default RichText;
