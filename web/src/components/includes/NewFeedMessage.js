@@ -51,7 +51,7 @@ const NewFeedMessage = connect(
       onPosted(entry);
     }
     const errorCallback = (err) => {
-      toast.error(err.message);      
+      toast.error(err.message);
       updatePosting(false);
     }
     if (forType === 'group') {
@@ -84,7 +84,7 @@ const NewFeedMessage = connect(
         >
           <Dropdown.Menu>
             <FileChooser
-              forType={forType} for={forObj}
+              forType={forType} forObject={forObj}
               trigger=<Dropdown.Item icon="upload" content="Upload a file from your computer" />
               onUploadStart={e => updateAttachmentUploading(true) }
               onUploadFinish={e => updateAttachmentUploading(false) }

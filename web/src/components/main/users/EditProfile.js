@@ -53,7 +53,7 @@ function EditProfile() {
 
         <h5>Profile picture</h5>
         <FileChooser
-          forType="user" for={profileUser}
+          forType="user" forObject={profileUser}
           trigger=<Button basic color="yellow" icon="image" content="Choose an image" />
           accept="image/*" onComplete={f => updatePicture(f.storedName)}
         />

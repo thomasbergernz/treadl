@@ -45,7 +45,7 @@ function ObjectCreator({ project, onCreateObject, onError, fluid }) {
         <Dropdown.Item onClick={createNewPattern} icon="pencil" content="Create a new weaving pattern" />
         <FileChooser
           forType="project"
-          for={project}
+          forObject={project}
           trigger=<Dropdown.Item icon="upload" content="Import a WIF file" />
           accept=".wif"
           onUploadStart={e => setIsUploading(true)}
@@ -54,7 +54,7 @@ function ObjectCreator({ project, onCreateObject, onError, fluid }) {
         />
         <FileChooser
           forType="project"
-          for={project}
+          forObject={project}
           trigger=<Dropdown.Item icon="cloud upload" content="Upload an image or a file" />
           onUploadStart={e => setIsUploading(true)}
           onUploadFinish={e => setIsUploading(false)}
