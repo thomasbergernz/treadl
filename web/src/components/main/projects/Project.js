@@ -15,7 +15,6 @@ import FormattedMessage from 'components/includes/FormattedMessage';
 function Project() {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const { username, projectPath } = useParams();
-  console.log(username, projectPath);
   const dispatch = useDispatch();
   const { user, project, fullName, errorMessage, editingDescription } = useSelector(state => {
     const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
