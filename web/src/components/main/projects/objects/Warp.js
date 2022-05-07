@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import utils from 'utils/utils.js';
 
@@ -17,157 +17,154 @@ const StyledWarp = styled.div`
   }
 `;
 
-class Warp extends Component {
-  constructor(props) {
-    super(props);
-    this.squares = {};
-    this.markers = {};
-  }
-  componentDidUpdate(prevProps, prevState) {
-    this.paintDrawdown();
-  }
-  componentDidMount() {
-    this.paintDrawdown();
-  }
+const squares = {};
+const markers = {};
 
-  getThreadShaft = (event) => {
+function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
+  const [draggingColourway, setDraggingColourway] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [startShaft, setStartShaft] = useState();
+  const [startThread, setStartThread] = useState();
+
+  const { editor } = useSelector(state => ({ editor: state.objects.editor }));
+  useEffect(() => paintDrawdown());
+  const warpRef = useRef(null);
+  const colourwayRef = useRef(null);
+
+  const getThreadShaft = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const y = event.clientY - rect.top;
     const x = 0 - (event.clientX - rect.right);
-    const shaft = this.props.warp.shafts - parseInt(y / this.props.baseSize);
-    const thread = parseInt(x / this.props.baseSize);
+    const shaft = warp.shafts - parseInt(y / baseSize);
+    const thread = parseInt(x / baseSize);
     return { shaft, thread };
-  }
+  };
 
-  mouseClickColourway = event => {
-    const warp = Object.assign({}, this.props.warp);
-    const { thread } = this.getThreadShaft(event);
-    if (thread >= warp.threading.length) this.fillUpTo(warp, thread);
-    warp.threading[thread].colour = this.props.colour;
-    this.props.updatePattern({ warp });
-  }
-  mouseDownColourway = event => {
+  const mouseClickColourway = event => {
+    const newWarp = Object.assign({}, warp);
+    const { thread } = getThreadShaft(event);
+    if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
+    newWarp.threading[thread].colour = editor.colour;
+    updatePattern({ warp: newWarp });
+  };
+  const mouseDownColourway = event => {
     event.preventDefault();
-    this.draggingColourway = true;
-  }
-  mouseUpColourway = event => this.draggingColourway = false;
-  mouseMoveColourway = (event) => {
-    if (this.draggingColourway) {
-      const warp = Object.assign({}, this.props.warp);
-      const { thread } = this.getThreadShaft(event);
-      if (thread >= warp.threading.length) this.fillUpTo(warp, thread);
-      warp.threading[thread].colour = this.props.colour;
-      this.props.updatePattern({ warp });
+    setDraggingColourway(true);
+  };
+  const mouseUpColourway = event => setDraggingColourway(false);
+  const mouseMoveColourway = (event) => {
+    if (draggingColourway) {
+      const newWarp = Object.assign({}, warp);
+      const { thread } = getThreadShaft(event);
+      if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
+      newWarp.threading[thread].colour = editor.colour;
+      updatePattern({ warp: newWarp });
     }
-  }
+  };
 
-  mouseUp = event => this.dragging = false;
-  mouseDown = (event) => {
+  const mouseUp = event => setDragging(false);
+  const mouseDown = (event) => {
     event.preventDefault();
-    const { shaft, thread } = this.getThreadShaft(event);
-    this.startShaft = shaft;
-    this.startThread = thread;
-    this.dragging = true;
-  }
-  mouseMove = (event) => {
-    if (this.dragging && this.props.tool) {
-      const warp = Object.assign({}, this.props.warp);
-      const { shaft, thread } = this.getThreadShaft(event);
+    const { shaft, thread } = getThreadShaft(event);
+    setStartShaft(shaft);
+    setStartThread(thread);
+    setDragging(true);
+  };
+  const mouseMove = (event) => {
+    if (dragging && editor.tool) {
+      const newWarp = Object.assign({}, warp);
+      const { shaft, thread } = getThreadShaft(event);
 
-      let lX = this.startThread; let hX = thread; let lY = this.startShaft; let
-        hY = shaft;
-      let xDirection = 1; let
-        yDirection = 1;
-      if (thread < this.startThread) {
+      let lX = startThread; let hX = thread; let lY = startShaft; let hY = shaft;
+      let xDirection = 1; let yDirection = 1;
+      if (thread < startThread) {
         lX = thread;
-        hX = this.startThread;
+        hX = startThread;
         xDirection = -1;
       }
-      if (shaft < this.startShaft) {
+      if (shaft < startShaft) {
         lY = shaft;
-        hY = this.startShaft;
+        hY = startShaft;
         yDirection = -1;
       }
 
       let x = xDirection > 0 ? lX : hX;
       let y = yDirection > 0 ? lY : hY;
-      if (this.props.tool === 'colour') {
-        if (thread >= warp.threading.length) this.fillUpTo(warp, thread);
-        warp.threading[thread].colour = this.props.colour;
+      if (editor.tool === 'colour') {
+        if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
+        newWarp.threading[thread].colour = editor.colour;
       }
-      if (this.props.tool === 'straight') {
+      if (editor.tool === 'straight') {
         while (x <= hX && x >= lX) {
-          if (x >= warp.threading.length || warp.threading.length - x < 5) this.fillUpTo(warp, x + 5);
-          warp.threading[x].shaft = y;
+          if (x >= warp.threading.length || warp.threading.length - x < 5) fillUpTo(newWarp, x + 5);
+          newWarp.threading[x].shaft = y;
           x += xDirection;
           y += yDirection;
           if (y > hY || y < lY) y = yDirection > 0 ? lY : hY;
         }
       }
-      if (this.props.tool === 'point') {
+      if (editor.tool === 'point') {
         while (x <= hX && x >= lX) {
-          if (x >= warp.threading.length || warp.threading.length - x < 5) this.fillUpTo(warp, x + 5);
-          warp.threading[x].shaft = y;
+          if (x >= warp.threading.length || warp.threading.length - x < 5) fillUpTo(newWarp, x + 5);
+          newWarp.threading[x].shaft = y;
           x += xDirection;
           y += yDirection;
           if (y > hY || y <= lY) yDirection = 0 - yDirection;
         }
       }
-      this.props.updatePattern({ warp });
+      updatePattern({ warp: newWarp });
     }
-  }
-  click = (event) => {
-    if (this.props.tool === 'point' || this.props.tool === 'straight') {
-      const { thread, shaft } = this.getThreadShaft(event);
-      const warp = Object.assign({}, this.props.warp);
-      if (thread > warp.threading.length || warp.threading.length - thread < 5) this.fillUpTo(warp, thread + 5);
-      const warpThread = warp.threading[thread];
+  };
+  const click = (event) => {
+    if (editor.tool === 'point' || editor.tool === 'straight') {
+      const { thread, shaft } = getThreadShaft(event);
+      const newWarp = Object.assign({}, warp);
+      if (thread > warp.threading.length || warp.threading.length - thread < 5) fillUpTo(newWarp, thread + 5);
+      const warpThread = newWarp.threading[thread];
       warpThread.shaft = warpThread.shaft === shaft ? 0 : shaft;
-      this.props.updatePattern({ warp });
+      updatePattern({ warp: newWarp });
     }
-  }
+  };
 
-  fillUpTo = (warp, limit) => {
+  const fillUpTo = (w, limit) => {
     let i = warp.threading.length;
     while (i <= limit) {
-      warp.threading.push({ shaft: 0 });
-      warp.threads++;
+      w.threading.push({ shaft: 0 });
+      w.threads++;
       i++;
     }
-  }
+  };
 
-
-  getMarker(size) {
-    if (this.markers[size]) return this.markers[size];
+  const getMarker = (size) => {
+    if (markers[size]) return markers[size];
     const m_canvas = document.createElement('canvas');
-    m_canvas.width = this.props.baseSize;
-    m_canvas.height = this.props.baseSize;
+    m_canvas.width = baseSize;
+    m_canvas.height = baseSize;
     const mc = m_canvas.getContext('2d');
     mc.fillStyle = 'black';
-    mc.fillRect(0, 0, this.props.baseSize, this.props.baseSize);
-    this.markers[size] = m_canvas;
+    mc.fillRect(0, 0, baseSize, baseSize);
+    markers[size] = m_canvas;
     return m_canvas;
-  }
+  };
 
-  getSquare(size, colour) {
-    if (this.squares[size] && this.squares[size][colour]) return this.squares[size][colour];
+  const getSquare = (size, colour) => {
+    if (squares[size] && squares[size][colour]) return squares[size][colour];
     const m_canvas = document.createElement('canvas');
-    m_canvas.width = this.props.baseSize;
+    m_canvas.width = baseSize;
     m_canvas.height = 10;
     const mc = m_canvas.getContext('2d');
     mc.fillStyle = utils.rgb(colour);
-    mc.fillRect(0, 0, this.props.baseSize, 10);
-    if (!this.squares[size]) this.squares[size] = {};
-    this.squares[size][colour] = m_canvas;
+    mc.fillRect(0, 0, baseSize, 10);
+    if (!squares[size]) squares[size] = {};
+    squares[size][colour] = m_canvas;
     return m_canvas;
-  }
+  };
 
-  paintDrawdown() {
-    const canvas = this.refs.warp;
-    const colourway = this.refs.colourway;
+  const paintDrawdown = () => {
+    const canvas = warpRef.current;
+    const colourway = colourwayRef.current;
     const ctx = canvas.getContext('2d');// , { alpha: false });
     const ctx2 = colourway.getContext('2d');// , { alpha: false });
-    const { baseSize, warp } = this.props;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -184,52 +181,40 @@ class Warp extends Component {
 
     for (let thread = 0; thread < warp.threads; thread++) {
       const shaft = warp.threading[thread].shaft;
-      const marker = this.getMarker(baseSize);
-      ctx.drawImage(marker, canvas.width - ((thread + 1) * this.props.baseSize), canvas.height - (shaft * this.props.baseSize));
-      const colourSquare = this.getSquare(baseSize, warp.threading[thread].colour || warp.defaultColour);
-      ctx2.drawImage(colourSquare, canvas.width - ((thread + 1) * this.props.baseSize), 0);
+      const marker = getMarker(baseSize);
+      ctx.drawImage(marker, canvas.width - ((thread + 1) * baseSize), canvas.height - (shaft * baseSize));
+      const colourSquare = getSquare(baseSize, warp.threading[thread].colour || warp.defaultColour);
+      ctx2.drawImage(colourSquare, canvas.width - ((thread + 1) * baseSize), 0);
     }
-  }
+  };
 
-
-
-  render() {
-    const { warp, weft, baseSize } = this.props;
-    return (
-      <StyledWarp treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize}>
-        <canvas className='warp-colourway joyride-warpColourway' ref="colourway" width={warp.threading.length * baseSize} height={10}
-          style={{
-            position: 'absolute', top: 0, right: 0, height: 10, width: warp.threading.length * baseSize,
-          }}
-          onClick={this.mouseClickColourway}
-          onMouseDown={this.mouseDownColourway}
-          onMouseMove={this.mouseMoveColourway}
-          onMouseUp={this.mouseUpColourway}
-          onMouseLeave={this.mouseUpColourway}
-        />
-        <canvas className='warp-threads joyride-warp' ref="warp" width={warp.threading.length * baseSize} height={warp.shafts * baseSize}
-          style={{
-            position: 'absolute', top: 10, right: 0,
-            height: warp.shafts * baseSize,
-            width: warp.threading.length * baseSize, borderRadius: 4,
-            boxShadow: '0px 0px 10px rgba(0,0,0,0.15)',
-          }}
-          onClick={this.click}
-          onMouseDown={this.mouseDown}
-          onMouseMove={this.mouseMove}
-          onMouseUp={this.mouseUp}
-          onMouseLeave={this.mouseUp}
-        />
-      </StyledWarp>
-    );
-  }
+  return (
+    <StyledWarp treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize}>
+      <canvas className='warp-colourway joyride-warpColourway' ref={colourwayRef} width={warp.threading.length * baseSize} height={10}
+        style={{
+          position: 'absolute', top: 0, right: 0, height: 10, width: warp.threading.length * baseSize,
+        }}
+        onClick={mouseClickColourway}
+        onMouseDown={mouseDownColourway}
+        onMouseMove={mouseMoveColourway}
+        onMouseUp={mouseUpColourway}
+        onMouseLeave={mouseUpColourway}
+      />
+      <canvas className='warp-threads joyride-warp' ref={warpRef} width={warp.threading.length * baseSize} height={warp.shafts * baseSize}
+        style={{
+          position: 'absolute', top: 10, right: 0,
+          height: warp.shafts * baseSize,
+          width: warp.threading.length * baseSize, borderRadius: 4,
+          boxShadow: '0px 0px 10px rgba(0,0,0,0.15)',
+        }}
+        onClick={click}
+        onMouseDown={mouseDown}
+        onMouseMove={mouseMove}
+        onMouseUp={mouseUp}
+        onMouseLeave={mouseUp}
+      />
+    </StyledWarp>
+  );
 }
 
-const mapStateToProps = (state, ownProps) => state.objects.editor;
-const mapDispatchToProps = dispatch => ({
-});
-const WarpContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Warp);
-
-export default WarpContainer;
+export default Warp;
