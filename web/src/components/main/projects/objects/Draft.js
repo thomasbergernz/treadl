@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import ElementPan from 'components/includes/ElementPan';
@@ -24,100 +25,91 @@ export const StyledPattern = styled.div`
   margin:20px;
 `;
 
-class Draft extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { unsaved: false, saving: false };
-  }
+function Draft() {
+  const [unsaved, setUnsaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [object, setObject] = useState();
+  const [pattern, setPattern] = useState();
+  const [name, setName] = useState();
+  const { objectId } = useParams();
+  const dispatch = useDispatch();
+  const { editor } = useSelector(state => ({ editor: state.objects.editor }));
 
-  componentDidMount() {
-    api.objects.get(this.props.match.params.objectId, (object) => {
-      if (!object.pattern.baseSize) object.pattern.baseSize = 10;
-      this.setState(object);
+  useEffect(() => {
+    api.objects.get(objectId, (o) => {
+      if (!o.pattern.baseSize) o.pattern.baseSize = 10;
+      setObject(o);
+      setPattern(o.pattern);
     });
-  }
+  }, [objectId]);
 
-  updateObject = (update) => {
-    this.setState(Object.assign({}, this.state, update));
-    this.setState({ unsaved: true });
-  }
+  const updateObject = (update) => {
+    setObject(Object.assign({}, object, update));
+    setUnsaved(true);
+  };
 
-  updatePattern = (update) => {
-    const newPattern = Object.assign({}, this.state.pattern, update);
-    this.setState(Object.assign({}, this.state, { pattern: newPattern }));
-    this.setState({ unsaved: true });
-  }
+  const updatePattern = (update) => {
+    const newPattern = Object.assign({}, pattern, update);
+    setPattern(Object.assign({}, pattern, newPattern));
+    setUnsaved(true);
+  };
 
-  saveObject = () => {
-    this.setState({ saving: true });
+  const saveObject = () => {
+    setSaving(true);
     const canvas = document.getElementsByClassName('drawdown')[0];
-    const object = Object.assign({}, this.state);
-    object.preview = canvas.toDataURL();
-    api.objects.update(this.props.match.params.objectId, object, (o) => {
+    const newObject = Object.assign({}, object);
+    newObject.preview = canvas.toDataURL();
+    api.objects.update(objectId, newObject, (o) => {
       toast.success('Pattern saved');
-      this.props.onReceiveObject(o);
-      this.setState({ unsaved: false, saving: false });
+      dispatch(actions.objects.receive(o));
+      setUnsaved(false);
+      setSaving(false);
     }, (err) => {
       toast.error(err.message);
-      this.setState({ saving: false });
+      setSaving(false);
     });
-  }
+  };
 
-  rerunTour = () => {
+  if (!pattern) return null;
+  const { warp, weft, tieups, baseSize } = pattern;
+  const cellStyle = { width: `${baseSize || 10}px`, height: `${baseSize || 10}px` };
+  return (
+    <div>
+      <Helmet title={`${name || 'Weaving Draft'}`} />
+      <Tour id='pattern' run={true} />
+      <div style={{display: 'flex'}}>
 
-  }
-
-  render() {
-    if (!this.state.pattern) return null;
-    const { unsaved, saving } = this.state;
-    const { warp, weft, tieups, baseSize } = this.state.pattern;
-    const cellStyle = { width: `${baseSize || 10}px`, height: `${baseSize || 10}px` };
-    return (
-      <div>
-        <Helmet title={`${this.state?.name || 'Weaving Draft'}`} />
-        <Tour id='pattern' run={true} />
-        <div style={{display: 'flex'}}>
-
-          <div style={{flex: 1, overflow: 'hidden'}}>
-            <ElementPan
-              disabled={!(this.props.editor && this.props.editor.tool === 'pan')}
-              startX={5000}
-              startY={0}
+        <div style={{flex: 1, overflow: 'hidden'}}>
+          <ElementPan
+            disabled={!(editor?.tool === 'pan')}
+            startX={5000}
+            startY={0}
+          >
+            <StyledPattern
+              style={{
+                width:  `${warp.threads * baseSize + weft.treadles * baseSize + 20}px`,
+                height: '1000px', // `${warp.shafts * baseSize + weft.threads * baseSize + 20}px`
+              }}
             >
-              <StyledPattern
-                style={{
-                  width:  `${warp.threads * baseSize + weft.treadles * baseSize + 20}px`,
-                  height: '1000px', // `${warp.shafts * baseSize + weft.threads * baseSize + 20}px`
-                }}
-              >
 
-                <Warp baseSize={baseSize} cellStyle={cellStyle} warp={warp} weft={weft} updatePattern={this.updatePattern} />
-                <Weft cellStyle={cellStyle} warp={warp} weft={weft} baseSize={baseSize} updatePattern={this.updatePattern} />
-                <Tieups cellStyle={cellStyle} warp={warp} weft={weft} tieups={tieups} updatePattern={this.updatePattern} baseSize={baseSize}/>
-                <Drawdown warp={warp} weft={weft} tieups={tieups} baseSize={baseSize} />
+              <Warp baseSize={baseSize} cellStyle={cellStyle} warp={warp} weft={weft} updatePattern={updatePattern} />
+              <Weft cellStyle={cellStyle} warp={warp} weft={weft} baseSize={baseSize} updatePattern={updatePattern} />
+              <Tieups cellStyle={cellStyle} warp={warp} weft={weft} tieups={tieups} updatePattern={updatePattern} baseSize={baseSize}/>
+              <Drawdown warp={warp} weft={weft} tieups={tieups} baseSize={baseSize} />
 
-              </StyledPattern>
-            </ElementPan>
-          </div>
-
-          <div style={{width: 300, marginLeft: 20}}>
-            <HelpLink className='joyride-help' link={`${process.env.REACT_APP_SUPPORT_ROOT}Editing-patterns#using-the-pattern-editor`} marginBottom/>
-            <ReRunTour id='pattern' />
-            <Tools warp={warp} weft={weft} object={this.state} pattern={this.state.pattern} updateObject={this.updateObject} updatePattern={this.updatePattern} saveObject={this.saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
-          </div>
-
+            </StyledPattern>
+          </ElementPan>
         </div>
+
+        <div style={{width: 300, marginLeft: 20}}>
+          <HelpLink className='joyride-help' link={`${process.env.REACT_APP_SUPPORT_ROOT}Editing-patterns#using-the-pattern-editor`} marginBottom/>
+          <ReRunTour id='pattern' />
+          <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
+        </div>
+
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-const mapStateToProps = (state, ownProps) => ({ editor: state.objects.editor });
-const mapDispatchToProps = dispatch => ({
-  onReceiveObject: object => dispatch(actions.objects.receive(object)),
-});
-const DraftContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Draft);
-
-export default DraftContainer;
+export default Draft;

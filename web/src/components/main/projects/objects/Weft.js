@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import utils from 'utils/utils.js';
 
 const StyledWeft = styled.div`
@@ -18,172 +18,172 @@ const StyledWeft = styled.div`
   }
 `;
 
-class Weft extends Component {
-  constructor(props) {
-    super(props);
-    this.squares = {};
-    this.markers = {};
-  }
-  componentDidUpdate(prevProps, prevState) {
-    this.paintDrawdown();
-  }
-  componentDidMount() {
-    this.paintDrawdown();
-  }
+// Cache
+const squares = {};
+const markers = {};
 
-  toggleWeft = (treadle, threadCount) => {
-    const weft = Object.assign({}, this.props.weft);
+function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
+  const [draggingColourway, setDraggingColourway] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [startTreadle, setStartTreadle] = useState();
+  const [startThread, setStartThread] = useState();
+
+  const { editor } = useSelector(state => ({ editor: state.objects.editor }));
+  useEffect(() => paintDrawdown());
+  const weftRef = useRef(null);
+  const colourwayRef = useRef(null);
+
+  /*const toggleWeft = (treadle, threadCount) => {
+    const weft = Object.assign({}, weft);
     const thread = weft.treadling[threadCount];
     thread.treadle = thread.treadle === treadle ? 0 : treadle;
-    this.props.updatePattern({ weft });
-  }
+   updatePattern({ weft });
+  };*/
 
-  changeWeftColour = (threadIndex) => {
-    const weft = Object.assign({}, this.props.weft);
-    const colour = this.props.colour;
+  /*const changeWeftColour = (threadIndex) => {
+    const weft = Object.assign({}, weft);
+    const colour = editor.colour;
     if (colour) {
       weft.treadling[threadIndex].colour = colour;
-      this.props.updatePattern({ weft });
+      updatePattern({ weft });
     }
-  }
+  };*/
 
-  getThreadTreadle = (event) => {
+  const getThreadTreadle = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const y = event.clientY - rect.top;
     const x = (event.clientX - rect.left);
-    const thread = parseInt(y / this.props.baseSize) + 1;
-    const treadle = parseInt(x / this.props.baseSize);
+    const thread = parseInt(y / baseSize) + 1;
+    const treadle = parseInt(x / baseSize);
     return { treadle, thread };
-  }
+  };
 
-  mouseClickColourway = event => {
-    const weft = Object.assign({}, this.props.weft);
-    const { thread } = this.getThreadTreadle(event);
-    if (thread >= weft.treadling.length) this.fillUpTo(weft, thread);
-    weft.treadling[thread - 1].colour = this.props.colour;
-    this.props.updatePattern({ weft });
-  }
-  mouseDownColourway = event => {
+  const mouseClickColourway = event => {
+    const newWeft = Object.assign({}, weft);
+    const { thread } = getThreadTreadle(event);
+    if (thread >= weft.treadling.length) fillUpTo(newWeft, thread);
+    newWeft.treadling[thread - 1].colour = editor.colour;
+    updatePattern({ weft: newWeft });
+  };
+  const mouseDownColourway = event => {
     event.preventDefault();
-    this.draggingColourway = true;
-  }
-  mouseUpColourway = event => this.draggingColourway = false;
-  mouseMoveColourway = (event) => {
-    if (this.draggingColourway) {
-      const weft = Object.assign({}, this.props.weft);
-      const { thread } = this.getThreadTreadle(event);
-      if (thread >= weft.treadling.length) this.fillUpTo(weft, thread);
-      weft.treadling[thread - 1].colour = this.props.colour;
-      this.props.updatePattern({ weft });
+    setDraggingColourway(true);
+  };
+  const mouseUpColourway = event => setDraggingColourway(false);
+  const mouseMoveColourway = (event) => {
+    if (draggingColourway) {
+      const newWeft = Object.assign({}, weft);
+      const { thread } = getThreadTreadle(event);
+      if (thread >= weft.treadling.length) fillUpTo(newWeft, thread);
+      newWeft.treadling[thread - 1].colour = editor.colour;
+      updatePattern({ weft: newWeft });
     }
-  }
+  };
 
-  mouseUp = event => this.dragging = false;
-  mouseDown = (event) => {
+  const mouseUp = event => setDragging(false);
+  const mouseDown = (event) => {
     event.preventDefault();
-    const { treadle, thread } = this.getThreadTreadle(event);
-    this.startTreadle = treadle;
-    this.startThread = thread;
-    this.dragging = true;
-  }
-  mouseMove = (event) => {
-    if (this.dragging && this.props.tool) {
-      const weft = Object.assign({}, this.props.weft);
-      const { treadle, thread } = this.getThreadTreadle(event);
+    const { treadle, thread } = getThreadTreadle(event);
+    setStartTreadle(treadle);
+    setStartThread(thread);
+    setDragging(true);
+  };
+  const mouseMove = (event) => {
+    if (dragging && editor.tool) {
+      const newWeft = Object.assign({}, weft);
+      const { treadle, thread } = getThreadTreadle(event);
 
-      let lX = this.startTreadle; let hX = treadle; let lY = this.startThread; let
-        hY = thread;
+      let lX = startTreadle; let hX = treadle; let lY = startThread; let hY = thread;
       let xDirection = 1; let
         yDirection = 1;
-      if (treadle < this.startTreadle) {
+      if (treadle < startTreadle) {
         lX = treadle;
-        hX = this.startTreadle;
+        hX = startTreadle;
         xDirection = -1;
       }
-      if (thread < this.startThread) {
+      if (thread < startThread) {
         lY = thread;
-        hY = this.startThread;
+        hY = startThread;
         yDirection = -1;
       }
       let x = xDirection > 0 ? lX : hX;
       let y = yDirection > 0 ? lY : hY;
-      if (this.props.tool === 'colour') {
-        if ((thread - 1) >= weft.treadling.length) this.fillUpTo(weft, (thread - 1));
-        weft.treadling[thread - 1].colour = this.props.colour;
+      if (editor.tool === 'colour') {
+        if ((thread - 1) >= weft.treadling.length) fillUpTo(newWeft, (thread - 1));
+        newWeft.treadling[thread - 1].colour = editor.colour;
       }
-      if (this.props.tool === 'straight') {
+      if (editor.tool === 'straight') {
         while (y <= hY && y >= lY) {
-          if ((y - 1) >= weft.treadling.length || weft.treadling.length - y - 1 < 5) this.fillUpTo(weft, (y + 5));
-          weft.treadling[y - 1].treadle = x + 1;
+          if ((y - 1) >= weft.treadling.length || weft.treadling.length - y - 1 < 5) fillUpTo(newWeft, (y + 5));
+          newWeft.treadling[y - 1].treadle = x + 1;
           x += xDirection;
           y += yDirection;
           if (x > hX || x < lX) x = xDirection > 0 ? lX : hX;
         }
       }
-      if (this.props.tool === 'point') {
+      if (editor.tool === 'point') {
         while (y <= hY && y >= lY) {
-          if ((y - 1) >= weft.treadling.length || weft.treadling.length - y -1 < 5) this.fillUpTo(weft, y + 5);
-          weft.treadling[y - 1].treadle = x + 1;
+          if ((y - 1) >= weft.treadling.length || weft.treadling.length - y -1 < 5) fillUpTo(newWeft, y + 5);
+          newWeft.treadling[y - 1].treadle = x + 1;
           x += xDirection;
           y += yDirection;
           if (x > hX || x <= lX) xDirection = 0 - xDirection;
         }
       }
-      this.props.updatePattern({ weft });
+      updatePattern({ weft: newWeft });
     }
-  }
-  click = (event) => {
-    if (this.props.tool === 'point' || this.props.tool === 'straight') {
-      let { thread, treadle } = this.getThreadTreadle(event);
+  };
+  const click = (event) => {
+    if (editor.tool === 'point' || editor.tool === 'straight') {
+      let { thread, treadle } = getThreadTreadle(event);
       treadle += 1;
-      const weft = Object.assign({}, this.props.weft);
-      if (thread >= weft.treadling.length || weft.treadling.length - thread < 5) this.fillUpTo(weft, thread + 5);
-      const weftThread = weft.treadling[thread - 1];
+      const newWeft = Object.assign({}, weft);
+      if (thread >= newWeft.treadling.length || newWeft.treadling.length - thread < 5) fillUpTo(newWeft, thread + 5);
+      const weftThread = newWeft.treadling[thread - 1];
       weftThread.treadle = weftThread.treadle === treadle ? 0 : treadle;
-      this.props.updatePattern({ weft });
+      updatePattern({ weft: newWeft });
     }
-  }
+  };
 
-  fillUpTo = (weft, limit) => {
+  const fillUpTo = (weft, limit) => {
     let i = weft.treadling.length;
     while (i <= limit) {
       weft.treadling.push({ treadle: 0 });
       weft.threads++;
       i++;
     }
-  }
+  };
 
-  getMarker(size) {
-    if (this.markers[size]) return this.markers[size];
+  const getMarker = (size) => {
+    if (markers[size]) return markers[size];
     const m_canvas = document.createElement('canvas');
-    m_canvas.width = this.props.baseSize;
-    m_canvas.height = this.props.baseSize;
+    m_canvas.width = baseSize;
+    m_canvas.height = baseSize;
     const mc = m_canvas.getContext('2d');
     mc.fillStyle = 'black';
-    mc.fillRect(0, 0, this.props.baseSize, this.props.baseSize);
-    this.markers[size] = m_canvas;
+    mc.fillRect(0, 0, baseSize, baseSize);
+    markers[size] = m_canvas;
     return m_canvas;
-  }
+  };
 
-  getSquare(size, colour) {
-    if (this.squares[size] && this.squares[size][colour]) return this.squares[size][colour];
+  const getSquare = (size, colour) => {
+    if (squares[size] && squares[size][colour]) return squares[size][colour];
     const m_canvas = document.createElement('canvas');
     m_canvas.width = 10;
-    m_canvas.height = this.props.baseSize;
+    m_canvas.height = baseSize;
     const mc = m_canvas.getContext('2d');
     mc.fillStyle = utils.rgb(colour);
-    mc.fillRect(0, 0, 10, this.props.baseSize);
-    if (!this.squares[size]) this.squares[size] = {};
-    this.squares[size][colour] = m_canvas;
+    mc.fillRect(0, 0, 10, baseSize);
+    if (!squares[size]) squares[size] = {};
+    squares[size][colour] = m_canvas;
     return m_canvas;
-  }
+  };
 
-  paintDrawdown() {
-    const canvas = this.refs.weft;
-    const colourway = this.refs.colourway;
+  const paintDrawdown = () => {
+    const canvas = weftRef.current;
+    const colourway = colourwayRef.current;
     const ctx = canvas.getContext('2d');// , { alpha: false });
     const ctx2 = colourway.getContext('2d');// , { alpha: false });
-    const { baseSize, weft } = this.props;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -200,49 +200,37 @@ class Weft extends Component {
 
     for (let thread = 0; thread < weft.threads; thread++) {
       const treadle = weft.treadling[thread].treadle;
-      const marker = this.getMarker(baseSize);
-      ctx.drawImage(marker, ((treadle - 1) * this.props.baseSize), ((thread) * this.props.baseSize));
-      const colourSquare = this.getSquare(baseSize, weft.treadling[thread].colour || weft.defaultColour);
-      ctx2.drawImage(colourSquare, 0, (thread * this.props.baseSize));
+      const marker = getMarker(baseSize);
+      ctx.drawImage(marker, ((treadle - 1) * baseSize), ((thread) * baseSize));
+      const colourSquare = getSquare(baseSize, weft.treadling[thread].colour || weft.defaultColour);
+      ctx2.drawImage(colourSquare, 0, (thread * baseSize));
     }
   }
 
-
-
-  render() {
-    const { warp, weft, baseSize } = this.props;
-    return (
-      <StyledWeft baseSize={baseSize} treadles={weft.treadles} shafts={warp.shafts} threads={weft.threads}>
-        <canvas className='weft-colourway' ref="colourway" width={10} height={weft.threads * baseSize}
-          style={{ position: 'absolute', top: 0, right: 0, width: 10, height: weft.threads * baseSize}}
-          onClick={this.mouseClickColourway}
-          onMouseDown={this.mouseDownColourway}
-          onMouseMove={this.mouseMoveColourway}
-          onMouseUp={this.mouseUpColourway}
-          onMouseLeave={this.mouseUpColourway}
-        />
-        <canvas className='weft-threads joyride-weft' ref="weft" width={weft.treadles * baseSize} height={weft.threads * baseSize}
-          style={{
-            position: 'absolute',
-            top: 0, right: 10, height: weft.threads * baseSize, width: weft.treadles * baseSize,
-            borderRadius: 4, boxShadow: '0px 0px 10px rgba(0,0,0,0.15)',
-          }}
-          onClick={this.click}
-          onMouseDown={this.mouseDown}
-          onMouseMove={this.mouseMove}
-          onMouseUp={this.mouseUp}
-          onMouseLeave={this.mouseUp}
-        />
-      </StyledWeft>
-    );
-  }
+  return (
+    <StyledWeft baseSize={baseSize} treadles={weft.treadles} shafts={warp.shafts} threads={weft.threads}>
+      <canvas className='weft-colourway' ref={colourwayRef} width={10} height={weft.threads * baseSize}
+        style={{ position: 'absolute', top: 0, right: 0, width: 10, height: weft.threads * baseSize}}
+        onClick={mouseClickColourway}
+        onMouseDown={mouseDownColourway}
+        onMouseMove={mouseMoveColourway}
+        onMouseUp={mouseUpColourway}
+        onMouseLeave={mouseUpColourway}
+      />
+      <canvas className='weft-threads joyride-weft' ref={weftRef} width={weft.treadles * baseSize} height={weft.threads * baseSize}
+        style={{
+          position: 'absolute',
+          top: 0, right: 10, height: weft.threads * baseSize, width: weft.treadles * baseSize,
+          borderRadius: 4, boxShadow: '0px 0px 10px rgba(0,0,0,0.15)',
+        }}
+        onClick={click}
+        onMouseDown={mouseDown}
+        onMouseMove={mouseMove}
+        onMouseUp={mouseUp}
+        onMouseLeave={mouseUp}
+      />
+    </StyledWeft>
+  );
 }
 
-const mapStateToProps = (state, ownProps) => state.objects.editor;
-const mapDispatchToProps = dispatch => ({
-});
-const WeftContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Weft);
-
-export default WeftContainer;
+export default Weft;

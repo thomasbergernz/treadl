@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Confirm, Select, Segment, Accordion, Grid, Icon, Input, Button,
 } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Slider from 'rc-slider';
@@ -35,22 +35,31 @@ const ColourSquare = styled.div`
   }
 `;
 
-function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, baseSize, onEditorUpdated, updatePattern, updateObject, saveObject, onObjectDeleted }) {
+function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updatePattern, updateObject, saveObject }) {
   const [activeDrawers, setActiveDrawers] = useState(['properties', 'drawing', 'palette']);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { objectId } = useParams();
+  const dispatch = useDispatch();
+  const { objectId, username, projectPath } = useParams();
+
+  const { project, fullName, editor } = useSelector(state => {
+    let project = {};
+    state.projects.projects.forEach((p) => {
+      if (p.path === projectPath && p.owner && p.owner.username === username) project = p;
+    });
+    return { project, fullName: `${username}/${projectPath}`, editor: state.objects.editor };
+  });
 
   const enableTool = (tool) => {
-    onEditorUpdated({ tool, colour: editor.colour });
+    dispatch(actions.objects.updateEditor({ tool, colour: editor.colour }));
   };
 
   const setColour = (colour) => {
-    onEditorUpdated({ tool: 'colour', colour });
+    dispatch(actions.objects.updateEditor({ tool: 'colour', colour }));
   };
 
   const setEditorView = (view) => {
-    onEditorUpdated({ view });
+    dispatch(actions.objects.updateEditor({ view }));
   };
 
   const setName = (event) => {
@@ -83,7 +92,7 @@ function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, 
   const deleteObject = () => {
     api.objects.delete(objectId, () => {
       toast('🗑️ Pattern deleted');
-      onObjectDeleted(objectId);
+      dispatch(actions.objects.delete(objectId));
       navigate(`/${project.fullName}`);
     }, err => console.log(err));
   }
@@ -111,8 +120,8 @@ function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, 
       warp.threads = warp.threading.length;
     }
     updatePattern({ warp });
-    onEditorUpdated();
-    onEditorUpdated({ tool: 'pan' });
+    dispatch(actions.objects.updateEditor());
+    dispatch(actions.objects.updateEditor( { tool: 'pan' }));
   };
   const changeHeight = () => {
     const newHeight = parseInt(window.prompt('Enter a new height for your pattern.\n\nIMPORTANT: If your new height is less than the current height, then any treadles selected beyond the new height will be lost.'));
@@ -130,7 +139,7 @@ function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, 
       weft.threads = weft.treadling.length;
     }
     updatePattern({ weft });
-    onEditorUpdated();
+    dispatch(actions.objects.updateEditor());
   };
 
   return (
@@ -240,20 +249,4 @@ function Tools({ project, object, pattern, warp, weft, editor, unsaved, saving, 
   );
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { username, projectPath } = ownProps.match.params;
-  let project = {};
-  state.projects.projects.forEach((p) => {
-    if (p.path === projectPath && p.owner && p.owner.username === username) project = p;
-  });
-  return { project, fullName: `${username}/${projectPath}`, editor: state.objects.editor };
-};
-const mapDispatchToProps = dispatch => ({
-  onEditorUpdated: editor => dispatch(actions.objects.updateEditor(editor)),
-  onObjectDeleted: id => dispatch(actions.objects.delete(id)),
-});
-const ToolsContainer = connect(
-  mapStateToProps, mapDispatchToProps,
-)(Tools);
-
-export default ToolsContainer;
+export default Tools;
