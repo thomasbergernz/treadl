@@ -33,22 +33,6 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
   const weftRef = useRef(null);
   const colourwayRef = useRef(null);
 
-  /*const toggleWeft = (treadle, threadCount) => {
-    const weft = Object.assign({}, weft);
-    const thread = weft.treadling[threadCount];
-    thread.treadle = thread.treadle === treadle ? 0 : treadle;
-   updatePattern({ weft });
-  };*/
-
-  /*const changeWeftColour = (threadIndex) => {
-    const weft = Object.assign({}, weft);
-    const colour = editor.colour;
-    if (colour) {
-      weft.treadling[threadIndex].colour = colour;
-      updatePattern({ weft });
-    }
-  };*/
-
   const getThreadTreadle = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const y = event.clientY - rect.top;

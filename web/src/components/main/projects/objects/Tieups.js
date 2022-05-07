@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 const StyledTieups = styled.canvas`
@@ -7,46 +7,40 @@ const StyledTieups = styled.canvas`
   right:10px;
 `;
 
-class Tieups extends Component {
+function Tieups({ cellStyle, warp, weft, tieups, updatePattern, baseSize }) {
+  useEffect(() => paintTieups());
+  const tieupRef = useRef(null);
 
-  componentDidUpdate(prevProps, prevState) {
-    this.paintTieups();
-  }
-  componentDidMount() {
-    this.paintTieups();
-  }
-
-  fillUpTo = (tieups, limit) => {
-    let i = tieups.length;
+  const fillUpTo = (t, limit) => {
+    let i = t.length;
     while (i <= limit) {
-      tieups.push([]);
+      t.push([]);
       i++;
     }
-  }
-  getTieupShaft = (event) => {
+  };
+  const getTieupShaft = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const y = event.clientY - rect.top;
     const x = 0 - (event.clientX - rect.right);
-    const shaft = this.props.warp.shafts - parseInt(y / this.props.baseSize);
-    const tieup = this.props.weft.treadles - parseInt(x / this.props.baseSize) - 1;
+    const shaft = warp.shafts - parseInt(y / baseSize);
+    const tieup = weft.treadles - parseInt(x / baseSize) - 1;
     return { tieup, shaft };
-  }
-  click = (event) => {
-    const { tieup, shaft } = this.getTieupShaft(event);
-    const tieups = Object.assign([], this.props.tieups);
+  };
+  const click = (event) => {
+    const { tieup, shaft } = getTieupShaft(event);
+    const newTieups = Object.assign([], tieups);
 
-    if (tieup >= tieups.length) this.fillUpTo(tieups, tieup);
+    if (tieup >= tieups.length) fillUpTo(newTieups, tieup);
     if (tieups[tieup] !== undefined) {
-      if (tieups[tieup].indexOf(shaft) === -1) tieups[tieup].push(shaft);
-      else tieups[tieup].splice(tieups[tieup].indexOf(shaft));
+      if (tieups[tieup].indexOf(shaft) === -1) newTieups[tieup].push(shaft);
+      else newTieups[tieup].splice(tieups[tieup].indexOf(shaft));
     }
-    this.props.updatePattern({ tieups });
-  }
+    updatePattern({ tieups: newTieups });
+  };
 
-  paintTieups() {
-    const canvas = this.refs.tieups;
+  const paintTieups = () => {
+    const canvas = tieupRef.current;
     const ctx = canvas.getContext('2d');// , { alpha: false });
-    const { baseSize, tieups } = this.props;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -68,12 +62,9 @@ class Tieups extends Component {
     }
   }
 
-  render() {
-    const { warp, weft, baseSize } = this.props;
-    return (
-      <StyledTieups ref='tieups' className='tieups joyride-tieups' width={weft.treadles * baseSize} height= {warp.shafts * baseSize} style={{width: weft.treadles * baseSize, height: warp.shafts * baseSize}} onClick={this.click}/>
-    );
-  }
+  return (
+    <StyledTieups ref={tieupRef} className='tieups joyride-tieups' width={weft.treadles * baseSize} height= {warp.shafts * baseSize} style={{width: weft.treadles * baseSize, height: warp.shafts * baseSize}} onClick={click}/>
+  );
 }
 
 export default Tieups;
