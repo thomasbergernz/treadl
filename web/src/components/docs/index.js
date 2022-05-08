@@ -23,7 +23,7 @@ function Docs() {
             description='Learn more about Treadl groups, and how they can be managed.'
           />
           <Message style={{marginTop: 20}} size='small' info header='Want to contribute documentation?'
-            content={<p>That's great! Please reach out to us by emailing <a href='mailto:hello@treadl.com'>hello@treadl.com</a>.</p>}
+            content={<p>That's great! Please reach out to us by emailing <a href={`mailTo:${process.env.REACT_APP_CONTACT_EMAIL}`}>{process.env.REACT_APP_CONTACT_EMAIL}</a>.</p>}
           />
 
           <Button style={{position: 'fixed', bottom: 40}} onClick={() => window.scrollTo(0, 0)} secondary><Icon name='arrow up' /> Back to the top</Button>

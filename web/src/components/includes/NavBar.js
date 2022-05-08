@@ -254,7 +254,7 @@ function NavBar() {
             <Button as='a' href='/docs' target='_blank' rel='noopener noreferrer'>View the Wiki</Button>
 
             <h3>We hope you enjoy using Treadl</h3>
-            <p>If you have any comments or feedback please tell us by emailing <a href="mailto:hello@treadl.com">hello@treadl.com</a>!</p>
+            <p>If you have any comments or feedback please tell us by emailing <a href={`mailTo:${process.env.REACT_APP_CONTACT_EMAIL}`}>{process.env.REACT_APP_CONTACT_EMAIL}</a>!</p>
           </Modal.Content>
           <Modal.Actions>
             <Button onClick={e => dispatch(actions.app.openHelpModal(false))} color='teal' icon='check' content='OK' />

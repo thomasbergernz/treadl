@@ -7,7 +7,7 @@ function TermsOfUse() {
     <Container style={{ marginTop: 50, marginBottom: 50 }}>
       <Helmet title='Terms of Use' />
       <h1>Treadl Terms of Use</h1>
-      <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing hello@treadl.com.</p>
+      <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing {process.env.REACT_APP_CONTACT_EMAIL}.</p>
       <p>This document will have slight changes made to it occasionally. Please refer back to it from time to time.</p>
 
       <h2>Terms</h2>

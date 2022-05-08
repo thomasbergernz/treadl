@@ -7,7 +7,7 @@ function PrivacyPolicy() {
     <Container style={{ marginTop: 50, marginBottom: 50 }}>
       <Helmet title='Privacy Policy' />
       <h1>Privacy Policy</h1>
-      <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing hello@treadl.com.</p>
+      <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing {process.env.REACT_APP_CONTACT_EMAIL}.</p>
       <p>This document will have slight changes made to it occasionally. Please refer back to it from time to time.</p>
       <p>This policy governs the use and protection of personal data of people (‘users’, ‘you’, etc.) using Treadl.</p>
       <p>Data protection refers to the responsible security of personal data and transparency in the way we handle and process such data. Personal data is information that - on its own or in conjunction with other data - can be used to identify an individual person.</p>
