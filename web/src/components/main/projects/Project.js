@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Message, Form, TextArea, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Outlet, Link, useParams, useLocation, useMatch } from 'react-router-dom';
+import { Outlet, Link, useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -17,7 +17,6 @@ function Project() {
   const { username, projectPath } = useParams();
   const dispatch = useDispatch();
   const location = useLocation();
-  const match = useMatch(location.pathname);
   const { user, project, fullName, errorMessage, editingDescription } = useSelector(state => {
     const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];

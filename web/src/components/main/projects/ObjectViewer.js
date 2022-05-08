@@ -40,8 +40,6 @@ function ObjectViewer() {
     return { user, myProjects, project, fullProjectPath: `${username}/${projectPath}`, object, comments };
   });
 
-  //const objectId = object?._id;
-
   useEffect(() => {
     if (!objectId) return;
     api.objects.getComments(objectId, data => {
