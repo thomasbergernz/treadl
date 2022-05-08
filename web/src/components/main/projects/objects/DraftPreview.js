@@ -11,7 +11,7 @@ import Weft from './Weft.js';
 import Tieups from './Tieups.js';
 import Drawdown from './Drawdown.js';
 
-function DraftPreview({ object, onImageLoaded }) {
+function DraftPreview({ object }) {
   const [loading, setLoading] = useState(false);
   const [pattern, setPattern] = useState();
   const dispatch = useDispatch();
@@ -41,7 +41,9 @@ function DraftPreview({ object, onImageLoaded }) {
     }, err => setLoading(false));
   }, [dispatch, objectId, generatePreview]);
 
-  const unifyCanvas = useCallback(({ warp, weft }) => {
+  const unifyCanvas = useCallback(() => {
+    if (!pattern) return;
+    const { warp, weft } = pattern;
     setTimeout(() => {
       const baseSize = 6;
       const canvas = document.createElement('canvas');
@@ -64,15 +66,14 @@ function DraftPreview({ object, onImageLoaded }) {
         ctx.drawImage(weftColourwayCanvas, canvas.width - 10, warp.shafts * baseSize + 20);
         ctx.drawImage(tieupsCanvas, canvas.width - weft.treadles * baseSize - 10, 10);
         ctx.drawImage(drawdownCanvas, canvas.width - drawdownCanvas.width - weft.treadles * baseSize - 20, warp.shafts * baseSize + 20);
-
-        onImageLoaded(canvas.toDataURL());
+        dispatch(actions.objects.update(objectId, 'patternImage', canvas.toDataURL()));
       }
     }, 500);
-  }, [objectId, onImageLoaded]);
+  }, [dispatch, objectId, pattern]);
 
   useEffect(() => {
-    if (pattern && onImageLoaded) unifyCanvas(pattern);
-  }, [pattern, onImageLoaded, unifyCanvas])
+    unifyCanvas();
+  }, [unifyCanvas])
 
   if (loading) return <Loader active />;
   if (!pattern) return null;

@@ -187,7 +187,7 @@ function ObjectViewer() {
       <div style={{marginTop: 20, marginBottom: 20, padding: 10, border: '1px solid rgb(240,240,240)'}}>
         {object.type === 'pattern' &&
           <div style={{maxHeight: 400, overflowY: 'scroll'}}>
-            <DraftPreview object={object} onImageLoaded={i => dispatch(actions.objects.update(object._id, 'patternImage', i))}/>
+            <DraftPreview object={object} />
           </div>
         }
         {object.isImage &&
