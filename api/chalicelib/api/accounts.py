@@ -56,12 +56,12 @@ Creating a new project: When you are ready to create/store a project on the syst
 
 Once complete you then have the option of saving the file privately, shared within a group, or made public for other Treadl users to see.
 
-We hope you enjoy using Treadl and if you have any comments or feedback please tell us by emailing hello@treadl.com!
+We hope you enjoy using Treadl and if you have any comments or feedback please tell us by emailing {}!
 
 Best wishes,
 
 The Treadl Team
-'''.format(username, username)
+'''.format(username, username, os.environ.get('CONTACT_EMAIL'))
     })
     return {'token': generate_access_token(result.inserted_id)}
   except Exception as e:
