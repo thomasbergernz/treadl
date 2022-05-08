@@ -62,7 +62,7 @@ function ProjectSettings() {
     <div>
       <h2>Project settings</h2>
 
-      <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects#changing-the-project-s-settings`} />
+      <HelpLink link={`/docs/projects#changing-the-project-s-settings`} />
 
       <Divider hidden section />
 

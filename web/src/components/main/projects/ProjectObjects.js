@@ -12,7 +12,7 @@ function ProjectObjects() {
       <Grid stackable>
         <Grid.Column width={4}>
           <ObjectList compact />
-          <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects#viewing-and-editing-objects`} marginTop />
+          <HelpLink link={`/docs/projects#viewing-and-editing-objects`} marginTop />
         </Grid.Column>
         <Grid.Column width={12}>
           <ObjectViewer />

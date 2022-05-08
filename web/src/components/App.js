@@ -158,7 +158,7 @@ function App() {
                 </p>
                 <p>
                   <Icon name='book' />
-                  <a href={process.env.REACT_APP_SUPPORT_ROOT} target='_blank' rel='noopener noreferrer'>Documentation</a>
+                  <a href='/docs' target='_blank' rel='noopener noreferrer'>Documentation</a>
                 </p>
 
                 <Divider />

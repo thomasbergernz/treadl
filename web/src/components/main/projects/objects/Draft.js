@@ -102,7 +102,7 @@ function Draft() {
         </div>
 
         <div style={{width: 300, marginLeft: 20}}>
-          <HelpLink className='joyride-help' link={`${process.env.REACT_APP_SUPPORT_ROOT}Editing-patterns#using-the-pattern-editor`} marginBottom/>
+          <HelpLink className='joyride-help' link={`/docs/patterns#using-the-pattern-editor`} marginBottom/>
           <ReRunTour id='pattern' />
           <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
         </div>

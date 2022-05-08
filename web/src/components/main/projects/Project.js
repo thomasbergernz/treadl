@@ -120,7 +120,7 @@ function Project() {
                 }
               </Card>
 
-              <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects`} />
+              <HelpLink link={`/docs/projects`} />
             </Grid.Column>
             )}
 

@@ -148,7 +148,7 @@ function Group() {
                 </Menu>
               }
 
-              <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Groups#a-tour-around-your-new-group`} />
+              <HelpLink link={`/docs/groups#a-tour-around-your-new-group`} />
 
             </Grid.Column>
             <Grid.Column computer={12}>

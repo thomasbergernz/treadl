@@ -118,7 +118,7 @@ function Home() {
                   )}
                 </List>
                 <Button className='joyride-createGroup' fluid size='small' icon='plus' content='Create a new group' as={Link} to='/groups/new' />
-                <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Groups`} text='Learn more about groups' marginTop/>
+                <HelpLink link={`/docs/groups`} text='Learn more about groups' marginTop/>
               </Card.Content>
             </Card>
           :
@@ -150,7 +150,7 @@ function Home() {
                 <p>Projects can contain anything - from rough ideas or design experiments through to commissions and exhibitions. Treat them as if they were just weaving-related <span role="img" aria-label="folder">📁</span> folders on your computer.</p>
                 <Divider  />
                 <h4>Start by creating a new project. Don't worry, you can keep it private.</h4>
-                <p><HelpLink className='joyride-help' link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects`} text='Learn more about projects' marginTop/></p>
+                <p><HelpLink className='joyride-help' link={`/docs/projects`} text='Learn more about projects' marginTop/></p>
                 <Button className='joyride-createProject' as={Link} to="/projects/new" color="teal" icon="plus" content="Create a project" />
               </Segment>
 
@@ -162,7 +162,7 @@ function Home() {
               <Button className='joyride-createProject' as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' floated='right'/>
               <h2><Icon name='book' /> Your projects</h2>
               <p>Projects contain the patterns and files that make up your creations.
-                <HelpLink className='joyride-help' link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects`} text='Learn more about projects' marginLeft/>
+                <HelpLink className='joyride-help' link={`/docs/projects`} text='Learn more about projects' marginLeft/>
               </p>
               <Divider clearing hidden />
               <Card.Group itemsPerRow={2} stackable>

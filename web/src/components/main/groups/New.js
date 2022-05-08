@@ -39,7 +39,7 @@ function NewGroup() {
         </h2>
         <p>Groups are great for communities of weavers and makers, or to help people of similar interests collaborate and come together.</p>
 
-        <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Groups#creating-a-new-group`} />
+        <HelpLink link={`/docs/groups#creating-a-new-group`} />
 
         <Divider section />
 

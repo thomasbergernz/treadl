@@ -64,7 +64,7 @@ Create a new project
         </h2>
         <p>This will contain all of the files and patterns for your project.</p>
 
-        <HelpLink link={`${process.env.REACT_APP_SUPPORT_ROOT}Projects#creating-a-new-project`} />
+        <HelpLink link={`/docs/projects#creating-a-new-project`} />
 
         <Divider section />
 
