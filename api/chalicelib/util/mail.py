@@ -4,7 +4,7 @@ import requests
 
 def handle_send(data):
   if 'from' not in data:
-    data['from'] = 'Treadl <no_reply@mail.treadl.com>'
+    data['from'] = 'Treadl <{}>'.format(os.environ.get('FROM_EMAIL'))
   if 'to_user' in data:
     user = data['to_user']
     data['to'] = user['username'] + ' <' + user['email'] + '>'
