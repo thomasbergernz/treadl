@@ -43,8 +43,12 @@ import GroupMembers from './main/groups/Members.js';
 import GroupProjects from './main/groups/Projects.js';
 import GroupSettings from './main/groups/Settings.js';
 
+import Docs from './docs';
+import DocsHome from './docs/Home';
+import DocsDoc from './docs/Doc';
+
 import Root from './main/root';
-//import Docs from './docs';
+
 
 function App() {
   const dispatch = useDispatch();
@@ -116,6 +120,10 @@ function App() {
             <Route path='' end element={<GroupFeed />} />
           </Route>
           <Route path='/root' element={<Root />} />
+          <Route path='/docs' element={<Docs />}>
+            <Route path=":doc" element={<DocsDoc />} />
+            <Route path='' element={<DocsHome />} />
+          </Route>
           <Route path='/:username/:projectPath' element={<Project />}>
             <Route path="settings" element={<ProjectSettings />} />
             <Route path=":objectId/edit" element={<ObjectDraft />} />

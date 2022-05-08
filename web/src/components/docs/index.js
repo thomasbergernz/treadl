@@ -1,28 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container } from 'semantic-ui-react';
-import { Switch, Route, Link } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import stuff from './stuff.md';
+import { Outlet } from 'react-router-dom';
 
-function Docs({ }) {
-  const [markdown, setMarkdown] = useState();
-
-  const getDoc = async key => {
-    const markdownFile = await fetch(stuff);//.then(res => res.text()).then(text => this.setState({ markdown: text }));
-    const markdown = await markdownFile.text();
-    console.log(markdown);
-    setMarkdown(markdown);
-  };
-
+function Docs() {
   return (
-    <Container>
+    <Container style={{marginTop: 40}}>
       <h1>Treadl documentation</h1>
-      <ReactMarkdown># Hello, *world*!</ReactMarkdown>
-      <ReactMarkdown>{stuff}</ReactMarkdown>
 
-      <Switch>
-        <Route path="/docs/project" component={<ReactMarkdown>{markdown}</ReactMarkdown>} />
-      </Switch>
+      <Outlet />
     </Container>
   );
 };
