@@ -7,6 +7,7 @@ import { Grid, Divider, Icon, Container } from 'semantic-ui-react';
 
 import api from 'api';
 import actions from 'actions';
+import utils from 'utils/utils.js';
 import NavBar from 'components/includes/NavBar';
 import logo from 'images/logo/main.png';
 
@@ -92,7 +93,7 @@ function App() {
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
-      <Helmet defaultTitle={'Treadl'} titleTemplate={`%s | Treadl`} />
+      <Helmet defaultTitle={utils.appName()} titleTemplate={`%s | ${utils.appName()}`} />
       <NavBar />
       <div style={{ flex: '1 0 0' }}>
         <Routes>
@@ -144,18 +145,22 @@ function App() {
         <Container>
           <Grid>
             <Grid.Column computer={8}>
-              <Link to="/"><img alt="Treadl logo" src={logo} style={{ width: '100px', paddingTop: 20, paddingBottom: 20 }} /></Link>
-              <p style={{marginTop: 10}}><small>Treadl software is free and open-source. Contributions to the project are always welcome.
-                <br />
-                <Icon name="code" /> <a href={process.env.REACT_APP_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">Project source homepage</a>
-              </small></p>
+              <Link to="/"><img alt={`${utils.appName()} logo`} src={logo} style={{ width: '100px', paddingTop: 20, paddingBottom: 20 }} /></Link>
+              {process.env.REACT_APP_SOURCE_REPO_URL &&
+                <p style={{marginTop: 10}}><small>{utils.appName()} software is free and open-source. Contributions to the project are always welcome.
+                  <br />
+                  <Icon name="code" /> <a href={process.env.REACT_APP_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">Project source homepage</a>
+                </small></p>
+              }
             </Grid.Column>
             <Grid.Column computer={8} textAlign="right">
               <div style={{ paddingTop: 40 }}>
-                <p>
-                  <Icon name='trophy' />
-                  <a href='https://www.patreon.com/treadl' target='_blank' rel='noopener noreferrer'>Become a patron</a>
-                </p>
+                {process.env.REACT_APP_PATREON_URL &&
+                  <p>
+                    <Icon name='trophy' />
+                    <a href={process.env.REACT_APP_PATREON_URL} target='_blank' rel='noopener noreferrer'>Become a patron</a>
+                  </p>
+                }
                 <p>
                   <Icon name='book' />
                   <a href='/docs' target='_blank' rel='noopener noreferrer'>Documentation</a>

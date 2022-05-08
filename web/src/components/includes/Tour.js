@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Joyride from 'react-joyride';
 import api from '../../api';
 import actions from '../../actions';
+import utils from 'utils/utils.js';
 import { LinkContainer as HelpLinkContainer } from 'components/includes/HelpLink';
 import Emoji from 'components/includes/Emoji';
 
@@ -20,7 +21,7 @@ const tours = {
       disableOverlay: false,
       placement: 'center',
       target: 'body',
-      title: 'Welcome to Treadl!',
+      title: `Welcome to ${utils.appName()}!`,
       content: (<div>
         <p><strong>Thanks for signing-up <Emoji e='😀' label='Smiley' />. We'd love to quickly show you around your homepage.</strong></p>
         <p>You can skip this tour if you just want to get on with things.</p>
@@ -30,7 +31,7 @@ const tours = {
       target: '.joyride-projects',
       title: 'Projects',
       content: (<div>
-        <p><strong>Treadl contents (patterns, images, files, and more) are stored in projects</strong></p>
+        <p><strong>{utils.appName()} contents (patterns, images, files, and more) are stored in projects</strong></p>
         <p>Your projects will appear in this area. You can think of them like folders on your computer.</p>
        </div>)
     },
@@ -45,8 +46,8 @@ const tours = {
       target: '.joyride-groups',
       title: 'Groups',
       content: (<div>
-        <p><strong>Treadl groups</strong></p>
-        <p>Your group memberships will show here. Groups allow you to talk and share content with other people on Treadl.</p>
+        <p><strong>{utils.appName()} groups</strong></p>
+        <p>Your group memberships will show here. Groups allow you to talk and share content with other people on {utils.appName()}.</p>
        </div>)
     },
     {
@@ -73,7 +74,7 @@ const tours = {
       disableOverlay: false,
       placement: 'center',
       target: 'body',
-      title: 'Welcome to the Treadl pattern editor!',
+      title: `Welcome to the ${utils.appName()} pattern editor!`,
       content: (<div>
         <p><strong>The editor can look a bit daunting at first, and so we'd like to briefly show you how it works.</strong></p>
         <p>If you already know what you're doing, then feel free to skip this.</p>

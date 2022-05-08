@@ -6,7 +6,6 @@ import { users } from './users.js';
 import { projects } from './projects.js';
 import { objects } from './objects.js';
 import { uploads } from './uploads.js';
-import { billing } from './billing.js';
 import { groups } from './groups.js';
 import { search } from './search.js';
 import { invitations } from './invitations.js';
@@ -54,7 +53,7 @@ export const api = {
     api.req(method, path, data, success, fail, true, options);
   },
 
-  auth, accounts, users, projects, objects, uploads, billing, groups, search, invitations, root
+  auth, accounts, users, projects, objects, uploads, groups, search, invitations, root
 };
 
 export default api;

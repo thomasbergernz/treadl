@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import actions from 'actions';
 import { api } from 'api';
+import utils from 'utils/utils.js';
 
 import ReadingImage from 'images/reading.png';
 
@@ -121,7 +122,7 @@ function Login({ open, authType, onClose }) {
                     <Input size="large" fluid name="password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
                   </Form.Field>
                   <div className="ui hidden divider" />
-                  <p style={{ fontSize: 11, color: 'rgb(180,180,180)' }}>By signing-up, you agree to the Treadl <a href="/privacy" target="_blank">Privacy Policy</a> and <a href="terms-of-use" target="_blank">Terms of Use</a>.</p>
+                  <p style={{ fontSize: 11, color: 'rgb(180,180,180)' }}>By signing-up, you agree to the {utils.appName()} <a href="/privacy" target="_blank">Privacy Policy</a> and <a href="terms-of-use" target="_blank">Terms of Use</a>.</p>
                   <Form.Button color="teal" type='submit' fluid size="large" loading={loading}>
                     <span role="img" aria-label="rocket">🚀</span> Sign up!
                   </Form.Button>

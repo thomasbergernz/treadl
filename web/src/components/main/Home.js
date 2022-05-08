@@ -86,20 +86,24 @@ function Home() {
 
           <h2><span role="img" aria-label="wave">👋</span> {greeting}{user && <span>, {user.username}</span>}</h2>
 
-          <Card fluid color='blue'>
-            <Card.Content>
-              <Card.Header><span role="img" aria-label="Loudspeaker">📣</span> Treadl is open-source</Card.Header>
-              <Card.Description>The source code for Treadl is <a href={process.env.REACT_APP_SOURCE_REPO_URL} target='_blank' rel='noopener noreferrer'>publicly available to view</a> and use in your own projects. Contributions are encouraged too!</Card.Description>
-            </Card.Content>
-          </Card>
+          {process.env.REACT_APP_SOURCE_REPO_URL &&
+            <Card fluid color='blue'>
+              <Card.Content>
+                <Card.Header><span role="img" aria-label="Loudspeaker">📣</span> {utils.appName()} is open-source</Card.Header>
+                <Card.Description>The source code for {utils.appName()} is <a href={process.env.REACT_APP_SOURCE_REPO_URL} target='_blank' rel='noopener noreferrer'>publicly available to view</a> and use in your own projects. Contributions are encouraged too!</Card.Description>
+              </Card.Content>
+            </Card>
+          }
 
-          <Card fluid color='blue'>
-            <Card.Content>
-              <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support Treadl</Card.Header>
-              <Card.Description>Treadl is offered free of charge, but costs money to run and build. If you get value out of Treadl and want to support its ongoing development, then you can  become a patron!</Card.Description>
-              <Button style={{marginTop: 10}} size='small' as='a' href='https://www.patreon.com/treadl' target='_blank' rel='noopener noreferrer'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
-            </Card.Content>
-          </Card>
+          {process.env.REACT_APP_PATREON_URL &&
+            <Card fluid color='blue'>
+              <Card.Content>
+                <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support {utils.appName()}</Card.Header>
+                <Card.Description>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} and want to support its ongoing development, then you can  become a patron!</Card.Description>
+                <Button style={{marginTop: 10}} size='small' as='a' href={process.env.REACT_APP_PATREON_URL} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
+              </Card.Content>
+            </Card>
+          }
 
           {(groups && groups.length) ?
             <Card fluid className='joyride-groups'>
@@ -146,7 +150,7 @@ function Home() {
               </h1>
               <Divider hidden/>
               <Segment placeholder textAlign='center'>
-                <h3>On Treadl your patterns and files are stored in <strong><span role="img" aria-label="box">📦</span> projects</strong></h3>
+                <h3>On {utils.appName()} your patterns and files are stored in <strong><span role="img" aria-label="box">📦</span> projects</strong></h3>
                 <p>Projects can contain anything - from rough ideas or design experiments through to commissions and exhibitions. Treat them as if they were just weaving-related <span role="img" aria-label="folder">📁</span> folders on your computer.</p>
                 <Divider  />
                 <h4>Start by creating a new project. Don't worry, you can keep it private.</h4>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Divider, Grid, Button, Container } from 'semantic-ui-react';
+import utils from 'utils/utils.js';
 
 import projectImage from 'images/project.png';
 import toolsImage from 'images/tools.png';
@@ -19,7 +20,7 @@ function MarketingHome({ onRegisterClicked }) {
             <Grid.Column computer={6} tablet={8}>
               <h1 style={{ color: 'white' }}>The perfect <span role="img" aria-label="house">🏠</span> home for your weaving projects
               </h1>
-              <h4 style={{ color: 'white' }}>Use Treadl to host your projects, draft your weaving patterns using our fab draft editor, and join weaving communities to discover what others are making.</h4>
+              <h4 style={{ color: 'white' }}>Use {utils.appName()} to host your projects, draft your weaving patterns using our fab draft editor, and join weaving communities to discover what others are making.</h4>
               <Divider hidden />
 
               <h2 style={{ marginBottom: 0 }}>Get started today</h2>
@@ -29,10 +30,10 @@ function MarketingHome({ onRegisterClicked }) {
                 borderRadius: 4, boxShadow: 'inset 0px 0px 5px rgba(0,0,0,0.1)', backgroundColor: 'rgba(250,250,250,0.1)', padding: 10,
               }}
               >
-                <h4><span role="img" aria-label="party" style={{marginRight: 10}}>🎉</span> Treadl is free</h4>
-                <p>The Treadl software is <a style={{color:'white', textDecoration: 'underline'}} href='#why-free'>free to use</a></p>
-                <h4><span role="img" aria-label="coder" style={{marginRight: 10}}>🧑‍💻</span> Treadl is open-source</h4>
-                <p>The code powering Treadl is <a style={{color:'white', textDecoration: 'underline'}} href={process.env.REACT_APP_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">publicly available</a>.</p>
+                <h4><span role="img" aria-label="party" style={{marginRight: 10}}>🎉</span> {utils.appName()} is free</h4>
+                <p>The {utils.appName()} software is <a style={{color:'white', textDecoration: 'underline'}} href='#why-free'>free to use</a></p>
+                <h4><span role="img" aria-label="coder" style={{marginRight: 10}}>🧑‍💻</span> {utils.appName()} is open-source</h4>
+                <p>The code powering {utils.appName()} is <a style={{color:'white', textDecoration: 'underline'}} href={process.env.REACT_APP_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">publicly available</a>.</p>
               </div>
             </Grid.Column>
 
@@ -56,7 +57,7 @@ function MarketingHome({ onRegisterClicked }) {
             <h2>
               <span role="img" aria-label="sharing hands">👐</span> Host and share your projects
             </h2>
-            <p>Use Treadl to organise your patterns into projects - along with images, text, and other files.</p>
+            <p>Use {utils.appName()} to organise your patterns into projects - along with images, text, and other files.</p>
             <p>Each project gets its own unique address, which you can use to share with others (or keep them private - it's up to you). Choose whether your projects are open-source, allowing visitors to export the source WIF files of your patterns for them to download and use in their own projects.</p>
             <p>Projects can contain any mixture of file types. Include images, text files, and other items amongst your patterns.</p>
           </Grid.Column>
@@ -75,11 +76,11 @@ function MarketingHome({ onRegisterClicked }) {
         </Grid.Column>
         <Grid.Column computer={8} tablet={10} textAlign="center">
           <h2>
-            <span role="img" aria-label="people holding hands">👭</span> Treadl fits into your workflow
+            <span role="img" aria-label="people holding hands">👭</span> {utils.appName()} fits into your workflow
           </h2>
-          <p>Treadl <strong>works well with other weaving tools</strong> by supporting the <a href="http://www.mhsoft.com/wif/wif.html" target="_blank" rel="noopener noreferrer">Weaving Information File (WIF) standard</a>.
+          <p>{utils.appName()} <strong>works well with other weaving tools</strong> by supporting the <a href="http://www.mhsoft.com/wif/wif.html" target="_blank" rel="noopener noreferrer">Weaving Information File (WIF) standard</a>.
           </p>
-          <p>This means that if you use Fiberworks, pixeLoom, WeaveIt, or other software for developing your patterns or for interacting with your loom, then Treadl can be used to import and export patterns to easily fit into your workflow.</p>
+          <p>This means that if you use Fiberworks, pixeLoom, WeaveIt, or other software for developing your patterns or for interacting with your loom, then {utils.appName()} can be used to import and export patterns to easily fit into your workflow.</p>
           <p>Found a weaving draft online? Simply import it into your project and continue to edit it.</p>
         </Grid.Column>
       </Grid>
@@ -94,7 +95,7 @@ function MarketingHome({ onRegisterClicked }) {
           </Grid.Column>
           <Grid.Column computer={6}>
             <h2>Familiar pattern tooling</h2>
-            <p>Treadl supports many of the features you may already be used to (plus some nice extras).</p>
+            <p>{utils.appName()} supports many of the features you may already be used to (plus some nice extras).</p>
             <p>
               <span role="img" aria-label="pencil">✏️ </span> Create your drafts using tools such as point draw and line draw.
             </p>
@@ -105,7 +106,7 @@ function MarketingHome({ onRegisterClicked }) {
               <span role="img" aria-label="magnifying glass">🔍</span> Enlarge or shrink your pattern to make it easier to edit in bulk or more precisely.
             </p>
             <p>
-              <span role="img" aria-label="painting">🖼️</span> Treadl generates previews of your patterns as you edit them to let you identify them easily from the project browser.
+              <span role="img" aria-label="painting">🖼️</span> {utils.appName()} generates previews of your patterns as you edit them to let you identify them easily from the project browser.
             </p>
             <p>
               <span role="img" aria-label="laptop">💻</span> Access your projects and manage and edit your patterns at any time from anywhere. Patterns in the cloud mean you don't need to carry them around or back them up on USB drives.
@@ -125,7 +126,7 @@ function MarketingHome({ onRegisterClicked }) {
           <h2>
             <span role="img" aria-label="padlock">🔒</span> Safe and secure
           </h2>
-          <p>We take your security and privacy very seriously. You can confidently use Treadl for storing and backing-up your weaving projects to the cloud.</p>
+          <p>We take your security and privacy very seriously. You can confidently use {utils.appName()} for storing and backing-up your weaving projects to the cloud.</p>
         </Grid.Column>
       </Grid>
 
@@ -157,9 +158,9 @@ function MarketingHome({ onRegisterClicked }) {
             </p>
             <h4>And lots more coming soon!</h4>
 
-            <h2 id='why-free'>How is Treadl free?</h2>
-            <p>Treadl was built in order to help family weavers organise, store, and share their weaving projects, as well as plan and design new patterns. We thought that all of this could be useful to other people too!</p>
-            <p>Treadl is built on modern and low-cost technologies that are not too expensive to maintain. We may eventually add in additional paid-for features to help cover our costs if these grow too big. If you'd like to help us out or find out more then please <a href={`mailTo:${process.env.REACT_APP_CONTACT_EMAIL}`} target='_blank' rel='noopener noreferrer'>get in touch</a>!</p>
+            <h2 id='why-free'>How is {utils.appName()} free?</h2>
+            <p>{utils.appName()} was built in order to help family weavers organise, store, and share their weaving projects, as well as plan and design new patterns. We thought that all of this could be useful to other people too!</p>
+            <p>{utils.appName()} is built on modern and low-cost technologies that are not too expensive to maintain. We may eventually add in additional paid-for features to help cover our costs if these grow too big. If you'd like to help us out or find out more then please <a href={`mailTo:${process.env.REACT_APP_CONTACT_EMAIL}`} target='_blank' rel='noopener noreferrer'>get in touch</a>!</p>
           </Grid.Column>
 
           <Grid.Column computer={6}>

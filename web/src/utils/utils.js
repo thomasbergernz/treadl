@@ -13,20 +13,14 @@ import avatar9 from 'images/avatars/9.png';
 import avatar10 from 'images/avatars/10.png';
 
 const utils = {
-  plans: [],
+  appName() {
+    return process.env.REACT_APP_NAME;
+  },
   hasSubscription(user, key) {
     return user?.subscriptions?.email?.indexOf(key) > -1;
   },
   canEditProject(user, project) {
     return user && project && user._id === project.user;
-  },
-  isInPlan(user, plan) {
-    if (!user || !plan) return false;
-    return user.planId === plan || plan.indexOf(user.planId) > -1;
-  },
-  getPlan(planId) {
-    const plan = utils.plans.filter(p => p.id === planId)[0];
-    return plan ? plan.name : 'Free';
   },
   isInGroup(user, groupId) {
     return user && user.groups && user.groups.indexOf(groupId) > -1;

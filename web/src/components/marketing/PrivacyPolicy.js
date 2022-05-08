@@ -1,21 +1,24 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Container } from 'semantic-ui-react';
+import utils from 'utils/utils.js';
 
 function PrivacyPolicy() {
+  const APP_NAME = utils.appName();
+  const EMAIL = process.env.REACT_APP_CONTACT_EMAIL;
   return (
     <Container style={{ marginTop: 50, marginBottom: 50 }}>
       <Helmet title='Privacy Policy' />
       <h1>Privacy Policy</h1>
-      <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing {process.env.REACT_APP_CONTACT_EMAIL}.</p>
+      <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing {EMAIL}.</p>
       <p>This document will have slight changes made to it occasionally. Please refer back to it from time to time.</p>
-      <p>This policy governs the use and protection of personal data of people (‘users’, ‘you’, etc.) using Treadl.</p>
+      <p>This policy governs the use and protection of personal data of people (‘users’, ‘you’, etc.) using {APP_NAME}.</p>
       <p>Data protection refers to the responsible security of personal data and transparency in the way we handle and process such data. Personal data is information that - on its own or in conjunction with other data - can be used to identify an individual person.</p>
 
       <h2>Complaints</h2>
       <p>If you would like to complain about this policy, or how we may have treated a request from you with respect to data protection, then please get in touch with us in the first case so that we can help rectify the problem. In other cases, you may also want to get in touch with the Information Comissioner's Office (ICO), who may be able to provide you with more information and support. Their website is at https://ico.org.uk.</p>
 
-      <h2>What data does Treadl collect?</h2>
+      <h2>What data does {APP_NAME} collect?</h2>
 
       <h3>When visiting and browsing our website</h3>
       <p>When you visit us using a web browser, we collect some data about your computer and the way our services are used by you, even if you don't have an account. We do not collect your name or other details about you at this stage, but we may process information such as your computing device’s location, its IP address, and details about relevant software your device may be running. This data is processed by Simple Analytics (for tracking aggregated use of our services, so that we can better understand how to improve our services for their audiences). The legal basis for processing this data is a legitimate interest in recording aggregated analytics data for improvement purposes and to see how often people visit our website.</p>
@@ -23,15 +26,15 @@ function PrivacyPolicy() {
       <h3>When sending us an email</h3>
       <p>Sometimes you may wish to send an email to us or reply to an email we have sent you. Any emails received will be treated in confidence and kept securely. Strong passwords and multi-factor authentication is implemented on all email accounts that can receive such emails.</p>
 
-      <h3>When signing-up for a Treadl account</h3>
-      <p>Treadl allows you to register for an account. This is the primary way by which we collect personal data from you, since such data is needed in order to identify you when you want to login and use these services. We may also use your email address to update you on platform updates and notifications, which you can control. When signing-up we collect an email address, username, and password. Once registered, you can choose to fill in additional profile data, such as social media links, a bio, and more. We ask for consent to this policy when creating an account, and the legal basis for processing this data is a legitimate interest in being able to provide services to you.</p>
+      <h3>When signing-up for a {APP_NAME} account</h3>
+      <p>{APP_NAME} allows you to register for an account. This is the primary way by which we collect personal data from you, since such data is needed in order to identify you when you want to login and use these services. We may also use your email address to update you on platform updates and notifications, which you can control. When signing-up we collect an email address, username, and password. Once registered, you can choose to fill in additional profile data, such as social media links, a bio, and more. We ask for consent to this policy when creating an account, and the legal basis for processing this data is a legitimate interest in being able to provide services to you.</p>
 
-      <h3>When using Treadl</h3>
-      <p>Posts, content, comments, patterns, files and any other data you add to or upload to Treadl as part of its standard use are also collected. This is for the purposes of providing services to you. To use Treadl, you will have provided consent to this policy during the registration process, and the legal basis for processing this data is a legitimate interest in being able to provide core services to you.</p>
+      <h3>When using {APP_NAME}</h3>
+      <p>Posts, content, comments, patterns, files and any other data you add to or upload to {APP_NAME} as part of its standard use are also collected. This is for the purposes of providing services to you. To use {APP_NAME}, you will have provided consent to this policy during the registration process, and the legal basis for processing this data is a legitimate interest in being able to provide core services to you.</p>
 
       <h2>Who has access to your data?</h2>
-      <p>Staff operating Treadl can view accounts and account data. This is with the exception of passwords, which are fully encrypted.</p>
-      <p>Other users and visitors to Treadl will also be able to see the profile data and content that you have made public. Your username and other profile data is always available to other people.</p>
+      <p>Staff operating {APP_NAME} can view accounts and account data. This is with the exception of passwords, which are fully encrypted.</p>
+      <p>Other users and visitors to {APP_NAME} will also be able to see the profile data and content that you have made public. Your username and other profile data is always available to other people.</p>
       <p>In order to provide access to our services to users, we also sometimes need to pass pieces of your personal data to third-party services (known as ‘data processors’ for the purposes of the GDPR). We only ever do this when we need to, and only send the minimum amount of information required. We ensure that the processors' own privacy policies follow suitable data protection practices. Our current data processors are:</p>
       <ul>
         <li>Mailgun (for sending mail). We provide Mailgun with your email address so that the mail can be delivered.</li>
@@ -49,7 +52,7 @@ function PrivacyPolicy() {
       <p>All data is encrypted during transmission (e.g. between your device and our servers, and between our servers), and when stored ("encrypted at rest"). Our servers are well-protected with industry standard security measures.</p>
 
       <h2>Child safety</h2>
-      <p>Children under the age of 16 are not allowed to use Treadl or to directly provide us with personal data. As such, we do not knowingly store or process personal data relating to children under the age of 16.</p>
+      <p>Children under the age of 16 are not allowed to use {APP_NAME} or to directly provide us with personal data. As such, we do not knowingly store or process personal data relating to children under the age of 16.</p>
 
       <h2>Your rights</h2>
       <p>We take the handling of personal data very seriously, and we want to make sure that you are aware of your rights under this policy. If your wish to invoke your rights requires us to complete some action on your behalf (for example, to stop processing your data), then we will always deal with your request in total confidence, at no cost, and as soon as we can (within 30 days of receiving your request).</p>

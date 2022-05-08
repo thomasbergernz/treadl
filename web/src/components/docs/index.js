@@ -2,11 +2,12 @@ import React from 'react';
 import { Container, Divider, Grid, Card, Message, Button, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+import utils from 'utils/utils.js';
 
 function Docs() {
   return (
     <Container style={{marginTop: 40}}>
-      <h1>Treadl documentation</h1>
+      <h1>{utils.appName()} documentation</h1>
       <Divider section />
 
       <Grid stackable>
@@ -17,10 +18,10 @@ function Docs() {
             description='Learn about how to create, manage, and organise your projects.'
           />
           <Card as={Link} to='/docs/patterns' header='Pattern editor'
-            description='Learn how to use the Treadl pattern editor.'
+            description={`Learn how to use the ${utils.appName()} pattern editor.`}
           />
           <Card as={Link} to='/docs/groups' header='Groups'
-            description='Learn more about Treadl groups, and how they can be managed.'
+            description={`Learn more about ${utils.appName()} groups, and how they can be managed.`}
           />
           <Message style={{marginTop: 20}} size='small' info header='Want to contribute documentation?'
             content={<p>That's great! Please reach out to us by emailing <a href={`mailTo:${process.env.REACT_APP_CONTACT_EMAIL}`}>{process.env.REACT_APP_CONTACT_EMAIL}</a>.</p>}

@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import actions from 'actions';
 import api from 'api';
+import utils from 'utils/utils.js';
 
 function IdentitySettings() {
   const [newUsername, setNewUsername] = useState('');
@@ -25,7 +26,7 @@ function IdentitySettings() {
   return (
     <Segment raised color="blue">
       <h3>Username</h3>
-      <p>Change the username you use for your profile and to login to Treadl.</p>
+      <p>Change the username you use for your profile and to login to {utils.appName()}.</p>
 
       <Message>
         <p><strong>Changing your username can have unintended side-effects</strong></p>

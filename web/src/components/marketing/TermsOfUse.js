@@ -1,17 +1,20 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Container } from 'semantic-ui-react';
+import utils from 'utils/utils.js';
 
 function TermsOfUse() {
+  const APP_NAME = utils.appName();
+  const EMAIL = process.env.REACT_APP_CONTACT_EMAIL;
   return (
     <Container style={{ marginTop: 50, marginBottom: 50 }}>
       <Helmet title='Terms of Use' />
-      <h1>Treadl Terms of Use</h1>
-      <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing {process.env.REACT_APP_CONTACT_EMAIL}.</p>
+      <h1>{APP_NAME} Terms of Use</h1>
+      <p>This policy is designed to be accessible, understandable, and easy to read without legal and other jargon. If you have any comments, questions, or concerns about this policy, please get in touch with us by emailing {EMAIL}.</p>
       <p>This document will have slight changes made to it occasionally. Please refer back to it from time to time.</p>
 
       <h2>Terms</h2>
-      <p>Treadl does not guarantee constant availability of service access and accepts no liability for downtime or access failure due to circumstances beyond its reasonable control (including any failure by ISP or system provider).</p>
+      <p>{APP_NAME} does not guarantee constant availability of service access and accepts no liability for downtime or access failure due to circumstances beyond its reasonable control (including any failure by ISP or system provider).</p>
 
       <p>The services may contain links to other sites on the internet. We are not responsible for the accuracy, legality, decency of material or copyright compliance of any such linked websites or services or information provided via any such link.</p>
 
@@ -19,13 +22,13 @@ function TermsOfUse() {
 
       <p>Any information on our services may include technical inaccuracies or typographical errors. We strive to maintain accuracy as much as possible.</p>
 
-      <p>We distribute the content supplied by our users. We try to maintain a safe platform for all of our users, but cannot take responsibility for such content. We are not liable for any damages as a result of such content. Self-policing is a an important feature of platforms like Treadl, so please report any problems with such user-generated content to the email address above. We accept no liability or responsibility to any person or organisation as a consequence of any reliance upon the information contained by our services.</p>
+      <p>We distribute the content supplied by our users. We try to maintain a safe platform for all of our users, but cannot take responsibility for such content. We are not liable for any damages as a result of such content. Self-policing is a an important feature of platforms like {APP_NAME}, so please report any problems with such user-generated content to the email address above. We accept no liability or responsibility to any person or organisation as a consequence of any reliance upon the information contained by our services.</p>
 
       <p>Our services are provided on an “as is”, “as available” basis without warranties of any kind, express or implied, including, but not limited to, those of TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE or NON-INFRINGEMENT or any warranty arising from a course of dealing, usage, or trade practice. No advice or written information provided shall create a warranty; nor shall members or visitors to our services rely on any such information or advice.</p>
 
       <p>We reserve the right to permanently ban any user from our services for any reason related to mis-behaviour. We will be the sole judge of behavior and we do not offer appeals or refunds in those cases.</p>
 
-      <p>All users must follow the Treadl code of conduct:</p>
+      <p>All users must follow the {APP_NAME} code of conduct:</p>
 
       <ul>
         <li>Do not upload or add content that contains slurs, racist, homophobic, transphobic, ableist or otherwise discriminatory content. Do not add or upload content containing any hateful ideologies.</li>

@@ -33,7 +33,7 @@ function NotificationSettings() {
   return (
     <Segment raised color="blue">
       <h3>Email preferences</h3>
-      <p>Customise which automated emails you'd like to receive from Treadl.</p>
+      <p>Customise which automated emails you'd like to receive from {utils.appName()}.</p>
       <Divider hidden />
 
       <Table fluid basic='very'>
