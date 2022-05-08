@@ -12,6 +12,8 @@ import avatar8 from 'images/avatars/8.png';
 import avatar9 from 'images/avatars/9.png';
 import avatar10 from 'images/avatars/10.png';
 
+const IMAGE_SERVER = process.env.REACT_APP_IMAGINARY_URL;
+
 const utils = {
   appName() {
     return process.env.REACT_APP_NAME;
@@ -93,11 +95,13 @@ const utils = {
   },
   cropUrl(url, width, height) {
     if (url?.indexOf('http') !== 0) return url;
-    return `${process.env.REACT_APP_IMAGINARY_URL}/crop?width=${width}&height=${height}&url=${url}`;
+    if (IMAGE_SERVER) return `${process.env.REACT_APP_IMAGINARY_URL}/crop?width=${width}&height=${height}&url=${url}`;
+    return url;
   },
   resizeUrl(url, width) {
     if (url?.indexOf('http') !== 0) return url;
-    return `${process.env.REACT_APP_IMAGINARY_URL}/resize?width=${width}&url=${url}`;
+    if (IMAGE_SERVER) return `${process.env.REACT_APP_IMAGINARY_URL}/resize?width=${width}&url=${url}`;
+    return url;
   },
 };
 

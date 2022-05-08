@@ -56,6 +56,8 @@ Once you have a bucket, generate some access keys for the bucket that will enabl
 * Access key: The "username" or access key for your bucket
 * Secret access key: The "password" or secret access key for the bucket
 
+_Note: assets in your bucket should be public. Treadl does not currently used signed requests to access uploaded files._
+
 ### 3. Provision the API
 
 The best way to run the web API is to do so via Docker. A `Dockerfile` is provided in the `api/` directory.
@@ -75,7 +77,7 @@ Once ready, you can launch the API by passing in this envfile (assuming you buil
 $ docker run --env-file envfile -d treadl-api
 ```
 
-Please note that a reverse proxy (such as Nginx or Traefik) should be running on your server to proxy traffic through to port 8000 on your running Treadl API container.
+_Note: a reverse proxy (such as Nginx or Traefik) should be running on your server to proxy traffic through to port 8000 on your running Treadl API container._
 
 ### 4. Host the front-end
 
@@ -94,7 +96,7 @@ We use [Vercel](https://vercel.com) to host the web UI. Once you have an account
 $ vercel --prod
 ```
 
-You will need to configure Vercel to use your own domain, and set-up a project, etc. first.
+_Note: You will need to configure Vercel to use your own domain, and set-up a project, etc. first._
 
 **Manual**
 
@@ -104,6 +106,16 @@ Simply build the app and then deploy the resulting `build/` directory to a serve
 $ yarn build
 $ s3cmd cp build/ s3://my-treadl-ui # Example
 ```
+
+### 5. Optional extras
+
+**Imaginary server**
+
+To help improve the performance of the app, you may wish to make use of [Imaginary](https://github.com/h2non/imaginary) to crop/resize large images. The web UI is already equipped to handle Imaginary if a server is configured.
+
+To use this feature, simply rebuild the app ensuring that an environment entry is made into `.env.production` that includes `"REACT_APP_IMAGINARY_URL=https://your.imaginaryserver.com"`.
+
+_Note: If this is not set, Treadl will by default fetch the full size images straight from the S3 source._
 
 ## Contributions
 
