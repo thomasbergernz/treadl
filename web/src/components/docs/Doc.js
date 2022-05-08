@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
-import stuff from './stuff.md';
+import styled from 'styled-components';
+
+import patternDoc from './patterns.md';
+import projectDoc from './projects.md';
+import groupDoc from './groups.md';
 
 const docs = {
-  stuff: stuff,
+  patterns: patternDoc,
+  projects: projectDoc,
+  groups: groupDoc,
 };
+
+const StyledDoc = styled.div`
+  img {
+    margin: 10px auto;
+    max-width: 100%;
+  }
+`;
 
 function Doc() {
   const [markdown, setMarkdown] = useState();
@@ -33,10 +46,9 @@ function Doc() {
           <p>Please select a different document.</p>
         </div>
       :
-        <div>
-          <h2>Doc</h2>
+        <StyledDoc>
           <ReactMarkdown>{markdown}</ReactMarkdown>
-        </div>
+        </StyledDoc>
       }
     </div>
   );
