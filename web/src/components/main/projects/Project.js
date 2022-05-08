@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Message, Form, TextArea, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
-import { Outlet, Link, useParams } from 'react-router-dom';
+import { Outlet, Link, useParams, useLocation, useMatch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -16,6 +16,9 @@ function Project() {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const { username, projectPath } = useParams();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const match = useMatch(location.pathname);
+  console.log(match);
   const { user, project, fullName, errorMessage, editingDescription } = useSelector(state => {
     const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
@@ -27,7 +30,7 @@ function Project() {
     api.projects.get(fullName, p => dispatch(actions.projects.receiveProject(p)), err => dispatch(actions.projects.requestFailed(err)));
   }, [user, dispatch, fullName]);
 
-  const wideBody = () => false;/*!match.isExact*/
+  const wideBody = () => !location.pathname.toLowerCase().endsWith(fullName.toLowerCase());
 
   const saveDescription = () => {
     dispatch(actions.projects.editDescription(false));
