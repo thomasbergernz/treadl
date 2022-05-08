@@ -4,7 +4,9 @@ This directory contains the code for the Treadl web front-end.
 
 ## Run locally
 
-To run this code locally, first clone this repository and then;
+Firstly, please ensure a local version of the Treadl API is up and running by following the instructions in the `api/` directory.
+
+Then, to run the Treadl web UI locally, follow these steps;
 
 Install dependencies:
 
@@ -18,4 +20,4 @@ Run the app:
 $ yarn start
 ```
 
-Note that the development version of the front-end expects to be able to connect to the API on port 2001.
+Note that the development version of the front-end expects to be able to connect to the local API on port 2001.
