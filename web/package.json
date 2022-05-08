@@ -20,6 +20,7 @@
     "react-joyride": "^2.4.0",
     "react-markdown": "^8.0.3",
     "react-redux": "^8.0.1",
+    "react-rewards": "^2.0.3",
     "react-router-dom": "^6.3.0",
     "react-scripts": "3.4.1",
     "react-toastify": "^4.4.0",

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Segment, Label, Input, Icon, Card, Loader } from 'semantic-ui-react';
 import { Link, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { useReward } from 'react-rewards';
 import styled from 'styled-components';
 import utils from 'utils/utils.js';
 import actions from 'actions';
@@ -27,6 +28,8 @@ function ObjectList({ compact }) {
   const [objectFilter, setObjectFilter] = useState('');
   const { username, projectPath, objectId } = useParams();
   const dispatch = useDispatch();
+  const { reward: balloonReward } = useReward('welcome-reward', 'balloons');
+  const { reward: confettiReward } = useReward('welcome-reward', 'emoji');
 
   const { user, project, objects, currentObject, fullProjectPath } = useSelector(state => {
     const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
@@ -45,6 +48,8 @@ function ObjectList({ compact }) {
     api.projects.getObjects(fullProjectPath, o => {
       dispatch(actions.objects.receiveMultiple(o));
       setLoading(false);
+      balloonReward();
+      confettiReward();
     }, err => setLoading(false));
   }, [fullProjectPath, dispatch]);
 
@@ -65,18 +70,19 @@ function ObjectList({ compact }) {
       {!loading && !objects.length &&
         (utils.canEditProject(user, project) ?
           <Segment placeholder textAlign='center'>
-            <h2>Welcome to your project</h2>
+            <h2>Welcome to your new project!</h2>
             <img src={FolderImage} style={{maxWidth:200, display:'block', margin: '0px auto'}} alt='Empty project' />
-            <h3>This project is currently empty</h3>
-            <div style={{maxWidth: 300, margin:'0px auto'}}>
-              <p>You can now add something by creating a new pattern draft, importing an existing pattern in the WIF file format, or uploading any other type of file.</p>
+            <h3>Let's add something to your project</h3>
+            <div style={{maxWidth: 400, margin:'0px auto'}}>
+              <h4>You can try creating a new pattern draft, importing an existing pattern in the WIF file format, or uploading any other type of file.</h4>
               <ObjectCreator project={project} />
+              <p id="welcome-reward" />
             </div>
           </Segment>
         :
           <Segment placeholder textAlign='center'>
             <h2>Welcome</h2>
-            <img src={FolderImage} style={{maxWidth:200, display:'block', margin: '0px auto'}} alt='Empty project' />
+            <img src={FolderImage} style={{maxWidth: 300, display:'block', margin: '0px auto'}} alt='Empty project' />
             <h3>This project is currently empty</h3> <p>Come back soon!</p>
           </Segment>
         )
