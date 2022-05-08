@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#ed0176">
-    <meta name="description" content="Free online weaving software for the web. Treadl lets you manage and backup your weaving projects, edit and view your weaving patterns directly in the browser. Import and export WIF files.">
+    <meta name="description" content="Free online weaving software for the web. %REACT_APP_NAME% lets you manage and backup your weaving projects, edit and view your weaving patterns directly in the browser. Import and export WIF files.">
     <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
@@ -22,7 +22,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Treadl</title>
+    <title>%REACT_APP_NAME%</title>
   </head>
   <body>
     <noscript>
@@ -47,7 +47,7 @@
       var t = window.driftt = window.drift = window.driftt || [];
       if (!t.init) {
         if (t.invoked) return void (window.console && console.error && console.error("Drift snippet included twice."));
-        t.invoked = !0, t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ], 
+        t.invoked = !0, t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ],
         t.factory = function(e) {
           return function() {
             var n = Array.prototype.slice.call(arguments);
