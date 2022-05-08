@@ -15,6 +15,7 @@ const docs = {
 
 const StyledDoc = styled.div`
   img {
+    display: block;
     margin: 10px auto;
     max-width: 100%;
   }
