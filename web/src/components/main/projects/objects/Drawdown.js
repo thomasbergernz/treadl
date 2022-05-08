@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import utils from 'utils/utils';
 
@@ -12,23 +12,17 @@ const StyledDrawdown = styled.canvas`
   width: ${props => props.warp.threads * props.baseSize}px;
 `;
 
-class Drawdown extends Component {
-  constructor(props) {
-    super(props);
-    this.squares = {};
-  }
+// Cache
+const squares = {};
 
-  componentDidMount() {
-    this.paintDrawdown();
-  }
+function Drawdown({ baseSize, warp, weft, tieups }) {
+  const drawdownRef = useRef();
+  useEffect(() => paintDrawdown());
+  const { editor } = useSelector(state => ({ editor: state.objects.editor }));
 
-  componentDidUpdate(prevProps, prevState) {
-    this.paintDrawdown(prevProps);
-  }
-
-  getSquare(thread, size, colour) {
-    const { view } = this.props.editor;
-    if (this.squares[view] && this.squares[view][thread] && this.squares[view][thread][size] && this.squares[view][thread][size][colour]) return this.squares[view][thread][size][colour];
+  const getSquare = (thread, size, colour) => {
+    const { view } = editor;
+    if (squares[view] && squares[view][thread] && squares[view][thread][size] && squares[view][thread][size][colour]) return squares[view][thread][size][colour];
     const m_canvas = document.createElement('canvas');
     m_canvas.width = size;
     m_canvas.height = size;
@@ -43,7 +37,7 @@ class Drawdown extends Component {
     if (view === 'colour' || view === 'interlacement') {
       mc.fillStyle = colour;
       mc.fillRect(0, 0, size, size);
-      if (this.props.editor.view === 'interlacement') {
+      if (editor.view === 'interlacement') {
         if (thread === 'warp') {
           const grd = mc.createLinearGradient(0, 0, size, 0);
           grd.addColorStop(0.1, 'rgba(0,0,0,0.3)');
@@ -63,19 +57,16 @@ class Drawdown extends Component {
       }
     }
 
-    if (!this.squares[view]) this.squares[view] = {};
-    if (!this.squares[view][thread]) this.squares[view][thread] = {};
-    if (!this.squares[view][thread][size]) this.squares[view][thread][size] = {};
-    this.squares[view][thread][size][colour] = m_canvas;
+    if (!squares[view]) squares[view] = {};
+    if (!squares[view][thread]) squares[view][thread] = {};
+    if (!squares[view][thread][size]) squares[view][thread][size] = {};
+    squares[view][thread][size][colour] = m_canvas;
     return m_canvas;
-  }
+  };
 
-  paintDrawdown(prevProps) {
-    const canvas = this.refs.drawdown;
+  const paintDrawdown = () => {
+    const canvas = drawdownRef.current;
     const ctx = canvas.getContext('2d', { alpha: false });
-    const {
-      baseSize, warp, weft, tieups,
-    } = this.props;
 
     for (let tread = 0; tread < weft.threads; tread++) {
       for (let thread = 0; thread < warp.threads; thread++) {
@@ -83,40 +74,25 @@ class Drawdown extends Component {
         const shaft = warp.threading[thread].shaft;
         const tieup = tieups[treadle - 1];
         const proceed = true;
-        /* if (prevProps) {
-          const prevTreadle = prevProps.weft.treadling[tread].treadle;
-          const prevShaft = prevProps.warp.threading[thread].shaft;
-          const prevTieup = prevProps.tieups[prevTreadle - 1];
-          const prevBaseSize = prevProps.baseSize;
-          proceed = prevTreadle !== treadle || prevShaft !== shaft || baseSize !== prevBaseSize || prevTieup !== tieup;
-        } */
         if (proceed) {
           const weftColour = utils.rgb(weft.treadling[tread].colour || weft.defaultColour);
           const warpColour = utils.rgb(warp.threading[thread].colour || warp.defaultColour);
           const threadType = tieup && tieup.filter(t => t <= warp.shafts).indexOf(shaft) > -1 ? 'warp' : 'weft';
-          const square = this.getSquare(threadType, baseSize, threadType === 'warp' ? warpColour : weftColour);
+          const square = getSquare(threadType, baseSize, threadType === 'warp' ? warpColour : weftColour);
 
           ctx.drawImage(square, canvas.width - (baseSize * (thread + 1)), tread * baseSize);
         }
       }
     }
-  }
+  };
 
-  render() {
-    const { warp, weft, baseSize } = this.props;
-    return (
-      <StyledDrawdown ref="drawdown" className="drawdown joyride-drawdown"
-        width={warp.threads * baseSize}
-        height={weft.threads * baseSize}
-        weft={weft} warp={warp} baseSize={baseSize}
-      />
-    );
-  }
+  return (
+    <StyledDrawdown ref={drawdownRef} className="drawdown joyride-drawdown"
+      width={warp.threads * baseSize}
+      height={weft.threads * baseSize}
+      weft={weft} warp={warp} baseSize={baseSize}
+    />
+  );
 }
 
-const mapStateToProps = (state, ownProps) => ({ editor: state.objects.editor });
-const DrawdownContainer = connect(
-  mapStateToProps,
-)(Drawdown);
-
-export default DrawdownContainer;
+export default Drawdown;
