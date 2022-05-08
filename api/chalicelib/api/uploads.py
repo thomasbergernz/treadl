@@ -18,13 +18,13 @@ def get_s3():
       service_name='s3',
       aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
       aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'],
-      endpoint_url='https://eu-central-1.linodeobjects.com/',
+      endpoint_url=os.environ['AWS_S3_ENDPOINT'],
   )
   return s3_client
 
 def get_presigned_url(path):
-  return 'https://eu-central-1.linodeobjects.com/' + os.environ['AWS_S3_BUCKET'] + '/' + path
-  s3 = get_s3() 
+  return os.environ['AWS_S3_ENDPOINT'] + os.environ['AWS_S3_BUCKET'] + '/' + path
+  s3 = get_s3()
   return s3.generate_presigned_url('get_object',
     Params = {
       'Bucket': os.environ['AWS_S3_BUCKET'],
@@ -33,7 +33,7 @@ def get_presigned_url(path):
   )
 
 def get_file(key):
-  s3 = get_s3() 
+  s3 = get_s3()
   return s3.get_object(
     Bucket = os.environ['AWS_S3_BUCKET'],
     Key = key
