@@ -9,7 +9,7 @@ def handle_send(data):
     user = data['to_user']
     data['to'] = user['username'] + ' <' + user['email'] + '>'
     del data['to_user']
-  data['text'] += '\n\nFrom the team at Treadl\n\n\n\n--\n\nDon\'t like this email? Choose which emails you receive from Treadl by visiting https://treadl.com/settings/notifications\n\nReceived this email in error? Please let us know by contacting {}'.format(os.environ.get('CONTACT_EMAIL'))
+  data['text'] += '\n\nFrom the team at Treadl\n\n\n\n--\n\nDon\'t like this email? Choose which emails you receive from Treadl by visiting {}/settings/notifications\n\nReceived this email in error? Please let us know by contacting {}'.format(os.environ.get('APP_URL'), os.environ.get('CONTACT_EMAIL'))
   data['reply-to'] = os.environ.get('CONTACT_EMAIL')
 
   base_url = os.environ.get('MAILGUN_URL')

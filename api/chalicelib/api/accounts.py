@@ -24,27 +24,27 @@ def register(username, email, password):
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
     result = db.users.insert_one({ 'username': username, 'email': email, 'password': hashed_password, 'createdAt': datetime.datetime.now(), 'subscriptions': {'email': ['groups.invited', 'groups.joinRequested', 'groups.joined', 'messages.replied', 'projects.commented']}})
     mail.send({
-      'to': 'will@treadl.com',
+      'to': os.environ.get('ADMIN_EMAIL'),
       'subject': 'Treadl signup',
       'text': 'A new user signed up with username {0} and email {1}'.format(username, email)
     })
     mail.send({
       'to': email,
       'subject': 'Welcome to Treadl!',
-      'text': '''Dear {},
+      'text': '''Dear {0},
 
 Welcome to Treadl! We won't send you many emails but we just want to introduce ourselves and to give you some tips to help you get started.
 
 LOGGING-IN
 
-To login to your account please visit https://treadl.com and click Login. Use your username ({}) and password to get back into your account.
+To login to your account please visit {1} and click Login. Use your username ({0}) and password to get back into your account.
 
 INTRODUCTION
 
 Treadl has been designed as a resource for weavers – not only for those working alone as individuals, but also for groups who wish to share ideas, design inspirations and weaving patterns. It is ideal for those looking for a depository to store their individual work, and also for groups such as guilds, teaching groups, or any other collaborative working partnerships.
 Projects can be created within Treadl using the integral WIF-compatible draft editor, or alternatively files can be imported from other design software along with supporting images and other information you may wish to be saved within the project file. Once complete, projects may be stored privately, shared within a closed group, or made public for other Treadl users to see. The choice is yours!
 
-Treadl is free to use. For more information please visit our website at https://treadl.com.
+Treadl is free to use. For more information please visit our website at {1}.
 
 GETTING STARTED
 
@@ -56,12 +56,12 @@ Creating a new project: When you are ready to create/store a project on the syst
 
 Once complete you then have the option of saving the file privately, shared within a group, or made public for other Treadl users to see.
 
-We hope you enjoy using Treadl and if you have any comments or feedback please tell us by emailing {}!
+We hope you enjoy using Treadl and if you have any comments or feedback please tell us by emailing {2}!
 
 Best wishes,
 
 The Treadl Team
-'''.format(username, username, os.environ.get('CONTACT_EMAIL'))
+'''.format(username, os.environ.get('APP_URL'), os.environ.get('CONTACT_EMAIL'))
     })
     return {'token': generate_access_token(result.inserted_id)}
   except Exception as e:
@@ -184,7 +184,7 @@ def reset_password(data):
     mail.send({
       'to_user': user,
       'subject': 'Reset your password',
-      'text': 'Dear {0},\n\nA password reset email was recently requested for your Treadl account. If this was you and you want to continue, please follow the link below:\n\n{1}\n\nThis link will expire after 24 hours.\n\nIf this was not you, then someone may be trying to gain access to your account. We recommend using a strong and unique password for your account.'.format(user['username'], 'https://treadl.com/password/reset?token=' + token)
+      'text': 'Dear {0},\n\nA password reset email was recently requested for your Treadl account. If this was you and you want to continue, please follow the link below:\n\n{1}\n\nThis link will expire after 24 hours.\n\nIf this was not you, then someone may be trying to gain access to your account. We recommend using a strong and unique password for your account.'.format(user['username'], '{}/password/reset?token={}'.format(os.environ.get('APP_URL'), token))
     })
     db.users.update({'_id': user['_id']}, {'$set': {'tokens.passwordReset': token}})
   return {'passwordResetEmailSent': True}

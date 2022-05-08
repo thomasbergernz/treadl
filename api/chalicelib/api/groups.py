@@ -1,4 +1,4 @@
-import datetime, re
+import datetime, re, os
 import pymongo
 from bson.objectid import ObjectId
 from chalicelib.util import database, util, mail, push
@@ -8,7 +8,7 @@ def create(user, data):
   if not data: raise util.errors.BadRequest('Invalid request')
   if len(data.get('name')) < 3: raise util.errors.BadRequest('A longer name is required')
   db = database.get_db()
- 
+
   group = {
     'createdAt': datetime.datetime.now(),
     'user': user['_id'],
@@ -25,7 +25,7 @@ def create(user, data):
 def get(user):
   db = database.get_db()
   groups = list(db.groups.find({'_id': {'$in': user.get('groups', [])}}))
-  return {'groups': groups} 
+  return {'groups': groups}
 
 def get_one(user, id):
   db = database.get_db()
@@ -82,7 +82,7 @@ def create_entry(user, id, data):
         attachment['url'] = uploads.get_presigned_url('groups/{0}/{1}'.format(id, attachment['storedName']))
 
   result = db.groupEntries.insert_one(entry)
-  entry['_id'] = result.inserted_id 
+  entry['_id'] = result.inserted_id
   entry['authorUser'] = {'_id': user['_id'], 'username': user['username'], 'avatar': user.get('avatar')}
   if 'avatar' in user:
     entry['authorUser']['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(user['_id'], user['avatar']))
@@ -91,7 +91,7 @@ def create_entry(user, id, data):
     mail.send({
       'to_user': u,
       'subject': 'New message in ' + group['name'],
-      'text': 'Dear {0},\n\n{1} posted a message in the Notice Board of {2} on Treadl:\n\n{3}\n\nFollow the link below to visit the group:\n\n{4}'.format(u['username'], user['username'], group['name'], data['content'], 'https://treadl.com/groups/' + str(id))
+      'text': 'Dear {0},\n\n{1} posted a message in the Notice Board of {2} on Treadl:\n\n{3}\n\nFollow the link below to visit the group:\n\n{4}'.format(u['username'], user['username'], group['name'], data['content'], '{}/groups/{}'.format(os.environ.get('APP_URL'), str(id)))
     })
   push.send_multiple(list(db.users.find({'_id': {'$ne': user['_id']}, 'groups': id})), '{} posted in {}'.format(user['username'], group['name']), data['content'][:30] + '...')
   return entry
@@ -153,7 +153,7 @@ def create_entry_reply(user, id, entry_id, data):
         attachment['url'] = uploads.get_presigned_url('groups/{0}/{1}'.format(id, attachment['storedName']))
 
   result = db.groupEntries.insert_one(reply)
-  reply['_id'] = result.inserted_id 
+  reply['_id'] = result.inserted_id
   reply['authorUser'] = {'_id': user['_id'], 'username': user['username'], 'avatar': user.get('avatar')}
   if 'avatar' in user:
     reply['authorUser']['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(user['_id'], user['avatar']))
@@ -162,7 +162,7 @@ def create_entry_reply(user, id, entry_id, data):
     mail.send({
       'to_user': op,
       'subject': user['username'] + ' replied to your post',
-      'text': 'Dear {0},\n\n{1} replied to your message in the Notice Board of {2} on Treadl:\n\n{3}\n\nFollow the link below to visit the group:\n\n{4}'.format(op['username'], user['username'], group['name'], data['content'], 'https://treadl.com/groups/' + str(id))
+      'text': 'Dear {0},\n\n{1} replied to your message in the Notice Board of {2} on Treadl:\n\n{3}\n\nFollow the link below to visit the group:\n\n{4}'.format(op['username'], user['username'], group['name'], data['content'], '{}/groups/{}'.format(os.environ.get('APP_URL'), str(id)))
     })
   return reply
 
@@ -195,7 +195,7 @@ def create_member(user, id, user_id, invited = False):
     mail.send({
       'to_user': admin,
       'subject': 'Someone joined your group',
-      'text': 'Dear {0},\n\n{1} recently joined your group {2} on Treadl!\n\nFollow the link below to manage your group:\n\n{2}'.format(admin['username'], user['username'], group['name'], 'https://treadl.com/groups/' + str(id))
+      'text': 'Dear {0},\n\n{1} recently joined your group {2} on Treadl!\n\nFollow the link below to manage your group:\n\n{2}'.format(admin['username'], user['username'], group['name'], '{}/groups/{}'.format(os.environ.get('APP_URL'), str(id)))
     })
 
   return {'newMember': user_id}

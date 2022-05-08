@@ -1,4 +1,4 @@
-import re, datetime
+import re, datetime, os
 import pymongo
 from bson.objectid import ObjectId
 from chalicelib.util import database, util, mail
@@ -93,10 +93,10 @@ def create_group_invitation(user, group_id, data):
     mail.send({
       'to_user': recipient,
       'subject': 'You\'ve been invited to a group on Treadl',
-      'text': 'Dear {0},\n\nYou have been invited to join the group {1} on Treadl!\n\nLogin by visting https://treadl.com to find your invitation.'.format(recipient['username'], group['name'])
+      'text': 'Dear {0},\n\nYou have been invited to join the group {1} on Treadl!\n\nLogin by visting {2} to find your invitation.'.format(recipient['username'], group['name'], os.environ.get('APP_URL'))
     })
-  invite['_id'] = result.inserted_id 
-  return invite 
+  invite['_id'] = result.inserted_id
+  return invite
 
 def create_group_request(user, group_id):
   db = database.get_db()
@@ -122,10 +122,10 @@ def create_group_request(user, group_id):
     mail.send({
       'to_user': admin,
       'subject': 'Someone wants to join your group',
-      'text': 'Dear {0},\n\{1} has requested to join your group {2} on Treadl!\n\nLogin by visting https://treadl.com to find and approve your requests.'.format(admin['username'], user['username'], group['name'])
+      'text': 'Dear {0},\n\{1} has requested to join your group {2} on Treadl!\n\nLogin by visting {3} to find and approve your requests.'.format(admin['username'], user['username'], group['name'], os.environ.get('APP_URL'))
     })
-  invite['_id'] = result.inserted_id 
-  return invite 
+  invite['_id'] = result.inserted_id
+  return invite
 
 def get_group_invitations(user, id):
   db = database.get_db()

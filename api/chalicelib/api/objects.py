@@ -1,4 +1,4 @@
-import datetime, base64
+import datetime, base64, os
 from bson.objectid import ObjectId
 import requests
 from chalicelib.util import database, wif, util, mail
@@ -36,7 +36,7 @@ def copy_to_project(user, id, project_id):
   target_project = db.projects.find_one(ObjectId(project_id))
   if not target_project or target_project['user'] != user['_id']:
     raise util.errors.Forbidden('You don\'t own the target project')
-  
+
   obj['_id'] = ObjectId()
   obj['project'] = target_project['_id']
   obj['createdAt'] = datetime.datetime.now()
@@ -113,7 +113,7 @@ def create_comment(user, id, data):
     mail.send({
       'to_user': project_owner,
       'subject': '{} commented on {}'.format(user['username'], project['name']),
-      'text': 'Dear {0},\n\n{1} commented on {2} in your project {3} on Treadl:\n\n{4}\n\nFollow the link below to see the comment:\n\n{5}'.format(project_owner['username'], user['username'], obj['name'], project['name'], comment['content'], 'https://treadl.com/{}/{}/{}'.format(project_owner['username'], project['path'], str(id)))
+      'text': 'Dear {0},\n\n{1} commented on {2} in your project {3} on Treadl:\n\n{4}\n\nFollow the link below to see the comment:\n\n{5}'.format(project_owner['username'], user['username'], obj['name'], project['name'], comment['content'], '{}/{}/{}/{}'.format(os.environ.get('APP_URL'), project_owner['username'], project['path'], str(id)))
     })
   return comment
 
