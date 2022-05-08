@@ -18,7 +18,6 @@ function Project() {
   const dispatch = useDispatch();
   const location = useLocation();
   const match = useMatch(location.pathname);
-  console.log(match);
   const { user, project, fullName, errorMessage, editingDescription } = useSelector(state => {
     const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];

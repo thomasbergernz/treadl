@@ -10,20 +10,19 @@ import api from 'api';
 import HelpLink from 'components/includes/HelpLink';
 
 function ProjectSettings() {
+  const { username, projectPath } = useParams();
   const { groups, project, fullProjectPath } = useSelector(state => {
     const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
     return { groups, project, fullProjectPath: `${username}/${projectPath}` };
   });
-
   const [name, setName] = useState(project.name);
   const [visibility, setVisibility] = useState(project.visibility || 'public');
   const [groupVisibility, setGroupVisibility] = useState(project.groupVisibility || []);
   const [openSource, setOpenSource] = useState(project.openSource || true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { username, projectPath } = useParams();
 
   const changeVisibility = (event, r) => {
     setVisibility(r.checked ? 'private' : 'public');
