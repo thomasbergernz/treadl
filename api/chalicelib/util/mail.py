@@ -4,12 +4,16 @@ import requests
 
 def handle_send(data):
   if 'from' not in data:
-    data['from'] = 'Treadl <{}>'.format(os.environ.get('FROM_EMAIL'))
+    data['from'] = '{} <{}>'.format(os.environ.get('APP_NAME'), os.environ.get('FROM_EMAIL'))
   if 'to_user' in data:
     user = data['to_user']
     data['to'] = user['username'] + ' <' + user['email'] + '>'
     del data['to_user']
-  data['text'] += '\n\nFrom the team at Treadl\n\n\n\n--\n\nDon\'t like this email? Choose which emails you receive from Treadl by visiting {}/settings/notifications\n\nReceived this email in error? Please let us know by contacting {}'.format(os.environ.get('APP_URL'), os.environ.get('CONTACT_EMAIL'))
+  data['text'] += '\n\nFrom the team at {0}\n\n\n\n--\n\nDon\'t like this email? Choose which emails you receive from {0} by visiting {1}/settings/notifications\n\nReceived this email in error? Please let us know by contacting {2}'.format(
+    os.environ.get('APP_NAME'),
+    os.environ.get('APP_URL'),
+    os.environ.get('CONTACT_EMAIL')
+  )
   data['reply-to'] = os.environ.get('CONTACT_EMAIL')
 
   base_url = os.environ.get('MAILGUN_URL')

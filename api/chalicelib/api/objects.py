@@ -4,6 +4,8 @@ import requests
 from chalicelib.util import database, wif, util, mail
 from chalicelib.api import uploads
 
+APP_NAME = os.environ.get('APP_NAME')
+
 def delete(user, id):
   db = database.get_db()
   obj = db.objects.find_one(ObjectId(id), {'project': 1})
@@ -113,7 +115,17 @@ def create_comment(user, id, data):
     mail.send({
       'to_user': project_owner,
       'subject': '{} commented on {}'.format(user['username'], project['name']),
-      'text': 'Dear {0},\n\n{1} commented on {2} in your project {3} on Treadl:\n\n{4}\n\nFollow the link below to see the comment:\n\n{5}'.format(project_owner['username'], user['username'], obj['name'], project['name'], comment['content'], '{}/{}/{}/{}'.format(os.environ.get('APP_URL'), project_owner['username'], project['path'], str(id)))
+      'text': 'Dear {0},\n\n{1} commented on {2} in your project {3} on {6}:\n\n{4}\n\nFollow the link below to see the comment:\n\n{5}'.format(
+        project_owner['username'],
+        user['username'],
+        obj['name'],
+        project['name'],
+        comment['content'],
+        '{}/{}/{}/{}'.format(
+          APP_URL, project_owner['username'], project['path'], str(id)
+        ),
+        APP_NAME,
+      )
     })
   return comment
 

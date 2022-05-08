@@ -4,6 +4,9 @@ from bson.objectid import ObjectId
 from chalicelib.util import database, util, mail, push
 from chalicelib.api import uploads
 
+APP_NAME = os.environ.get('APP_NAME')
+APP_URL = os.environ.get('APP_URL')
+
 def create(user, data):
   if not data: raise util.errors.BadRequest('Invalid request')
   if len(data.get('name')) < 3: raise util.errors.BadRequest('A longer name is required')
@@ -91,7 +94,14 @@ def create_entry(user, id, data):
     mail.send({
       'to_user': u,
       'subject': 'New message in ' + group['name'],
-      'text': 'Dear {0},\n\n{1} posted a message in the Notice Board of {2} on Treadl:\n\n{3}\n\nFollow the link below to visit the group:\n\n{4}'.format(u['username'], user['username'], group['name'], data['content'], '{}/groups/{}'.format(os.environ.get('APP_URL'), str(id)))
+      'text': 'Dear {0},\n\n{1} posted a message in the Notice Board of {2} on {5}:\n\n{3}\n\nFollow the link below to visit the group:\n\n{4}'.format(
+        u['username'],
+        user['username'],
+        group['name'],
+        data['content'],
+        '{}/groups/{}'.format(APP_URL, str(id)),
+        APP_NAME,
+      )
     })
   push.send_multiple(list(db.users.find({'_id': {'$ne': user['_id']}, 'groups': id})), '{} posted in {}'.format(user['username'], group['name']), data['content'][:30] + '...')
   return entry
@@ -162,7 +172,14 @@ def create_entry_reply(user, id, entry_id, data):
     mail.send({
       'to_user': op,
       'subject': user['username'] + ' replied to your post',
-      'text': 'Dear {0},\n\n{1} replied to your message in the Notice Board of {2} on Treadl:\n\n{3}\n\nFollow the link below to visit the group:\n\n{4}'.format(op['username'], user['username'], group['name'], data['content'], '{}/groups/{}'.format(os.environ.get('APP_URL'), str(id)))
+      'text': 'Dear {0},\n\n{1} replied to your message in the Notice Board of {2} on {5}:\n\n{3}\n\nFollow the link below to visit the group:\n\n{4}'.format(
+        op['username'],
+        user['username'],
+        group['name'],
+        data['content'],
+        '{}/groups/{}'.format(APP_URL, str(id)),
+        APP_NAME,
+      )
     })
   return reply
 
@@ -195,7 +212,13 @@ def create_member(user, id, user_id, invited = False):
     mail.send({
       'to_user': admin,
       'subject': 'Someone joined your group',
-      'text': 'Dear {0},\n\n{1} recently joined your group {2} on Treadl!\n\nFollow the link below to manage your group:\n\n{2}'.format(admin['username'], user['username'], group['name'], '{}/groups/{}'.format(os.environ.get('APP_URL'), str(id)))
+      'text': 'Dear {0},\n\n{1} recently joined your group {2} on {4}!\n\nFollow the link below to manage your group:\n\n{3}'.format(
+        admin['username'],
+        user['username'],
+        group['name'],
+        '{}/groups/{}'.format(APP_URL, str(id)),
+        APP_NAME,
+      )
     })
 
   return {'newMember': user_id}

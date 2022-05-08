@@ -25,15 +25,15 @@ def register(username, email, password):
     result = db.users.insert_one({ 'username': username, 'email': email, 'password': hashed_password, 'createdAt': datetime.datetime.now(), 'subscriptions': {'email': ['groups.invited', 'groups.joinRequested', 'groups.joined', 'messages.replied', 'projects.commented']}})
     mail.send({
       'to': os.environ.get('ADMIN_EMAIL'),
-      'subject': 'Treadl signup',
+      'subject': '{} signup'.format(os.environ.get('APP_NAME')),
       'text': 'A new user signed up with username {0} and email {1}'.format(username, email)
     })
     mail.send({
       'to': email,
-      'subject': 'Welcome to Treadl!',
+      'subject': 'Welcome to {}!'.format(os.environ.get('APP_NAME')),
       'text': '''Dear {0},
 
-Welcome to Treadl! We won't send you many emails but we just want to introduce ourselves and to give you some tips to help you get started.
+Welcome to {3}! We won't send you many emails but we just want to introduce ourselves and to give you some tips to help you get started.
 
 LOGGING-IN
 
@@ -41,28 +41,32 @@ To login to your account please visit {1} and click Login. Use your username ({0
 
 INTRODUCTION
 
-Treadl has been designed as a resource for weavers – not only for those working alone as individuals, but also for groups who wish to share ideas, design inspirations and weaving patterns. It is ideal for those looking for a depository to store their individual work, and also for groups such as guilds, teaching groups, or any other collaborative working partnerships.
-Projects can be created within Treadl using the integral WIF-compatible draft editor, or alternatively files can be imported from other design software along with supporting images and other information you may wish to be saved within the project file. Once complete, projects may be stored privately, shared within a closed group, or made public for other Treadl users to see. The choice is yours!
+{3} has been designed as a resource for weavers – not only for those working alone as individuals, but also for groups who wish to share ideas, design inspirations and weaving patterns. It is ideal for those looking for a depository to store their individual work, and also for groups such as guilds, teaching groups, or any other collaborative working partnerships.
+Projects can be created within {3} using the integral WIF-compatible draft editor, or alternatively files can be imported from other design software along with supporting images and other information you may wish to be saved within the project file. Once complete, projects may be stored privately, shared within a closed group, or made public for other {3} users to see. The choice is yours!
 
-Treadl is free to use. For more information please visit our website at {1}.
+{3} is free to use. For more information please visit our website at {1}.
 
 GETTING STARTED
 
 Creating a profile: You can add a picture, links to a personal website, and other social media accounts to tell others more about yourself.
 
-Creating a group: You have the option to do things alone, or create a group. By clicking on the ‘Create a group’ button, you can name your group, and then invite members via email or directly through Treadl if they are existing Treadl users.
+Creating a group: You have the option to do things alone, or create a group. By clicking on the ‘Create a group’ button, you can name your group, and then invite members via email or directly through {3} if they are existing {3} users.
 
-Creating a new project: When you are ready to create/store a project on the system, you are invited to give the project a name, and a brief description. You will then be taken to a ‘Welcome to your project’ screen, where if you click on ‘add something’, you have the option of creating a new weaving pattern directly inside Treadl or you can simply import a WIF file from your preferred weaving software. Once imported, you can perform further editing within Treadl, or you can add supporting picture files and any other additional information you wish to keep (eg weaving notes, yarn details etc).
+Creating a new project: When you are ready to create/store a project on the system, you are invited to give the project a name, and a brief description. You will then be taken to a ‘Welcome to your project’ screen, where if you click on ‘add something’, you have the option of creating a new weaving pattern directly inside {3} or you can simply import a WIF file from your preferred weaving software. Once imported, you can perform further editing within {3}, or you can add supporting picture files and any other additional information you wish to keep (eg weaving notes, yarn details etc).
 
-Once complete you then have the option of saving the file privately, shared within a group, or made public for other Treadl users to see.
+Once complete you then have the option of saving the file privately, shared within a group, or made public for other {3} users to see.
 
-We hope you enjoy using Treadl and if you have any comments or feedback please tell us by emailing {2}!
+We hope you enjoy using {3} and if you have any comments or feedback please tell us by emailing {2}!
 
 Best wishes,
 
-The Treadl Team
-'''.format(username, os.environ.get('APP_URL'), os.environ.get('CONTACT_EMAIL'))
-    })
+The {3} Team
+'''.format(
+      username,
+      os.environ.get('APP_URL'),
+      os.environ.get('CONTACT_EMAIL'),
+      os.environ.get('APP_NAME'),
+    )})
     return {'token': generate_access_token(result.inserted_id)}
   except Exception as e:
     print(e)
@@ -92,13 +96,21 @@ def update_email(user, data):
   db.users.update_one({'_id': user['_id']}, {'$set': {'email': data['email']}})
   mail.send({
     'to': user['email'],
-    'subject': 'Your email address has changed on Treadl',
-    'text': 'Dear {},\n\nThis email is to let you know that we recently received a request to change your account email address on Treadl. We have now made this change.\n\nThe new email address for your account is {}.\n\nIf you think this is a mistake then please get in touch with us as soon as possible.'.format(user['username'], data['email'])
+    'subject': 'Your email address has changed on {}'.format(os.environ.get('APP_NAME')),
+    'text': 'Dear {0},\n\nThis email is to let you know that we recently received a request to change your account email address on {2}. We have now made this change.\n\nThe new email address for your account is {1}.\n\nIf you think this is a mistake then please get in touch with us as soon as possible.'.format(
+      user['username'],
+      data['email'],
+      os.environ.get('APP_NAME'),
+    )
   })
   mail.send({
     'to': data['email'],
-    'subject': 'Your email address has changed on Treadl',
-    'text': 'Dear {},\n\nThis email is to let you know that we recently received a request to change your account email address on Treadl. We have now made this change.\n\nThe new email address for your account is {}.\n\nIf you think this is a mistake then please get in touch with us as soon as possible.'.format(user['username'], data['email'])
+    'subject': 'Your email address has changed on {}'.format(os.environ.get('APP_NAME')),
+    'text': 'Dear {0},\n\nThis email is to let you know that we recently received a request to change your account email address on {2}. We have now made this change.\n\nThe new email address for your account is {1}.\n\nIf you think this is a mistake then please get in touch with us as soon as possible.'.format(
+      user['username'],
+      data['email'],
+      os.environ.get('APP_NAME'),
+    )
   })
   return {'email': data['email']}
 
@@ -128,8 +140,11 @@ def update_password(user, data):
 
   mail.send({
     'to_user': user,
-    'subject': 'Your Treadl password has changed',
-    'text': 'Dear {},\n\nThis email is to let you know that we recently received a request to change your account password on Treadl. We have now made this change.\n\nIf you think this is a mistake then please login to change your password as soon as possible.'.format(user['username'])
+    'subject': 'Your {} password has changed'.format(os.environ.get('APP_NAME')),
+    'text': 'Dear {0},\n\nThis email is to let you know that we recently received a request to change your account password on {1}. We have now made this change.\n\nIf you think this is a mistake then please login to change your password as soon as possible.'.format(
+      user['username'],
+      os.environ.get('APP_NAME'),
+    )
   })
   return {'passwordUpdated': True}
 
@@ -184,7 +199,11 @@ def reset_password(data):
     mail.send({
       'to_user': user,
       'subject': 'Reset your password',
-      'text': 'Dear {0},\n\nA password reset email was recently requested for your Treadl account. If this was you and you want to continue, please follow the link below:\n\n{1}\n\nThis link will expire after 24 hours.\n\nIf this was not you, then someone may be trying to gain access to your account. We recommend using a strong and unique password for your account.'.format(user['username'], '{}/password/reset?token={}'.format(os.environ.get('APP_URL'), token))
+      'text': 'Dear {0},\n\nA password reset email was recently requested for your {2} account. If this was you and you want to continue, please follow the link below:\n\n{1}\n\nThis link will expire after 24 hours.\n\nIf this was not you, then someone may be trying to gain access to your account. We recommend using a strong and unique password for your account.'.format(
+        user['username'],
+        '{}/password/reset?token={}'.format(os.environ.get('APP_URL'), token),
+        os.environ.get('APP_NAME'),
+      )
     })
     db.users.update({'_id': user['_id']}, {'$set': {'tokens.passwordReset': token}})
   return {'passwordResetEmailSent': True}

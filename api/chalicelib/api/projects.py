@@ -21,7 +21,7 @@ default_pattern = {
     'defaultThickness': 1
   },
   'tieups': [[]] * 8,
-  'colours': ['256,256,256', '0,0,0', '50,0,256', '0,68,256', '0,256,256', '0,256,0', '119,256,0', '256,256,0', '256,136,0', '256,0,0', '256,0,153', '204,0,256', '132,102,256', '102,155,256', '102,256,256', '102,256,102', '201,256,102', '256,256,102', '256,173,102', '256,102,102', '256,102,194', '224,102,256', '31,0,153', '0,41,153', '0,153,153', '0,153,0', '71,153,0', '153,153,0', '153,82,0', '153,0,0', '153,0,92', '122,0,153', '94,68,204', '68,102,204', '68,204,204', '68,204,68', '153,204,68', '204,204,68', '204,136,68', '204,68,68', '204,68,153', '170,68,204', '37,0,204', '0,50,204', '0,204,204', '0,204,0', '89,204,0', '204,204,0', '204,102,0', '204,0,0', '204,0,115', '153,0,204', '168,136,256', '136,170,256', '136,256,256', '136,256,136', '230,256,136', '256,256,136', '256,178,136', '256,136,136', '256,136,204', '240,136,256', '49,34,238', '34,68,238', '34,238,238', '34,238,34', '71,238,34', '238,238,34', '238,82,34', '238,34,34', '238,34,92', '122,34,238', '128,102,238', '102,136,238', '102,238,238', '102,238,102', '187,238,102', '238,238,102', '238,170,102', '238,102,102', '238,102,187', '204,102,238', '178,53,111', '53,69,178'], 
+  'colours': ['256,256,256', '0,0,0', '50,0,256', '0,68,256', '0,256,256', '0,256,0', '119,256,0', '256,256,0', '256,136,0', '256,0,0', '256,0,153', '204,0,256', '132,102,256', '102,155,256', '102,256,256', '102,256,102', '201,256,102', '256,256,102', '256,173,102', '256,102,102', '256,102,194', '224,102,256', '31,0,153', '0,41,153', '0,153,153', '0,153,0', '71,153,0', '153,153,0', '153,82,0', '153,0,0', '153,0,92', '122,0,153', '94,68,204', '68,102,204', '68,204,204', '68,204,68', '153,204,68', '204,204,68', '204,136,68', '204,68,68', '204,68,153', '170,68,204', '37,0,204', '0,50,204', '0,204,204', '0,204,0', '89,204,0', '204,204,0', '204,102,0', '204,0,0', '204,0,115', '153,0,204', '168,136,256', '136,170,256', '136,256,256', '136,256,136', '230,256,136', '256,256,136', '256,178,136', '256,136,136', '256,136,204', '240,136,256', '49,34,238', '34,68,238', '34,238,238', '34,238,34', '71,238,34', '238,238,34', '238,82,34', '238,34,34', '238,34,92', '122,34,238', '128,102,238', '102,136,238', '102,238,238', '102,238,102', '187,238,102', '238,238,102', '238,170,102', '238,102,102', '238,102,187', '204,102,238', '178,53,111', '53,69,178'],
 }
 
 def derive_path(name):
@@ -45,7 +45,7 @@ def create(user, data):
   name = data.get('name', '')
   if len(name) < 3: raise util.errors.BadRequest('A longer name is required')
   db = database.get_db()
- 
+
   path = derive_path(name)
   if db.projects.find_one({'user': user['_id'], 'path': path}, {'_id': 1}):
     raise util.errors.BadRequest('Bad Name')
@@ -88,7 +88,7 @@ def update(user, username, project_path, update):
   db = database.get_db()
   project = get_by_username(username, project_path)
   if project['user'] != user['_id']: raise util.errors.Forbidden('Forbidden')
-  
+
   current_path = project_path
   if 'name' in update:
     if len(update['name']) < 3: raise util.errors.BadRequest('The name is too short.')
@@ -115,7 +115,7 @@ def delete(user, username, project_path):
 
 def get_objects(user, username, path):
   db = database.get_db()
-  project = get_by_username(username, path) 
+  project = get_by_username(username, path)
   if not project: raise util.errors.NotFound('Project not found')
   if not util.can_view_project(user, project):
     raise util.errors.Forbidden('This project is private')
@@ -170,7 +170,7 @@ def create_object(user, username, path, data):
           obj['_id'] = result.inserted_id
           return obj
       except Exception as e:
-        raise util.errors.BadRequest('Unable to load WIF file. It is either invalid or in a format Treadl cannot understand.')
+        raise util.errors.BadRequest('Unable to load WIF file. It is either invalid or in a format we cannot understand.')
     elif data.get('name'):
       pattern = default_pattern.copy()
       pattern['warp'].update({'shafts': data.get('shafts', 8)})
