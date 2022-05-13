@@ -12,6 +12,7 @@ COPY pyproject.toml /app
 RUN poetry export --without-hashes -f requirements.txt | pip install -r /dev/stdin
 
 # Add remaining files
-COPY . /app/
+COPY app.py .
+COPY chalicelib/ .
 
 CMD ["gunicorn"  , "-b", "0.0.0.0:8000", "app:app"]
