@@ -100,7 +100,7 @@ function Home() {
               <Card.Content>
                 <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support {utils.appName()}</Card.Header>
                 <Card.Description>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} and want to support its ongoing development, then you can  become a patron!</Card.Description>
-                <Button style={{marginTop: 10}} size='small' as='a' href={process.env.REACT_APP_PATREON_URL} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
+                <Button style={{marginTop: 10}} size='small' as='a' href={process.env.REACT_APP_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-button'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
               </Card.Content>
             </Card>
           }

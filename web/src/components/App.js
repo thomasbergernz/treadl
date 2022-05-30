@@ -158,7 +158,7 @@ function App() {
                 {process.env.REACT_APP_PATREON_URL &&
                   <p>
                     <Icon name='trophy' />
-                    <a href={process.env.REACT_APP_PATREON_URL} target='_blank' rel='noopener noreferrer'>Become a patron</a>
+                    <a href={process.env.REACT_APP_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-footer'>Become a patron</a>
                   </p>
                 }
                 <p>
