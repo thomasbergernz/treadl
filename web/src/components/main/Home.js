@@ -90,7 +90,7 @@ function Home() {
             <Card fluid color='blue'>
               <Card.Content>
                 <Card.Header><span role="img" aria-label="Loudspeaker">📣</span> {utils.appName()} is open-source</Card.Header>
-                <Card.Description>The source code for {utils.appName()} is <a href={process.env.REACT_APP_SOURCE_REPO_URL} target='_blank' rel='noopener noreferrer'>publicly available to view</a> and use in your own projects. Contributions are encouraged too!</Card.Description>
+                <Card.Description>The source code for {utils.appName()} is <a href={process.env.REACT_APP_SOURCE_REPO_URL} target='_blank' rel='noopener noreferrer' className='umami--click--source-button'>publicly available to view</a> and use in your own projects. Contributions are encouraged too!</Card.Description>
               </Card.Content>
             </Card>
           }

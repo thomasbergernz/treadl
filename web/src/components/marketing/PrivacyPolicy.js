@@ -21,7 +21,7 @@ function PrivacyPolicy() {
       <h2>What data does {APP_NAME} collect?</h2>
 
       <h3>When visiting and browsing our website</h3>
-      <p>When you visit us using a web browser, we collect some data about your computer and the way our services are used by you, even if you don't have an account. We do not collect your name or other details about you at this stage, but we may process information such as your computing device’s location, its IP address, and details about relevant software your device may be running. This data is processed by Simple Analytics (for tracking aggregated use of our services, so that we can better understand how to improve our services for their audiences). The legal basis for processing this data is a legitimate interest in recording aggregated analytics data for improvement purposes and to see how often people visit our website.</p>
+      <p>When you visit us using a web browser, we collect some data about your computer and the way our services are used by you, even if you don't have an account. We do not collect your name or other personal details about you at this stage, but we may process information such as your computing device’s country and details about your browser and where you arrived at Treadl from. We do this for observing aggregated usage of our services, so that we can better understand how to improve our services for their audiences. The legal basis for processing this data is a legitimate interest in recording aggregated analytics data for improvement purposes and to see how often people visit our website.</p>
 
       <h3>When sending us an email</h3>
       <p>Sometimes you may wish to send an email to us or reply to an email we have sent you. Any emails received will be treated in confidence and kept securely. Strong passwords and multi-factor authentication is implemented on all email accounts that can receive such emails.</p>
@@ -37,16 +37,14 @@ function PrivacyPolicy() {
       <p>Other users and visitors to {APP_NAME} will also be able to see the profile data and content that you have made public. Your username and other profile data is always available to other people.</p>
       <p>In order to provide access to our services to users, we also sometimes need to pass pieces of your personal data to third-party services (known as ‘data processors’ for the purposes of the GDPR). We only ever do this when we need to, and only send the minimum amount of information required. We ensure that the processors' own privacy policies follow suitable data protection practices. Our current data processors are:</p>
       <ul>
-        <li>Mailgun (for sending mail). We provide Mailgun with your email address so that the mail can be delivered.</li>
-        <li>Drift (for providing support). If you get in touch with us via the Drift chat widget, it may collect your email address for ongoing support provision.</li>
-        <li>Simple Analytics (for aggregated visitor analytics). This service may collect information about your browser and the location you visit us from.</li>
+        <li>Mailgun (for sending mail, such as notifications and account information). We provide Mailgun with your email address so that the mail can be delivered.</li>
       </ul>
 
       <h2>How long do we keep your data for?</h2>
       <p>We keep your account data (email and username) and content produced by your account (e.g. posts, comments, projects) for as long as your account is active. You can fully and irreversibly delete your account (and its associated data) at any time. Please note that data held in backup systems may be held for up to 30 days after such an event before it too is deleted.</p>
 
       <h2>Where is your data stored?</h2>
-      <p>Our databases and servers are all based in the UK, and so your data will be processed fully within the UK. We use Mailgun's EU based servers for transmitting mail, and other processors may process subsets of your data in the US, if you choose to use those features.</p>
+      <p>Our databases and servers are all based in the UK, and so your data will be stored and processed within the UK. We use Mailgun's EU based servers for transmitting mail.</p>
 
       <h2>How do we protect your data?</h2>
       <p>All data is encrypted during transmission (e.g. between your device and our servers, and between our servers), and when stored ("encrypted at rest"). Our servers are well-protected with industry standard security measures.</p>

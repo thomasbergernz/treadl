@@ -149,7 +149,7 @@ function App() {
               {process.env.REACT_APP_SOURCE_REPO_URL &&
                 <p style={{marginTop: 10}}><small>{utils.appName()} software is free and open-source. Contributions to the project are always welcome.
                   <br />
-                  <Icon name="code" /> <a href={process.env.REACT_APP_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">Project source homepage</a>
+                  <Icon name="code" /> <a href={process.env.REACT_APP_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer" className='umami--click--source-footer'>Project source homepage</a>
                 </small></p>
               }
             </Grid.Column>
