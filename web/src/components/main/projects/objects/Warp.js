@@ -179,7 +179,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     ctx.strokeStyle = 'rgba(0,0,0,0.3)';
     ctx.stroke();
 
-    for (let thread = 0; thread < warp.threads; thread++) {
+    for (let thread = 0; thread < warp.threading.length; thread++) {
       const shaft = warp.threading[thread].shaft;
       const marker = getMarker(baseSize);
       ctx.drawImage(marker, canvas.width - ((thread + 1) * baseSize), canvas.height - (shaft * baseSize));

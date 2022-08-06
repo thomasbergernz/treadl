@@ -68,8 +68,8 @@ function Drawdown({ baseSize, warp, weft, tieups }) {
     const canvas = drawdownRef.current;
     const ctx = canvas.getContext('2d', { alpha: false });
 
-    for (let tread = 0; tread < weft.threads; tread++) {
-      for (let thread = 0; thread < warp.threads; thread++) {
+    for (let tread = 0; tread < weft.treadling.length; tread++) {
+      for (let thread = 0; thread < warp.threading.length; thread++) {
         const treadle = weft.treadling[tread].treadle > weft.treadles ? 0 : weft.treadling[tread].treadle;
         const shaft = warp.threading[thread].shaft;
         const tieup = tieups[treadle - 1];
