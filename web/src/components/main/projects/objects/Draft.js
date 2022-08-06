@@ -59,6 +59,7 @@ function Draft() {
     const canvas = document.getElementsByClassName('drawdown')[0];
     const newObject = Object.assign({}, object);
     newObject.preview = canvas.toDataURL();
+    newObject.pattern = pattern;
     api.objects.update(objectId, newObject, (o) => {
       toast.success('Pattern saved');
       dispatch(actions.objects.receive(o));

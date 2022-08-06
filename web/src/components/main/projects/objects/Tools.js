@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import {
-  Confirm, Select, Segment, Accordion, Grid, Icon, Input, Button,
+  Confirm, Select, Segment, Accordion, Grid, Icon, Input, Button, Popup
 } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { SketchPicker } from 'react-color';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
 
@@ -38,6 +39,7 @@ const ColourSquare = styled.div`
 function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updatePattern, updateObject, saveObject }) {
   const [activeDrawers, setActiveDrawers] = useState(['properties', 'drawing', 'palette']);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [newColour, setNewColour] = useState('#22194D');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { objectId, username, projectPath } = useParams();
@@ -223,12 +225,29 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
 
           <Accordion.Title active={drawerIsActive('palette')} onClick={e => activateDrawer('palette')}>
             <Icon name="dropdown" /> Palette
-            <ColourSquare colour={utils.rgb(editor.colour)} style={{top: 4, marginLeft: 10}}/>
+            <ColourSquare colour={utils.rgb(editor.colour)} style={{top: 4, marginLeft: 10}} />
           </Accordion.Title>
           <Accordion.Content active={drawerIsActive('palette')}>
             {pattern.colours && pattern.colours.map(colour =>
               <ColourSquare key={colour} colour={utils.rgb(colour)} onClick={() => setColour(colour)} />
             )}
+            <div style={{marginTop: 10}}>
+              <Popup
+                trigger={<Button size='mini'><Icon name='add' /> Colour</Button>}
+                on='click' hoverable
+                content={
+                  <div style={{padding: 5}}>
+                    <SketchPicker color={newColour} onChangeComplete={c => setNewColour(c.rgb)} />
+                    <Button size='sm' style={{marginTop: 10}} onClick={e => {
+                      const { r, g, b } = newColour;
+                      const newColours = Object.assign([], pattern.colours);
+                      newColours.push(`${r},${g},${b}`);
+                      updatePattern({ colours: newColours })
+                    }}>Add colour to palette</Button>
+                  </div>
+                }
+              />
+            </div>
           </Accordion.Content>
 
           <Accordion.Title active={drawerIsActive('advanced')} onClick={e => activateDrawer('advanced')}>
