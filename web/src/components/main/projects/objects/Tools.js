@@ -83,12 +83,9 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const activateDrawer = (drawer) => {
     const index = activeDrawers.indexOf(drawer);
     const drawers = activeDrawers;
-    if (index === -1) {
-      drawers.push(drawer);
-    } else {
-      drawers.splice(index, 1);
-    }
-    setActiveDrawers(drawers);
+    if (index === -1) drawers.push(drawer);
+    else drawers.splice(index, 1);
+    setActiveDrawers(Object.assign([], drawers));
   };
 
   const deleteObject = () => {
