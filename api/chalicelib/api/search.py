@@ -1,4 +1,4 @@
-import re
+import re, random
 import pymongo
 from chalicelib.util import database, util
 from chalicelib.api import uploads
@@ -32,6 +32,7 @@ def all(user, params):
   return {'users': users, 'projects': projects, 'groups': groups}
 
 def users(user, params):
+  if not user: raise util.errors.Forbidden('You need to be logged in')
   if not params or 'username' not in params: raise util.errors.BadRequest('Username parameter needed')
   expression = re.compile(params['username'], re.IGNORECASE)
   db = database.get_db()
@@ -40,3 +41,34 @@ def users(user, params):
     if 'avatar' in u:
       u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(u['_id'], u['avatar']))
   return {'users': users}
+
+def discover(user):
+  if not user: raise util.errors.Forbidden('You need to be logged in')
+
+  db = database.get_db()
+  projects = []
+  users = []
+  count = 3
+
+  all_projects = list(db.projects.find({'name': {'$not': re.compile('my new project', re.IGNORECASE)}, 'visibility': 'public', 'user': {'$ne': user['_id']}}, {'name': 1, 'path': 1, 'user': 1}))
+  random.shuffle(all_projects)
+  for p in all_projects:
+    if db.objects.find_one({'project': p['_id'], 'name': {'$ne': 'Untitled pattern'}}):
+      owner = db.users.find_one({'_id': p['user']}, {'username': 1})
+      p['fullName'] = owner['username'] + '/' + p['path']
+      projects.append(p)
+    if len(projects) >= count: break
+
+  interest_fields = ['bio', 'avatar', 'website', 'facebook', 'twitter', 'instagram', 'location']
+  all_users = list(db.users.find({'_id': {'$ne': user['_id']}, '$or': list(map(lambda f: {f: {'$exists': True}}, interest_fields))}, {'username': 1, 'avatar': 1}))
+  random.shuffle(all_users)
+  for u in all_users:
+    if 'avatar' in u:
+      u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(u['_id'], u['avatar']))
+    users.append(u)
+    if len(users) >= count: break
+
+  return {
+    'highlightProjects': projects,
+    'highlightUsers': users,
+  }

@@ -15,6 +15,8 @@ import Tour from 'components/includes/Tour';
 
 function Home() {
   const [runJoyride, setRunJoyride] = useState(false);
+  const [highlightProjects, setHighlightProjects] = useState([]);
+  const [highlightUsers, setHighlightUsers] = useState([]);
   const dispatch = useDispatch();
   const { user, projects, groups, invitations, loadingProjects } = useSelector(state => {
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
@@ -27,6 +29,10 @@ function Home() {
   useEffect(() => {
     api.invitations.get(({ invitations, sentInvitations}) => {
       dispatch(actions.invitations.receiveInvitations(invitations.concat(sentInvitations)));
+    });
+    api.search.discover(({ highlightProjects, highlightUsers }) => {
+      setHighlightProjects(highlightProjects);
+      setHighlightUsers(highlightUsers);
     });
   }, [dispatch]);
   useEffect(() => {
@@ -86,21 +92,35 @@ function Home() {
 
           <h2><span role="img" aria-label="wave">👋</span> {greeting}{user && <span>, {user.username}</span>}</h2>
 
-          {process.env.REACT_APP_SOURCE_REPO_URL &&
-            <Card fluid color='blue'>
+          {(highlightProjects?.length > 0 || highlightUsers?.length > 0) &&
+            <Card fluid>
               <Card.Content>
-                <Card.Header><span role="img" aria-label="Loudspeaker">📣</span> {utils.appName()} is open-source</Card.Header>
-                <Card.Description>The source code for {utils.appName()} is <a href={process.env.REACT_APP_SOURCE_REPO_URL} target='_blank' rel='noopener noreferrer' className='umami--click--source-button'>publicly available to view</a> and use in your own projects. Contributions are encouraged too!</Card.Description>
-              </Card.Content>
-            </Card>
-          }
+                {highlightProjects?.length > 0 && <>
+                  <h4>Discover public projects</h4>
+                  <List relaxed>
+                    {highlightProjects.map(p =>
+                      <List.Item key={p._id}>
+                        <List.Icon name='book' size='large' verticalAlign='middle' />
+                        <List.Content>
+                          <List.Header className='umami--click--discover-project' as={Link} to={p.fullName}>{p.name}</List.Header>
+                        </List.Content>
+                      </List.Item>
+                    )}
+                  </List>
+                </>}
 
-          {process.env.REACT_APP_PATREON_URL &&
-            <Card fluid color='blue'>
-              <Card.Content>
-                <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support {utils.appName()}</Card.Header>
-                <Card.Description>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} and want to support its ongoing development, then you can  become a patron!</Card.Description>
-                <Button style={{marginTop: 10}} size='small' as='a' href={process.env.REACT_APP_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-button'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
+                {highlightUsers?.length > 0 && <>
+                  <h4>Find others on {utils.appName()}</h4>
+                  <List relaxed>
+                    {highlightUsers.map(u =>
+                      <List.Item key={u._id}>
+                        <List.Content>
+                          <UserChip user={u} className='umami--click--discover-user'/>
+                        </List.Content>
+                      </List.Item>
+                    )}
+                  </List>
+                </>}
               </Card.Content>
             </Card>
           }
@@ -131,6 +151,16 @@ function Home() {
               <p>Groups enable you to build communities of weavers and makers with similar interests. Create one for your weaving group or class today.</p>
               <Button className='joyride-createGroup' as={Link} to='/groups/new' size='small' color='purple' icon='plus' content='Create a group' />
             </Message>
+          }
+
+          {process.env.REACT_APP_PATREON_URL &&
+            <Card fluid color='blue'>
+              <Card.Content>
+                <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support {utils.appName()}</Card.Header>
+                <Card.Description>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} and want to support its ongoing development, then you can  become a patron!</Card.Description>
+                <Button style={{marginTop: 10}} size='small' as='a' href={process.env.REACT_APP_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-button'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
+              </Card.Content>
+            </Card>
           }
 
         </Grid.Column>
