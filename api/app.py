@@ -1,12 +1,12 @@
-import os
-from flask import Flask, request, jsonify
+import os, json
+from flask import Flask, request, Response, jsonify
 from flask_limiter import Limiter
 from flask_cors import CORS
 import werkzeug
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from chalicelib.util import util
-from chalicelib.api import accounts, users, projects, objects, uploads, groups, search, invitations, root
+from chalicelib.api import accounts, users, projects, objects, uploads, groups, search, invitations, root, activitypub
 
 app = Flask(__name__)
 CORS(app)
@@ -284,3 +284,28 @@ def root_users():
 @app.route('/root/groups', methods=['GET'])
 def root_groups():
   return util.jsonify(root.get_groups(util.get_user(required=True)))
+
+
+## ActivityPub Support
+
+@app.route('/.well-known/webfinger', methods=['GET'])
+def webfinger():
+  resource = request.args.get('resource')
+  return util.jsonify(activitypub.webfinger(resource))
+
+@app.route('/u/<username>', methods=['GET'])
+def ap_user(username):
+  resp_data = activitypub.user(username)
+  resp = Response(json.dumps(resp_data))
+  resp.headers['Content-Type'] = 'application/activity+json'
+  return resp
+
+@app.route('/u/<username>/outbox', methods=['GET'])
+def ap_user_outbox(username):
+  page = request.args.get('page')
+  min_id = request.args.get('min_id')
+  max_id = request.args.get('max_id')
+  resp_data = activitypub.outbox(username, page, min_id, max_id)
+  resp = Response(json.dumps(resp_data))
+  resp.headers['Content-Type'] = 'application/activity+json'
+  return resp

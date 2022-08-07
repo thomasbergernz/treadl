@@ -1,7 +1,9 @@
 import json, datetime
-from flask import request
+from flask import request, Response
 import werkzeug
 from flask_limiter.util import get_remote_address
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 from bson.objectid import ObjectId
 from chalicelib.api import accounts
 from chalicelib.util import util
@@ -62,7 +64,22 @@ def build_updater(obj, allowed_keys):
       updater['$set'][key] = allowed[key]
   return updater
 
-
+def generate_rsa_keypair():
+  private_key = rsa.generate_private_key(
+    public_exponent=65537,
+    key_size=4096
+  )
+  private_pem = private_key.private_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PrivateFormat.PKCS8,
+    encryption_algorithm=serialization.NoEncryption()
+  )
+  public_key = private_key.public_key()
+  public_pem = public_key.public_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PublicFormat.SubjectPublicKeyInfo
+  )
+  return private_pem, public_pem
 class MongoJsonEncoder(json.JSONEncoder):
   def default(self, obj):
     if isinstance(obj, (datetime.datetime, datetime.date)):
@@ -72,4 +89,7 @@ class MongoJsonEncoder(json.JSONEncoder):
     return json.JSONEncoder.default(self, obj)
 
 def jsonify(*args, **kwargs):
-  return json.dumps(dict(*args, **kwargs), cls=MongoJsonEncoder)
+  resp_data = json.dumps(dict(*args, **kwargs), cls=MongoJsonEncoder)
+  resp = Response(resp_data)
+  resp.headers['Content-Type'] = 'application/json'
+  return resp
