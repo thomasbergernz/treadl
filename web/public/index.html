@@ -39,23 +39,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-
-    <script>
-      (function(d,t) {
-        var BASE_URL="https://chat.wilw.dev";
-        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-        g.src=BASE_URL+"/packs/js/sdk.js";
-        g.defer = true;
-        g.async = true;
-        s.parentNode.insertBefore(g,s);
-        g.onload=function(){
-          window.chatwootSDK.run({
-            websiteToken: '4WAWsrDQZtfZvchuweM9wSeL',
-            baseUrl: BASE_URL
-          })
-        }
-      })(document,"script");
-    </script>
     <script async defer data-website-id="e537f39a-ce86-4cce-aa31-f1111aa1fab0" src="https://u.wilw.dev/umami.js"></script>
   </body>
 </html>
