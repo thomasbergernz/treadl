@@ -1,4 +1,4 @@
-import api from 'api';
+import api from '.';
 
 export const search = {
   all(query, success, fail) {

@@ -1,6 +1,6 @@
-import api from 'api';
-import actions from 'actions';
-import { store } from 'index.js';
+import api from '../api';
+import actions from './';
+import { store } from '../index';
 
 export default {
 

@@ -1,4 +1,4 @@
-import api from 'api';
+import api from '.';
 
 export const accounts = {
   updateEmail(email, success, fail) {

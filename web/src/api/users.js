@@ -1,6 +1,6 @@
-import api from 'api';
-import actions from 'actions';
-import { store } from 'index.js';
+import api from '.';
+import actions from '../actions';
+import { store } from '..';
 
 export const users = {
   me(success, fail) {

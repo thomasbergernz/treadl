@@ -1,5 +1,5 @@
-import actions from 'actions';
-import { store } from 'index.js';
+import actions from './';
+import { store } from '../index';
 
 export default {
 

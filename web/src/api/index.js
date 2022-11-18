@@ -1,15 +1,15 @@
-import actions from 'actions';
-import { store } from 'index.js';
-import { auth } from './auth.js';
-import { accounts } from './accounts.js';
-import { users } from './users.js';
-import { projects } from './projects.js';
-import { objects } from './objects.js';
-import { uploads } from './uploads.js';
-import { groups } from './groups.js';
-import { search } from './search.js';
-import { invitations } from './invitations.js';
-import { root } from './root.js';
+import actions from '../actions';
+import { store } from '../';
+import { auth } from './auth';
+import { accounts } from './accounts';
+import { users } from './users';
+import { projects } from './projects';
+import { objects } from './objects';
+import { uploads } from './uploads';
+import { groups } from './groups';
+import { search } from './search';
+import { invitations } from './invitations';
+import { root } from './root';
 
 export const api = {
 
@@ -17,7 +17,7 @@ export const api = {
 
   req(method, path, data, success, fail, withAuth, options) {
     const xhr = new XMLHttpRequest();
-    xhr.open(method, `${process.env.REACT_APP_API_URL}${path}`);
+    xhr.open(method, `${import.meta.env.VITE_API_URL}${path}`);
     xhr.setRequestHeader('Content-Type', 'application/json');
     if (withAuth && api.token) {
       xhr.setRequestHeader('Authorization', `Bearer ${api.token}`);

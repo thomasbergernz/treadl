@@ -1,4 +1,4 @@
-import actions from 'actions';
+import actions from '../actions';
 
 const initialState = {
   loading: false,
@@ -12,7 +12,7 @@ const initialState = {
 
 function auth(state = initialState, action) {
   switch (action.type) {
-    case actions.auth.OPEN_LOGIN: 
+    case actions.auth.OPEN_LOGIN:
       return Object.assign({}, state, { isAuthenticating: true, isAuthenticatingType: 'login' });
     case actions.auth.OPEN_REGISTER:
       return Object.assign({}, state, { isAuthenticating: true, isAuthenticatingType: 'register' });
@@ -54,7 +54,7 @@ function auth(state = initialState, action) {
         authToken: null,
         currentUserId: null,
       });
-    
+
     default:
       return state;
   }

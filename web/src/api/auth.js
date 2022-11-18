@@ -1,4 +1,4 @@
-import api from 'api';
+import api from '.';
 
 export const auth = {
   autoLogin(success) {
@@ -22,7 +22,7 @@ export const auth = {
   login(email, password, start, success, fail) {
     start();
     api.unauthenticatedRequest('POST', '/accounts/login', { email, password }, (data) => {
-      auth.localLogin(data.token, success); 
+      auth.localLogin(data.token, success);
     }, fail);
   },
   logout(success, fail) {

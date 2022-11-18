@@ -1,4 +1,4 @@
-import actions from 'actions';
+import actions from '../actions';
 
 const initialState = {
   loading: false,
@@ -25,7 +25,7 @@ function posts(state = initialState, action) {
       return Object.assign({}, state, { attachments: newAttachments });
     }
 
-    case actions.posts.ATTACHMENT_UPLOADING: 
+    case actions.posts.ATTACHMENT_UPLOADING:
       return Object.assign({}, state, { attachmentUploading: action.isUploading });
 
     case actions.posts.CLEAR:

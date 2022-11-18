@@ -1,4 +1,4 @@
-import actions from 'actions';
+import actions from '../actions';
 
 const initialState = {
   loading: false,
@@ -93,7 +93,7 @@ function groups(state = initialState, action) {
       return Object.assign({}, state, { newEntryAttachments: attachments });
     }
 
-    case actions.groups.NEW_ENTRY_ATTACHMENT_UPLOADING: 
+    case actions.groups.NEW_ENTRY_ATTACHMENT_UPLOADING:
       return Object.assign({}, state, { newEntryAttachmentUploading: action.isUploading });
     case actions.groups.CLEAR_NEW_ENTRY:
       return Object.assign({}, state, { newEntryAttachments: [], newEntry: '' });

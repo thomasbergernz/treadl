@@ -1,4 +1,4 @@
-import actions from 'actions';
+import actions from '../actions';
 
 const initialState = {
   invitations: [],
@@ -21,7 +21,7 @@ function invitations(state = initialState, action) {
       });
       return Object.assign({}, state, { invitations });
     }
-    
+
     case actions.invitations.DISMISS: {
       const invitations = Object.assign([], state.invitations).filter(i => i._id !== action.id);
       return Object.assign({}, state, { invitations });

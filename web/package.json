@@ -1,13 +1,11 @@
 {
-  "name": "weaving",
-  "version": "0.1.0",
+  "name": "treadl-web",
+  "version": "1.3.0",
   "private": true,
   "dependencies": {
     "@sentry/react": "^6.19.6",
     "@sentry/tracing": "^6.19.6",
-    "babel-loader": "^8.1.0",
     "blurhash": "^1.1.3",
-    "browserslist": "latest",
     "eventlistener": "^0.0.1",
     "history": "^4.7.2",
     "moment": "^2.22.2",
@@ -24,7 +22,6 @@
     "react-redux": "^8.0.1",
     "react-rewards": "^2.0.3",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "3.4.1",
     "react-toastify": "^4.4.0",
     "redux": "^4.0.0",
     "sanitize-html": "^1.19.1",
@@ -32,11 +29,8 @@
     "styled-components": "^5.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "env-cmd .env.production react-scripts build",
-    "predeploy": "export NODE_PATH=src && env-cmd .env.production react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "vite --port 8002",
+    "build": "vite build"
   },
   "browserslist": [
     ">0.2%",
@@ -44,7 +38,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "env-cmd": "^8.0.2"
+    "vite": "^3.2.4"
   },
   "packageManager": "yarn@3.2.1"
 }

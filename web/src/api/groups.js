@@ -1,4 +1,4 @@
-import api from 'api';
+import api from '.';
 
 export const groups = {
   create(data, success, fail) {
@@ -47,10 +47,10 @@ export const groups = {
     api.authenticatedRequest('POST', `/groups/${id}/invitations`, { user }, success, fail);
   },
   createJoinRequest(id, success, fail) {
-    api.authenticatedRequest('POST', `/groups/${id}/requests`, null, success, fail); 
+    api.authenticatedRequest('POST', `/groups/${id}/requests`, null, success, fail);
   },
   getInvitations(id, success, fail) {
-    api.authenticatedRequest('GET', `/groups/${id}/invitations`, null, data => success && success(data.invitations), fail); 
+    api.authenticatedRequest('GET', `/groups/${id}/invitations`, null, data => success && success(data.invitations), fail);
   },
   deleteInvitation(id, inviteId, success, fail) {
     api.authenticatedRequest('DELETE', `/groups/${id}/invitations/${inviteId}`, null, success, fail);

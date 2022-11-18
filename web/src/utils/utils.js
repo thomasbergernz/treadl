@@ -1,22 +1,22 @@
 import { createConfirmation } from 'react-confirm';
-import ConfirmModal from 'components/includes/ConfirmModal';
+import ConfirmModal from '../components/includes/ConfirmModal';
 
-import avatar1 from 'images/avatars/1.png';
-import avatar2 from 'images/avatars/2.png';
-import avatar3 from 'images/avatars/3.png';
-import avatar4 from 'images/avatars/4.png';
-import avatar5 from 'images/avatars/5.png';
-import avatar6 from 'images/avatars/6.png';
-import avatar7 from 'images/avatars/7.png';
-import avatar8 from 'images/avatars/8.png';
-import avatar9 from 'images/avatars/9.png';
-import avatar10 from 'images/avatars/10.png';
+import avatar1 from '../images/avatars/1.png';
+import avatar2 from '../images/avatars/2.png';
+import avatar3 from '../images/avatars/3.png';
+import avatar4 from '../images/avatars/4.png';
+import avatar5 from '../images/avatars/5.png';
+import avatar6 from '../images/avatars/6.png';
+import avatar7 from '../images/avatars/7.png';
+import avatar8 from '../images/avatars/8.png';
+import avatar9 from '../images/avatars/9.png';
+import avatar10 from '../images/avatars/10.png';
 
-const IMAGE_SERVER = process.env.REACT_APP_IMAGINARY_URL;
+const IMAGE_SERVER = import.meta.env.VITE_IMAGINARY_URL;
 
 const utils = {
   appName() {
-    return process.env.REACT_APP_NAME;
+    return import.meta.env.VITE_APP_NAME;
   },
   hasSubscription(user, key) {
     return user?.subscriptions?.email?.indexOf(key) > -1;
@@ -95,12 +95,12 @@ const utils = {
   },
   cropUrl(url, width, height) {
     if (url?.indexOf('http') !== 0) return url;
-    if (IMAGE_SERVER) return `${process.env.REACT_APP_IMAGINARY_URL}/crop?width=${width}&height=${height}&url=${url}`;
+    if (IMAGE_SERVER) return `${import.meta.env.VITE_IMAGINARY_URL}/crop?width=${width}&height=${height}&url=${url}`;
     return url;
   },
   resizeUrl(url, width) {
     if (url?.indexOf('http') !== 0) return url;
-    if (IMAGE_SERVER) return `${process.env.REACT_APP_IMAGINARY_URL}/resize?width=${width}&url=${url}`;
+    if (IMAGE_SERVER) return `${import.meta.env.VITE_IMAGINARY_URL}/resize?width=${width}&url=${url}`;
     return url;
   },
 };
