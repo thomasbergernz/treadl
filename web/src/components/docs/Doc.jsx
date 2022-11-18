@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-//import patternDoc from './patterns.md';
-//import projectDoc from './projects.md';
-//import groupDoc from './groups.md';
+import PatternDoc from './patterns.md';
+import ProjectDoc from './projects.md';
+import GroupDoc from './groups.md';
 
 const docs = {
-  //patterns: patternDoc,
-  //projects: projectDoc,
-  //groups: groupDoc,
+  patterns: <PatternDoc />,
+  projects: <ProjectDoc />,
+  groups: <GroupDoc />,
 };
 
 const StyledDoc = styled.div`
@@ -21,37 +20,13 @@ const StyledDoc = styled.div`
   }
 `;
 
-function Doc() {
-  const [markdown, setMarkdown] = useState();
-  const [notFound, setNotFound] = useState(false);
+export default function Doc() {
   const { doc } = useParams();
-
-  useEffect(() => {
-    async function prepareDoc() {
-      if (!docs[doc]) {
-        setNotFound(true);
-        return;
-      }
-      const markdownFile = await fetch(docs[doc]);
-      const markdown = await markdownFile.text();
-      setMarkdown(markdown);
-    }
-    prepareDoc();
-  }, [doc]);
-
   return (
     <div>
-      {notFound ?
-        <div>
-          <h2>This document could not be found</h2>
-          <p>Please select a different document.</p>
-        </div>
-      :
-        <StyledDoc>
-          <ReactMarkdown>{markdown}</ReactMarkdown>
-        </StyledDoc>
-      }
+      <StyledDoc>
+        {docs[doc]}
+      </StyledDoc>
     </div>
   );
 }
-export default Doc;
