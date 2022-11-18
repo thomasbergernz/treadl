@@ -113,7 +113,7 @@ $ s3cmd cp build/ s3://my-treadl-ui # Example
 
 To help improve the performance of the app, you may wish to make use of [Imaginary](https://github.com/h2non/imaginary) to crop/resize large images. The web UI is already equipped to handle Imaginary if a server is configured.
 
-To use this feature, simply rebuild the app ensuring that an environment entry is made into `.env.production` that includes `"REACT_APP_IMAGINARY_URL=https://your.imaginaryserver.com"`.
+To use this feature, simply rebuild the app ensuring that an environment entry is made into `.env.production` that includes `"VITE_IMAGINARY_URL=https://your.imaginaryserver.com"`.
 
 _Note: If this is not set, Treadl will by default fetch the full size images straight from the S3 source._
 
