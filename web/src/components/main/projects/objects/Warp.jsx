@@ -19,20 +19,64 @@ const StyledWarp = styled.div`
 
 const squares = {};
 const markers = {};
+let dragging = false;
+let startShaft = null;
+let startThread = null;
+let warpTouchListeners = {};
 
 function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   const [draggingColourway, setDraggingColourway] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [startShaft, setStartShaft] = useState();
-  const [startThread, setStartThread] = useState();
 
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
-  useEffect(() => paintDrawdown());
+  const { tool, colour } = editor;
   const warpRef = useRef(null);
   const colourwayRef = useRef(null);
 
-  const getThreadShaft = (event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
+  useEffect(() => paintDrawdown());
+  useEffect(() => {
+    const canvas = warpRef.current;
+    if (!canvas) return;
+    document.body.addEventListener("touchstart", e => {
+      if (e.target == canvas) e.preventDefault();
+    }, false);
+    document.body.addEventListener("touchend", e => {
+      if (e.target == canvas) e.preventDefault();
+    }, false);
+    document.body.addEventListener("touchmove", e => {
+      if (e.target == canvas) e.preventDefault();
+    }, false);
+
+    const onTouchStart = e =>
+      mouseDown(new MouseEvent("mousedown", {
+        clientX: e.touches[0].clientX,
+        clientY: e.touches[0].clientY,
+      }));
+    const onTouchEnd = e => {
+      canvas.dispatchEvent(new MouseEvent("mouseup", {}));
+    };
+    const onTouchMove = e => {
+      e.preventDefault();
+      mouseMove(new MouseEvent("mousemove", {
+        clientX: e.touches[0].clientX,
+        clientY: e.touches[0].clientY,
+      }));
+    };
+
+    canvas.removeEventListener('touchstart', warpTouchListeners.touchStart);
+    canvas.addEventListener("touchstart", onTouchStart, false);
+    warpTouchListeners.touchStart = onTouchStart;
+
+    canvas.removeEventListener('touchend', warpTouchListeners.touchEnd);
+    canvas.addEventListener("touchend", onTouchEnd, false);
+    warpTouchListeners.touchEnd = onTouchEnd;
+
+    canvas.removeEventListener('touchmove', warpTouchListeners.touchMove);
+    canvas.addEventListener("touchmove", onTouchMove, false);
+    warpTouchListeners.touchMove = onTouchMove;
+  }, [warpRef, tool, colour]);
+
+  const getThreadShaft = (event, element) => {
+    const rect = element.getBoundingClientRect();
     const y = event.clientY - rect.top;
     const x = 0 - (event.clientX - rect.right);
     const shaft = warp.shafts - parseInt(y / baseSize);
@@ -42,7 +86,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
 
   const mouseClickColourway = event => {
     const newWarp = Object.assign({}, warp);
-    const { thread } = getThreadShaft(event);
+    const { thread } = getThreadShaft(event, colourwayRef.current);
     if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
     newWarp.threading[thread].colour = editor.colour;
     updatePattern({ warp: newWarp });
@@ -55,26 +99,25 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   const mouseMoveColourway = (event) => {
     if (draggingColourway) {
       const newWarp = Object.assign({}, warp);
-      const { thread } = getThreadShaft(event);
+      const { thread } = getThreadShaft(event, colourwayRef.current);
       if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
       newWarp.threading[thread].colour = editor.colour;
       updatePattern({ warp: newWarp });
     }
   };
 
-  const mouseUp = event => setDragging(false);
+  const mouseUp = event => dragging = false;
   const mouseDown = (event) => {
     event.preventDefault();
-    const { shaft, thread } = getThreadShaft(event);
-    setStartShaft(shaft);
-    setStartThread(thread);
-    setDragging(true);
+    const { shaft, thread } = getThreadShaft(event, warpRef.current);
+    startShaft = shaft;
+    startThread = thread;
+    dragging = true;
   };
   const mouseMove = (event) => {
     if (dragging && editor.tool) {
       const newWarp = Object.assign({}, warp);
-      const { shaft, thread } = getThreadShaft(event);
-
+      const { shaft, thread } = getThreadShaft(event, warpRef.current);
       let lX = startThread; let hX = thread; let lY = startShaft; let hY = shaft;
       let xDirection = 1; let yDirection = 1;
       if (thread < startThread) {
@@ -117,7 +160,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   };
   const click = (event) => {
     if (editor.tool === 'point' || editor.tool === 'straight') {
-      const { thread, shaft } = getThreadShaft(event);
+      const { thread, shaft } = getThreadShaft(event, warpRef.current);
       const newWarp = Object.assign({}, warp);
       if (thread > warp.threading.length || warp.threading.length - thread < 5) fillUpTo(newWarp, thread + 5);
       const warpThread = newWarp.threading[thread];
