@@ -18,23 +18,66 @@ const StyledWeft = styled.div`
   }
 `;
 
-// Cache
 const squares = {};
 const markers = {};
+let dragging = false;
+let startTreadle = null;
+let startThread = null;
+let weftTouchListeners = {};
 
 function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
   const [draggingColourway, setDraggingColourway] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [startTreadle, setStartTreadle] = useState();
-  const [startThread, setStartThread] = useState();
 
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
-  useEffect(() => paintDrawdown());
+  const { tool, colour } = editor;
   const weftRef = useRef(null);
   const colourwayRef = useRef(null);
 
-  const getThreadTreadle = (event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
+  useEffect(() => paintDrawdown());
+  useEffect(() => {
+    const canvas = weftRef.current;
+    if (!canvas) return;
+    document.body.addEventListener("touchstart", e => {
+      if (e.target == canvas) e.preventDefault();
+    }, false);
+    document.body.addEventListener("touchend", e => {
+      if (e.target == canvas) e.preventDefault();
+    }, false);
+    document.body.addEventListener("touchmove", e => {
+      if (e.target == canvas) e.preventDefault();
+    }, false);
+
+    const onTouchStart = e =>
+      mouseDown(new MouseEvent("mousedown", {
+        clientX: e.touches[0].clientX,
+        clientY: e.touches[0].clientY,
+      }));
+    const onTouchEnd = e => {
+      canvas.dispatchEvent(new MouseEvent("mouseup", {}));
+    }
+    const onTouchMove = e => {
+      e.preventDefault();
+      mouseMove(new MouseEvent("mousemove", {
+        clientX: e.touches[0].clientX,
+        clientY: e.touches[0].clientY,
+      }));
+    };
+
+    canvas.removeEventListener('touchstart', weftTouchListeners.touchStart);
+    canvas.addEventListener("touchstart", onTouchStart, false);
+    weftTouchListeners.touchStart = onTouchStart;
+
+    canvas.removeEventListener('touchend', weftTouchListeners.touchEnd);
+    canvas.addEventListener("touchend", onTouchEnd, false);
+    weftTouchListeners.touchEnd = onTouchEnd;
+
+    canvas.removeEventListener('touchmove', weftTouchListeners.touchMove);
+    canvas.addEventListener("touchmove", onTouchMove, false);
+    weftTouchListeners.touchMove = onTouchMove;
+  }, [weftRef, tool, colour]);
+
+  const getThreadTreadle = (event, element) => {
+    const rect = element.getBoundingClientRect();
     const y = event.clientY - rect.top;
     const x = (event.clientX - rect.left);
     const thread = parseInt(y / baseSize) + 1;
@@ -44,7 +87,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
 
   const mouseClickColourway = event => {
     const newWeft = Object.assign({}, weft);
-    const { thread } = getThreadTreadle(event);
+    const { thread } = getThreadTreadle(event, colourwayRef.current);
     if (thread >= weft.treadling.length) fillUpTo(newWeft, thread);
     newWeft.treadling[thread - 1].colour = editor.colour;
     updatePattern({ weft: newWeft });
@@ -57,25 +100,25 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
   const mouseMoveColourway = (event) => {
     if (draggingColourway) {
       const newWeft = Object.assign({}, weft);
-      const { thread } = getThreadTreadle(event);
+      const { thread } = getThreadTreadle(event, colourwayRef.current);
       if (thread >= weft.treadling.length) fillUpTo(newWeft, thread);
       newWeft.treadling[thread - 1].colour = editor.colour;
       updatePattern({ weft: newWeft });
     }
   };
 
-  const mouseUp = event => setDragging(false);
+  const mouseUp = event => dragging = false;
   const mouseDown = (event) => {
     event.preventDefault();
-    const { treadle, thread } = getThreadTreadle(event);
-    setStartTreadle(treadle);
-    setStartThread(thread);
-    setDragging(true);
+    const { treadle, thread } = getThreadTreadle(event, weftRef.current);
+    startTreadle = treadle;
+    startThread = thread;
+    dragging = true;
   };
   const mouseMove = (event) => {
     if (dragging && editor.tool) {
       const newWeft = Object.assign({}, weft);
-      const { treadle, thread } = getThreadTreadle(event);
+      const { treadle, thread } = getThreadTreadle(event, weftRef.current);
 
       let lX = startTreadle; let hX = treadle; let lY = startThread; let hY = thread;
       let xDirection = 1; let
@@ -119,7 +162,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
   };
   const click = (event) => {
     if (editor.tool === 'point' || editor.tool === 'straight') {
-      let { thread, treadle } = getThreadTreadle(event);
+      let { thread, treadle } = getThreadTreadle(event, weftRef.current);
       treadle += 1;
       const newWeft = Object.assign({}, weft);
       if (thread >= newWeft.treadling.length || newWeft.treadling.length - thread < 5) fillUpTo(newWeft, thread + 5);

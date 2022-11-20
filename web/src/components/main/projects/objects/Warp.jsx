@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-
 import utils from '../../../../utils/utils.js';
 
 const StyledWarp = styled.div`

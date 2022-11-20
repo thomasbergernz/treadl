@@ -27,7 +27,7 @@ function ProfileProjects() {
         )
         : (
           <Message>
-            <span role="img" aria-label="monkey hiding eyes">🙈</span> {profileUser.username} doesn't have any projects yet.
+            <span role="img" aria-label="monkey hiding eyes">🙈</span> {profileUser.username} doesn't have any public projects.
           </Message>
         )
     }
