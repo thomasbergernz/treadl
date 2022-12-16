@@ -9,6 +9,7 @@ import actions from '../../../actions';
 import api from '../../../api';
 
 import BlurrableImage from '../../includes/BlurrableImage';
+import SupporterBadge from '../../includes/SupporterBadge';
 
 function Profile() {
   const [loading, setLoading] = useState(false);
@@ -69,6 +70,9 @@ function Profile() {
                       Joined {moment(profileUser.createdAt).fromNow()}
                     </span>
                   </Card.Meta>
+                  {profileUser.isSilverSupporter &&
+                    <div style={{marginTop: 10}}><SupporterBadge type='silver' /></div>
+                  }
                 </Card.Content>
                 {profileUser.location
                   && (

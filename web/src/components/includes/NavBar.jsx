@@ -9,6 +9,7 @@ import utils from '../../utils/utils.js';
 
 import logoLight from '../../images/logo/light.png';
 import UserChip from './UserChip';
+import SupporterBadge from './SupporterBadge';
 
 const StyledNavBar = styled.div`
   height:60px;
@@ -185,11 +186,7 @@ function NavBar() {
               </span>
 
               <Dropdown direction="left" pointing="top right" icon={null} style={{marginLeft: 10}}
-                trigger={
-                  <div style={{
-                    display: 'inline-block', width: 33, height: 33, borderRadius: '50%', backgroundSize: 'cover', backgroundPosition: 'center center', backgroundImage: `url(${utils.avatarUrl(user)})`, verticalAlign: 'middle', boxShadow: '0px 5px 10px rgba(0,0,0,0.1)', border: '2px solid white'
-                  }} />
-                }
+                trigger={<UserChip user={user} withoutLink avatarOnly />}
                 >
                 <Dropdown.Menu style={{ minWidth: '200px', paddingTop: 10 }}>
                   {user &&
@@ -201,6 +198,7 @@ function NavBar() {
                       <span>{user.username}</span>
                     </Dropdown.Header>
                   }
+                  {user?.isSilverSupporter && <Dropdown.Header><SupporterBadge type='silver' /></Dropdown.Header>}
                   <Dropdown.Divider />
                   <Link to="/" className="item">Projects</Link>
                   {user &&<Link to={`/${user.username}`} className="item">Profile</Link>}
