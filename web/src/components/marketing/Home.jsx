@@ -44,7 +44,7 @@ function MarketingHome({ onRegisterClicked }) {
                 }}
                 autoPlay loop muted playsInline
               >
-                <source src="https://treadl-files.eu-central-1.linodeobjects.com/assets/intro.mp4" />
+                <source src="https://treadl.eu-central-1.linodeobjects.com/assets/intro.mp4" />
               </video>
             </Grid.Column>
           </Grid>
