@@ -71,7 +71,7 @@ def create(user, data):
 
 def get(user, username, path):
   db = database.get_db()
-  owner = db.users.find_one({'username': username}, {'_id': 1, 'username': 1, 'avatar': 1, 'isSilverSupporter': 1})
+  owner = db.users.find_one({'username': username}, {'_id': 1, 'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1})
   if not owner: raise util.errors.NotFound('User not found')
   project = db.projects.find_one({'user': owner['_id'], 'path': path})
   if not project: raise util.errors.NotFound('Project not found')

@@ -16,11 +16,12 @@ def me(user):
     'subscriptions': user.get('subscriptions'),
     'finishedTours': user.get('completedTours', []) + user.get('skippedTours', []),
     'isSilverSupporter': user.get('isSilverSupporter'),
+    'isGoldSupporter': user.get('isGoldSupporter'),
   }
 
 def get(user, username):
   db = database.get_db()
-  fetch_user = db.users.find_one({'username': username}, {'username': 1, 'createdAt': 1, 'avatar': 1, 'avatarBlurHash': 1, 'bio': 1, 'location': 1, 'website': 1, 'twitter': 1, 'facebook': 1, 'linkedIn': 1, 'instagram': 1, 'isSilverSupporter': 1})
+  fetch_user = db.users.find_one({'username': username}, {'username': 1, 'createdAt': 1, 'avatar': 1, 'avatarBlurHash': 1, 'bio': 1, 'location': 1, 'website': 1, 'twitter': 1, 'facebook': 1, 'linkedIn': 1, 'instagram': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1})
   if not fetch_user:
     raise util.errors.NotFound('User not found')
   project_query = {'user': fetch_user['_id']}

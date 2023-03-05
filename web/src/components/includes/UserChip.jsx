@@ -31,7 +31,8 @@ function UserChip({ user, compact, meta, withoutLink, avatarOnly, style }) {
   return (
     <Link to={withoutLink ? '#' : `/${user.username}`} style={style || {}}>
       <Avatar compact={compact} user={user} avatarOnly={avatarOnly}>
-        {user.isSilverSupporter && <Badge><SupporterBadge compact type='silver' /></Badge>}
+        {user.isGoldSupporter && <Badge><SupporterBadge compact type='gold' /></Badge>}
+        {user.isSilverSupporter && !user.isGoldSupporter && <Badge><SupporterBadge compact type='silver' /></Badge>}
       </Avatar>
       {!avatarOnly && <>
         <Username compact={compact}>{user.username}</Username>

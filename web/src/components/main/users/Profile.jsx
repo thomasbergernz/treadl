@@ -70,7 +70,10 @@ function Profile() {
                       Joined {moment(profileUser.createdAt).fromNow()}
                     </span>
                   </Card.Meta>
-                  {profileUser.isSilverSupporter &&
+                  {profileUser.isGoldSupporter &&
+                    <div style={{marginTop: 10}}><SupporterBadge type='gold' /></div>
+                  }
+                  {profileUser.isSilverSupporter && !profileUser.isGoldSupporter &&
                     <div style={{marginTop: 10}}><SupporterBadge type='silver' /></div>
                   }
                 </Card.Content>

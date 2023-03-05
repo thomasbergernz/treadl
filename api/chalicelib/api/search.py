@@ -8,7 +8,7 @@ def all(user, params):
   expression = re.compile(params['query'], re.IGNORECASE)
   db = database.get_db()
 
-  users = list(db.users.find({'username': expression}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1}).limit(10).sort('username', pymongo.ASCENDING))
+  users = list(db.users.find({'username': expression}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}).limit(10).sort('username', pymongo.ASCENDING))
   for u in users:
     if 'avatar' in u:
       u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(u['_id'], u['avatar']))
@@ -36,7 +36,7 @@ def users(user, params):
   if not params or 'username' not in params: raise util.errors.BadRequest('Username parameter needed')
   expression = re.compile(params['username'], re.IGNORECASE)
   db = database.get_db()
-  users = list(db.users.find({'username': expression}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1}).limit(5).sort('username', pymongo.ASCENDING))
+  users = list(db.users.find({'username': expression}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}).limit(5).sort('username', pymongo.ASCENDING))
   for u in users:
     if 'avatar' in u:
       u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(u['_id'], u['avatar']))
@@ -60,7 +60,7 @@ def discover(user):
     if len(projects) >= count: break
 
   interest_fields = ['bio', 'avatar', 'website', 'facebook', 'twitter', 'instagram', 'location']
-  all_users = list(db.users.find({'_id': {'$ne': user['_id']}, '$or': list(map(lambda f: {f: {'$exists': True}}, interest_fields))}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1}))
+  all_users = list(db.users.find({'_id': {'$ne': user['_id']}, '$or': list(map(lambda f: {f: {'$exists': True}}, interest_fields))}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}))
   random.shuffle(all_users)
   for u in all_users:
     if 'avatar' in u:

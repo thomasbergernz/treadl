@@ -198,7 +198,8 @@ function NavBar() {
                       <span>{user.username}</span>
                     </Dropdown.Header>
                   }
-                  {user?.isSilverSupporter && <Dropdown.Header><SupporterBadge type='silver' /></Dropdown.Header>}
+                  {user?.isGoldSupporter && <Dropdown.Header><SupporterBadge type='gold' /></Dropdown.Header>}
+                  {user?.isSilverSupporter && !user?.isGoldSupporter && <Dropdown.Header><SupporterBadge type='silver' /></Dropdown.Header>}
                   <Dropdown.Divider />
                   <Link to="/" className="item">Projects</Link>
                   {user &&<Link to={`/${user.username}`} className="item">Profile</Link>}
