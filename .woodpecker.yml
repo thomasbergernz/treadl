@@ -3,5 +3,4 @@ pipeline:
     image: plugins/docker
     commands:
       - cd api
-      - docker build -t wilw/treadl-api .
       - echo "Done"
