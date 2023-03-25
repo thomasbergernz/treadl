@@ -1,7 +1,7 @@
 import re, random
 import pymongo
-from chalicelib.util import database, util
-from chalicelib.api import uploads
+from util import database, util
+from api import uploads
 
 def all(user, params):
   if not params or 'query' not in params: raise util.errors.BadRequest('Username parameter needed')

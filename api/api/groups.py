@@ -1,8 +1,8 @@
 import datetime, re, os
 import pymongo
 from bson.objectid import ObjectId
-from chalicelib.util import database, util, mail, push
-from chalicelib.api import uploads
+from util import database, util, mail, push
+from api import uploads
 
 APP_NAME = os.environ.get('APP_NAME')
 APP_URL = os.environ.get('APP_URL')

@@ -5,8 +5,8 @@ from flask_limiter.util import get_remote_address
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from bson.objectid import ObjectId
-from chalicelib.api import accounts
-from chalicelib.util import util
+from api import accounts
+from util import util
 
 errors = werkzeug.exceptions
 

@@ -1,6 +1,6 @@
 import os, re
-from chalicelib.util import database, util
-from chalicelib.api import uploads
+from util import database, util
+from api import uploads
 
 DOMAIN = os.environ.get('APP_DOMAIN')
 

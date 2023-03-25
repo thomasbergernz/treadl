@@ -1,8 +1,8 @@
 import re, datetime
 import pymongo
 from bson.objectid import ObjectId
-from chalicelib.util import database, util, mail
-from chalicelib.api import uploads, groups
+from util import database, util, mail
+from api import uploads, groups
 
 def get_users(user):
   db = database.get_db()
