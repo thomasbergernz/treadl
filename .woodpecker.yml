@@ -1,6 +1,7 @@
 pipeline:
   buildapi:
-    image: plugins/docker
-    commands:
-      - cd api
-      - echo "Done"
+    image: woodpeckerci/plugin-docker-buildx
+    secrets: [docker_username, docker_password]
+    settings:
+      repo: wilw/treadl-api
+      dockerfile: api/Dockerfile
