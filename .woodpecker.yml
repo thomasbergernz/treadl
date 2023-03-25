@@ -1,0 +1,6 @@
+pipeline:
+  buildapi:
+    image: plugins/docker
+    commands:
+      - cd api
+      - docker build -t wilw/treadl-api .
