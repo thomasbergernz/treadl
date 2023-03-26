@@ -4,7 +4,8 @@ pipeline:
     secrets: [docker_username, docker_password]
     settings:
       repo: wilw/treadl-api
-      dockerfile: api/Dockerfile
+      dockerfile: Dockerfile
+      context: api
     #settings:
     #  repo: wilw/treadl-api
     #  dockerfile: api/Dockerfile
