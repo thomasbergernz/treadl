@@ -1,6 +1,6 @@
 pipeline:
   buildapi:
-    image: plugins/docker
+    image: docker
     secrets: [docker_username, docker_password]
     commands:
       - cd api
