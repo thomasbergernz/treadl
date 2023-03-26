@@ -2,6 +2,7 @@ pipeline:
   buildweb:
     image: node
     commands:
+      - cd web
       - yarn build
   
   buildapi:
