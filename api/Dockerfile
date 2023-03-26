@@ -14,6 +14,6 @@ RUN poetry export --without-hashes -f requirements.txt | pip install -r /dev/std
 # Add remaining files
 COPY app.py .
 COPY api/ .
-COPY util/ .
+#COPY util/ .
 
 CMD ["gunicorn"  , "-b", "0.0.0.0:8000", "app:app"]
