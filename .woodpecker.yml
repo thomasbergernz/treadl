@@ -1,4 +1,9 @@
 pipeline:
+  buildweb:
+    image: node
+    commands:
+      - yarn build
+  
   buildapi:
     image: woodpeckerci/plugin-docker-buildx
     secrets: [docker_username, docker_password]
@@ -6,6 +11,3 @@ pipeline:
       repo: wilw/treadl-api
       dockerfile: api/Dockerfile
       context: api
-    #settings:
-    #  repo: wilw/treadl-api
-    #  dockerfile: api/Dockerfile
