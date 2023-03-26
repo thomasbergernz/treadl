@@ -1,12 +1,10 @@
 pipeline:
   buildapi:
-    image: docker
+    image: woodpeckerci/plugin-docker-buildx
     secrets: [docker_username, docker_password]
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    commands:
-      - cd api
-      - docker build -t test .
+    settings:
+      repo: wilw/treadl-api
+      dockerfile: api/Dockerfile
     #settings:
     #  repo: wilw/treadl-api
     #  dockerfile: api/Dockerfile
