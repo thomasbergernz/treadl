@@ -2,6 +2,9 @@ pipeline:
   buildapi:
     image: plugins/docker
     secrets: [docker_username, docker_password]
-    settings:
-      repo: wilw/treadl-api
-      dockerfile: api/Dockerfile
+    commands:
+      - cd api
+      - docker build -t test .
+    #settings:
+    #  repo: wilw/treadl-api
+    #  dockerfile: api/Dockerfile
