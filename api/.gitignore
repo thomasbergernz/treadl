@@ -7,3 +7,4 @@ __pycache__/
 config-prod.yml
 envfile
 firebase.json
+.DS_Store   

@@ -1,7 +1,7 @@
 import datetime
 from bson.objectid import ObjectId
-from chalicelib.util import database, util
-from chalicelib.api import uploads
+from util import database, util
+from api import uploads
 
 def me(user):
   return {

@@ -1,8 +1,8 @@
 import datetime, base64, os
 from bson.objectid import ObjectId
 import requests
-from chalicelib.util import database, wif, util, mail
-from chalicelib.api import uploads
+from util import database, wif, util, mail
+from api import uploads
 
 APP_NAME = os.environ.get('APP_NAME')
 

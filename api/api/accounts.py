@@ -1,7 +1,7 @@
 import datetime, jwt, bcrypt, re, os
 from bson.objectid import ObjectId
-from chalicelib.util import database, mail, util
-from chalicelib.api import uploads
+from util import database, mail, util
+from api import uploads
 
 jwt_secret = os.environ['JWT_SECRET']
 MIN_PASSWORD_LENGTH = 8

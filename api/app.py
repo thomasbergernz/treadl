@@ -5,8 +5,8 @@ from flask_cors import CORS
 import werkzeug
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
-from chalicelib.util import util
-from chalicelib.api import accounts, users, projects, objects, uploads, groups, search, invitations, root, activitypub
+from util import util
+from api import accounts, users, projects, objects, uploads, groups, search, invitations, root, activitypub
 
 app = Flask(__name__)
 CORS(app)

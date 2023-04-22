@@ -1,7 +1,7 @@
 import datetime, re
 from bson.objectid import ObjectId
-from chalicelib.util import database, wif, util
-from chalicelib.api import uploads
+from util import database, wif, util
+from api import uploads
 
 default_pattern = {
   'warp': {
