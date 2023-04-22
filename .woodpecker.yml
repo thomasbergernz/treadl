@@ -1,14 +1,34 @@
 pipeline:
   buildweb:
+    group: build
     image: node
+
     commands:
       - cd web
+      - yarn install
       - yarn build
-  
+
   buildapi:
+    group: build
     image: woodpeckerci/plugin-docker-buildx
     secrets: [docker_username, docker_password]
+    when:
+      path: "api/*"
     settings:
       repo: wilw/treadl-api
       dockerfile: api/Dockerfile
       context: api
+      
+  deployweb:
+    image: alpine
+    secrets: [ LINODE_ACCESS_KEY, LINODE_SECRET_ACCESS_KEY, BUNNY_KEY ]
+
+    commands:
+      - cd web
+      - apk update
+      - apk add s3cmd curl
+      - s3cmd --configure --access_key=$LINODE_ACCESS_KEY --secret_key=$LINODE_SECRET_ACCESS_KEY --host=https://eu-central-1.linodeobjects.com --host-bucket="%(bucket)s.eu-central-1.linodeobjects.com" --dump-config > /root/.s3cfg
+      - s3cmd -c /root/.s3cfg sync --no-mime-magic --guess-mime-type dist/* s3://treadl.com
+      - 'curl -X POST -H "AccessKey: $BUNNY_KEY" https://api.bunny.net/pullzone/782753/purgeCache'
+      
+#branches: main
