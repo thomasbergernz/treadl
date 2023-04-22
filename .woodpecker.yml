@@ -2,7 +2,8 @@ pipeline:
   buildweb:
     group: build
     image: node
-
+    when:
+      path: "web/*"
     environment:
       - VITE_API_URL=https://api.treadl.com
       - VITE_IMAGINARY_URL=https://images.treadl.com
@@ -30,7 +31,8 @@ pipeline:
   deployweb:
     image: alpine
     secrets: [ LINODE_ACCESS_KEY, LINODE_SECRET_ACCESS_KEY, BUNNY_KEY ]
-
+    when:
+      path: "web/*"
     commands:
       - cd web
       - apk update
@@ -39,4 +41,4 @@ pipeline:
       - s3cmd -c /root/.s3cfg sync --no-mime-magic --guess-mime-type dist/* s3://treadl.com
       - 'curl -X POST -H "AccessKey: $BUNNY_KEY" https://api.bunny.net/pullzone/782753/purgeCache'
       
-#branches: main
+branches: main
