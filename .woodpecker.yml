@@ -3,6 +3,15 @@ pipeline:
     group: build
     image: node
 
+    environment:
+      - VITE_API_URL="https://api.treadl.com"
+      - VITE_IMAGINARY_URL="https://images.treadl.com"
+      - VITE_SENTRY_DSN=""
+      - VITE_SOURCE_REPO_URL="https://git.wilw.dev/wilw/treadl"
+      - VITE_PATREON_URL="https://www.patreon.com/treadl"
+      - VITE_KOFI_URL="https://ko-fi.com/wilw88"
+      - VITE_CONTACT_EMAIL="hello@treadl.com"
+      - VITE_APP_NAME="Treadl"
     commands:
       - cd web
       - yarn install
