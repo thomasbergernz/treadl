@@ -100,10 +100,14 @@ def dumps(obj):
 def loads(wif_file):
   config = configparser.ConfigParser(allow_no_value=True, strict=False)
   config.read_string(wif_file.lower())
+  DEFAULT_TITLE = 'Untitled Pattern'
   draft = {}
 
-  text = config['text']
-  draft['name'] = text.get('title')
+  if 'text' in config:
+    text = config['text']
+    draft['name'] = text.get('title') or DEFAULT_TITLE
+  if not draft.get('name'):
+    draft['name'] = DEFAULT_TITLE
 
   min_color = 0
   max_color = 255
