@@ -42,8 +42,8 @@ const utils = {
     return window.location.protocol + '//' + window.location.host + path;
   },
   avatarUrl(user) {
-    const avatar = (user && user.avatar) || '9';
-    if (avatar.length < 3) {
+    const avatar = user?.avatar;
+    if (avatar?.length < 3) {
       const a = utils.defaultAvatars().filter(a => a.key === avatar)[0];
       return a && a.url;
     }

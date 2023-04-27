@@ -104,7 +104,7 @@ function NavBar() {
 
   return (
     <StyledNavBar>
-      <Container style={{display:'flex', justifyContent: 'space-between'}}>
+      <Container style={{display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Link to="/"><img alt={`${utils.appName()} logo`} src={logoLight} className="logo" /></Link>
         {isAuthenticated
           ? (
@@ -191,11 +191,7 @@ function NavBar() {
                 <Dropdown.Menu style={{ minWidth: '200px', paddingTop: 10 }}>
                   {user &&
                     <Dropdown.Header as={Link} to={`/${user.username}`}>
-                      <div style={{
-                        display: 'inline-block', width: 30, height: 30, borderRadius: '50%', backgroundSize: 'cover', backgroundPosition: 'center center', backgroundImage: `url(${utils.avatarUrl(user)})`, verticalAlign: 'middle', marginRight: 8,
-                      }}
-                      />
-                      <span>{user.username}</span>
+                      <UserChip user={user} withoutLink />
                     </Dropdown.Header>
                   }
                   {user?.isGoldSupporter && <Dropdown.Header><SupporterBadge type='gold' /></Dropdown.Header>}

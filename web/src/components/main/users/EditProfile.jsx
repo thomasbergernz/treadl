@@ -57,16 +57,6 @@ function EditProfile() {
           trigger={<Button basic color="yellow" icon="image" content="Choose an image" />}
           accept="image/*" onComplete={f => updatePicture(f.storedName)}
         />
-        <h4>Or choose one of ours:</h4>
-        {utils.defaultAvatars().map(a => (
-          <img
-            alt="Default avatar" key={a.key} src={a.url}
-            style={{
-              width: 40, height: 40, margin: 4, cursor: 'pointer',
-            }}
-            onClick={e => updatePicture(a.key)}
-          />
-        ))}
         <Divider hidden />
 
         <Form>
