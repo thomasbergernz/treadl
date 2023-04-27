@@ -20,8 +20,8 @@ const StyledNavBar = styled.div`
     margin-top:5px;
   }
   .nav-links{
-    vertical-align:middle;
-    margin-top:8px;
+    display: flex;
+    align-items: center;
     .ui.button{
       margin-right: 8px;
     }
@@ -185,13 +185,13 @@ function NavBar() {
                 <Button size='small' icon='help' basic inverted onClick={e => dispatch(actions.app.openHelpModal(true))}/>
               </span>
 
-              <Dropdown direction="left" pointing="top right" icon={null} style={{marginLeft: 10}}
+              <Dropdown direction="left" pointing="top right" icon={null} style={{marginLeft: 10, marginTop: 5}}
                 trigger={<UserChip user={user} withoutLink avatarOnly />}
                 >
                 <Dropdown.Menu style={{ minWidth: '200px', paddingTop: 10 }}>
                   {user &&
                     <Dropdown.Header as={Link} to={`/${user.username}`}>
-                      <UserChip user={user} withoutLink />
+                      <UserChip user={user} />
                     </Dropdown.Header>
                   }
                   {user?.isGoldSupporter && <Dropdown.Header><SupporterBadge type='gold' /></Dropdown.Header>}
