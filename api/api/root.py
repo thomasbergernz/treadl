@@ -7,10 +7,10 @@ from api import uploads, groups
 def get_users(user):
   db = database.get_db()
   if 'root' not in user.get('roles', []): raise util.errors.Forbidden('Not allowed')
-  users = list(db.users.find({}, {'username': 1, 'avatar': 1, 'email': 1, 'createdAt': 1, 'lastSeenAt': 1, 'roles': 1, 'groups': 1}).sort('lastSeenAt', -1))
+  users = list(db.users.find({}, {'username': 1, 'avatar': 1, 'email': 1, 'createdAt': 1, 'lastSeenAt': 1, 'roles': 1, 'groups': 1}).sort('lastSeenAt', -1).limit(200))
   group_ids = []
   for u in users: group_ids += u.get('groups', [])
-  groups = list(db.groups.find({'_id': {'$in': group_ids}}))
+  groups = list(db.groups.find({'_id': {'$in': group_ids}}, {'name': 1}))
   projects = list(db.projects.find({}, {'name': 1, 'path': 1, 'user': 1}))
   for u in users:
     if 'avatar' in u:

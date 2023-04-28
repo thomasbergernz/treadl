@@ -68,7 +68,7 @@ function Profile() {
                     :
                       <Avatar
                         size={200}
-                        name={user.username}
+                        name={profileUser.username}
                         variant="beam"
                         colors={["#B2A4FF", "#FFB4B4", "#FFDEB4", "#FDF7C3"]}
                       />
