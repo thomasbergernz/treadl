@@ -47,12 +47,14 @@ def update(user, username, data):
     if db.users.find({'username': data['username'].lower()}).count():
       raise util.errors.BadRequest('A user with this username already exists')
     data['username'] = data['username'].lower()
-  if 'avatar' in data and len(data['avatar']) > 3: # Not a default avatar
+  if data.get('avatar') and len(data['avatar']) > 3: # Not a default avatar
     def handle_cb(h):
       db.users.update_one({'_id': user['_id']}, {'$set': {'avatarBlurHash': h}})
     uploads.blur_image('users/' + str(user['_id']) + '/' + data['avatar'], handle_cb)
   updater = util.build_updater(data, allowed_keys)
   if updater:
+    if 'avatar' in updater.get('$unset', {}): # Also unset blurhash if removing avatar
+      updater['$unset']['avatarBlurHash'] = ''
     db.users.update({'username': username}, updater)
   return get(user, data.get('username', username))
 

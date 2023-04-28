@@ -21,7 +21,13 @@ function EditProfile() {
   });
 
   const updatePicture = (avatar) => {
-    api.users.update(profileUser.username, { avatar }, u => dispatch(actions.users.receive(u)));
+    api.users.update(profileUser.username, { avatar }, u => {
+      if (!avatar) { // Needed to ensure the avatar is immediately unset
+        u.avatar = null;
+        u.avatarUrl = null;
+      }
+      dispatch(actions.users.receive(u))
+    });
   };
 
   const updateProfile = () => {
@@ -57,6 +63,14 @@ function EditProfile() {
           trigger={<Button basic color="yellow" icon="image" content="Choose an image" />}
           accept="image/*" onComplete={f => updatePicture(f.storedName)}
         />
+        {profileUser.avatar &&
+          <Button basic color="gray" icon="times" content="Remove image" onClick={() => {
+            utils.confirm(
+              'Really remove your image?',
+              'Your profile will be given a default avatar.'
+            ).then(() => updatePicture(null), () => {});
+          }}/>
+        }
         <Divider hidden />
 
         <Form>

@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Loader, Icon, List, Container, Card, Grid, Message } from 'semantic-ui-react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import Avatar from 'boring-avatars';
 import moment from 'moment';
 import utils from '../../../utils/utils';
 import actions from '../../../actions';
@@ -57,12 +58,21 @@ function Profile() {
               <Card raised color="yellow">
                 <Card.Content>
                   <div style={{textAlign: 'center'}}>
-                  <BlurrableImage
-                    src={utils.cropUrl(utils.avatarUrl(profileUser), 200, 200)}
-                    blurHash={profileUser.avatarBlurHash}
-                    width={200} height={200}
-                    style={{ borderRadius: '50%' }}
-                  />
+                    {profileUser.avatar ?
+                      <BlurrableImage
+                        src={utils.cropUrl(utils.avatarUrl(profileUser), 200, 200)}
+                        blurHash={profileUser.avatarBlurHash}
+                        width={200} height={200}
+                        style={{ borderRadius: '50%' }}
+                      />
+                    :
+                      <Avatar
+                        size={200}
+                        name={user.username}
+                        variant="beam"
+                        colors={["#B2A4FF", "#FFB4B4", "#FFDEB4", "#FDF7C3"]}
+                      />
+                    }
                   </div>
                   <Card.Header>{profileUser.username}</Card.Header>
                   <Card.Meta>
