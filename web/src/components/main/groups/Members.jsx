@@ -135,15 +135,17 @@ function Members() {
             <Card.Content>
               <UserChip user={i.recipientUser} />
             </Card.Content>
-            <Card.Content extra >
-              <Label size='tiny' color='yellow' content='Invited' />
-              {utils.isGroupAdmin(user, group) &&
-                <Dropdown text='Options' style={{float:'right'}}>
-                  <Dropdown.Menu>
-                    <Dropdown.Item icon='trash' content='Delete invitation' onClick={e => deleteInvitation(i)} />
-                  </Dropdown.Menu>
-                </Dropdown>
-              }
+            <Card.Content extra>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Label size='tiny' color='yellow' content='Invited' />
+                {utils.isGroupAdmin(user, group) &&
+                  <Dropdown text='Options'>
+                    <Dropdown.Menu>
+                      <Dropdown.Item icon='trash' content='Delete invitation' onClick={e => deleteInvitation(i)} />
+                    </Dropdown.Menu>
+                  </Dropdown>
+                }
+              </div>
             </Card.Content>
           </Card>
         )}
@@ -154,16 +156,18 @@ function Members() {
               <Card.Meta style={{marginTop: 10}}>{m.bio}</Card.Meta>
             </Card.Content>
             <Card.Content extra >
-              {utils.isGroupAdmin(m, group) &&
-                <Label size='tiny' color='violet' icon='rocket' content='Admin' />
-              }
-              {utils.isGroupAdmin(user, group) && user._id !== m._id &&
-                <Dropdown text='Options' style={{float:'right'}}>
-                  <Dropdown.Menu>
-                    <Dropdown.Item icon='ban' content='Kick' onClick={e => kickUser(m._id)} />
-                  </Dropdown.Menu>
-                </Dropdown>
-              }
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {utils.isGroupAdmin(m, group) &&
+                  <Label size='tiny' color='violet' icon='rocket' content='Admin' />
+                }
+                {utils.isGroupAdmin(user, group) && user._id !== m._id &&
+                  <Dropdown text='Options'>
+                    <Dropdown.Menu>
+                      <Dropdown.Item icon='ban' content='Kick' onClick={e => kickUser(m._id)} />
+                    </Dropdown.Menu>
+                  </Dropdown>
+                }
+              </div>
             </Card.Content>
           </Card>
         )}

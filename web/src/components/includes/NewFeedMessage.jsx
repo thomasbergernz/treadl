@@ -77,37 +77,38 @@ const NewFeedMessage = connect(
         )}
       </div>
     }
-    <Button.Group style={{marginTop: 10, float:'right'}}>
-      {!noAttachments &&
-        <Dropdown
-          trigger={<Button size='small' icon='paperclip' content='Attach something' loading={attachmentUploading}/>}
-        >
-          <Dropdown.Menu>
-            <FileChooser
-              forType={forType} forObject={forObj}
-              trigger={<Dropdown.Item icon="upload" content="Upload a file from your computer" />}
-              onUploadStart={e => updateAttachmentUploading(true) }
-              onUploadFinish={e => updateAttachmentUploading(false) }
-              onComplete={addAttachment}
-            />
-            <Dropdown.Divider />
-            <Dropdown item text="Attach one of your projects">
-              <Dropdown.Menu direction='left'>
-                {(projects && projects.length > 0) ?
-                  projects.map(p =>
-                    <Dropdown.Item key={p._id} icon="book" text={p.name} onClick={e => attachProject(p)} />
-                  )
-                :
-                  <Dropdown.Header>No projects available</Dropdown.Header>
-                }
-              </Dropdown.Menu>
-            </Dropdown>
-          </Dropdown.Menu>
-        </Dropdown>
-      }
-      <Button disabled={posting} loading={posting} size='small' color='teal' icon='send' content={inReplyTo ? 'Post reply' : 'Post message'} onClick={createEntry}/>
-    </Button.Group>
-    <div style={{clear:'both'}} />
+    <div style={{ display: 'flex', justifyContent: 'end', marginTop: 10 }}>
+      <Button.Group>
+        {!noAttachments &&
+          <Dropdown
+            trigger={<Button size='small' icon='paperclip' content='Attach something' loading={attachmentUploading}/>}
+          >
+            <Dropdown.Menu>
+              <FileChooser
+                forType={forType} forObject={forObj}
+                trigger={<Dropdown.Item icon="upload" content="Upload a file from your computer" />}
+                onUploadStart={e => updateAttachmentUploading(true) }
+                onUploadFinish={e => updateAttachmentUploading(false) }
+                onComplete={addAttachment}
+              />
+              <Dropdown.Divider />
+              <Dropdown item text="Attach one of your projects">
+                <Dropdown.Menu direction='left'>
+                  {(projects && projects.length > 0) ?
+                    projects.map(p =>
+                      <Dropdown.Item key={p._id} icon="book" text={p.name} onClick={e => attachProject(p)} />
+                    )
+                  :
+                    <Dropdown.Header>No projects available</Dropdown.Header>
+                  }
+                </Dropdown.Menu>
+              </Dropdown>
+            </Dropdown.Menu>
+          </Dropdown>
+        }
+        <Button disabled={posting} loading={posting} size='small' color='teal' icon='send' content={inReplyTo ? 'Post reply' : 'Post message'} onClick={createEntry}/>
+      </Button.Group>
+    </div>
   </>
   );
 });

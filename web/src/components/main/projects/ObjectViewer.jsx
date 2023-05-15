@@ -117,9 +117,9 @@ function ObjectViewer() {
     <>
       <Helmet title={`${object.name || 'Project Item'} | ${project?.name || 'Project'}`} />
 
-      <div style={{float:'right'}}>
+      <div style={{ display: 'flex', justifyContent: 'end' }}>
         {object.type === 'pattern' && (project.user === (user && user._id) || project.openSource || object.preview) && <>
-          <Dropdown icon={null} trigger={<Button size='tiny' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
+          <Dropdown icon={null} trigger={<Button size='small' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
             <Dropdown.Menu>
               {object.preview &&
                 <Dropdown.Item onClick={e => downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />

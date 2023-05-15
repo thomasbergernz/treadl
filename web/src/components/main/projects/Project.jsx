@@ -73,11 +73,12 @@ function Project() {
                     {project.visibility === 'private' && <span data-tooltip="This project is private" data-position="right center"><Icon name="lock" /></span>}
                     {project.name}
                   </Card.Header>
-                  {project.owner && <UserChip user={project.owner} />}
-                  {utils.canEditProject(user, project) &&
-                    <Button style={{float:'right'}} basic size='mini' icon='cogs' content='Settings' as={Link} to={`/${fullName}/settings`} />
-                  }
-
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {project.owner && <UserChip user={project.owner} />}
+                    {utils.canEditProject(user, project) &&
+                      <Button basic size='mini' icon='cogs' content='Settings' as={Link} to={`/${fullName}/settings`} />
+                    }
+                  </div>
                 </Card.Content>
                 <Card.Content extra>
                   {editingDescription

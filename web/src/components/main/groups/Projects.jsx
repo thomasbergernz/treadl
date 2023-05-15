@@ -75,13 +75,16 @@ function Projects() {
         <h2>Projects in this group</h2>
         <p>This tab lists projects that members have made available to this group.</p>
 
-        {myProjects?.length > 0 && <>
-          <AddProject style={{float:'right'}} />
-        </>}
+        {myProjects?.length > 0 && <div style={{ display: 'flex', justifyContent: 'end' }}>
+          <AddProject />
+        </div>}
+        
+        <Divider />
         {projects?.length > 0 &&
-          <Input autoFocus style={{float:'right', marginRight: 5}} size='small' icon='search' value={projectFilter} onChange={e => dispatch(actions.groups.updateProjectFilter(e.target.value))} placeholder='Filter projects...' />
+          <div style={{ display: 'flex', justifyContent: 'end' }}>
+            <Input size='small' icon='search' value={projectFilter} onChange={e => dispatch(actions.groups.updateProjectFilter(e.target.value))} placeholder='Filter projects...' />
+          </div>
         }
-        <Divider hidden clearing />
 
         {projects?.length > 0 ?
           <Card.Group itemsPerRow={3}>

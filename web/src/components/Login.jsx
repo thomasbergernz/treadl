@@ -155,10 +155,11 @@ Welcome back <Button floated="right" onClick={onClose} basic content="Close" />
                     <Input autoFocus size="large" fluid name="email" type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder='Email or username' />
                   </Form.Field>
                   <Form.Field>
-                    <label>Password
-                      <Link to="/password/forgotten" style={{ float: 'right' }} onClick={onClose}>Forgotten your password?</Link>
-                    </label>
+                    <label>Password</label>
                     <Input size="large" fluid name="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder='Password' />
+                    <div style={{ display: 'flex', justifyContent: 'end' }}>
+                      <Link to="/password/forgotten" onClick={onClose}>Forgotten your password?</Link>
+                    </div>
                   </Form.Field>
                   <div className="ui hidden divider" />
                   <Form.Button type='submit' size="large" color="teal" fluid loading={loading}>Login</Form.Button>
