@@ -112,7 +112,7 @@ function ObjectList({ compact }) {
                   : <div style={{ height: 40, width:40, backgroundImage: `url(${logoGreyShort})`, backgroundSize: '50px' }} />
                 )}
                 <div style={{flex: 1, marginLeft: 5}}>
-                  <h3 style={{fontSize: 13, marginBottom: 0}}>{object.name}</h3>
+                  <h3 style={{fontSize: 13, marginBottom: 0, wordBreak: 'break-all'}}>{object.name}</h3>
                   <Label size='mini' rounded>
                     {object.type === 'pattern' && <><Icon name='pencil' /> WIF pattern</>}
                     {object.type === 'file' &&
@@ -166,7 +166,7 @@ function ObjectList({ compact }) {
                 )
               }
                 <Card.Content>
-                  <Card.Header style={{ wordBreak: 'break-all' }}>{object.name}</Card.Header>
+                  <p style={{ wordBreak: 'break-all' }}>{object.name}</p>
                 </Card.Content>
               </Card>
             ))}

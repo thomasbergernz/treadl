@@ -117,7 +117,7 @@ function ObjectViewer() {
     <>
       <Helmet title={`${object.name || 'Project Item'} | ${project?.name || 'Project'}`} />
 
-      <span style={{float:'right'}}>
+      <div style={{float:'right'}}>
         {object.type === 'pattern' && (project.user === (user && user._id) || project.openSource || object.preview) && <>
           <Dropdown icon={null} trigger={<Button size='tiny' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
             <Dropdown.Menu>
@@ -160,7 +160,7 @@ function ObjectViewer() {
 
           </>
         }
-      </span>
+      </div>
 
       {editingName ?
         <div style={{marginBottom: 5}}>

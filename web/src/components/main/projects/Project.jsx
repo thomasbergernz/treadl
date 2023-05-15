@@ -54,12 +54,6 @@ function Project() {
       {project
         && (
         <div>
-          {/*history.location?.state?.prevPath &&
-            <div style={{marginBottom:15}}>
-              <Button basic secondary onClick={e => history.goBack()} icon='arrow left' content='Go back' />
-            </div>
-          */}
-
           {wideBody() && project.owner &&
             <>
               <h3 style={{ marginBottom: 0 }}>
