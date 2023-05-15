@@ -160,7 +160,7 @@ function App() {
             <Grid.Column>
               <Link to="/"><img alt={`${utils.appName()} logo`} src={logo} style={{ width: '100px', opacity: 0.5 }} /></Link>
               {import.meta.env.VITE_SOURCE_REPO_URL &&
-                <p style={{marginTop: 5 }}><small>{utils.appName()} software is free and open-source. Contributions to the project are always welcome.
+                <p style={{marginTop: 5 }}><small>{utils.appName()} software is free and open-source.
                   <br />
                   <Icon name="code" /> <a href={import.meta.env.VITE_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer" className='umami--click--source-footer'>Project source homepage</a>
                 </small></p>

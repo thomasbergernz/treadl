@@ -70,7 +70,7 @@ function Project() {
               <Card fluid>
                 <Card.Content>
                   <Card.Header style={{ marginBottom: 10 }}>
-                    {project.visibility === 'private' && <span data-tooltip="This project is private"><Icon name="lock" /></span>}
+                    {project.visibility === 'private' && <span data-tooltip="This project is private" data-position="right center"><Icon name="lock" /></span>}
                     {project.name}
                   </Card.Header>
                   {project.owner && <UserChip user={project.owner} />}

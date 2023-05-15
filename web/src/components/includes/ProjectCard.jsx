@@ -18,21 +18,17 @@ function ProjectCard({ project }) {
         <Card.Meta>{shorten(project.description)}</Card.Meta>
       </Card.Content>
       <Card.Content extra>
-        <UserChip user={project.owner} />
-        <span style={{ float: 'right' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <UserChip user={project.owner} />
           {project.visibility === 'private'
             ? (
-              <span>
-                <Icon name="lock" /> Private
-              </span>
+              <div><Icon name="lock" /> Private</div>
             )
             : (
-              <span>
-                <Icon name="unlock" /> Public
-              </span>
+              <div><Icon name="unlock" /> Public</div>
             )
-        }
-        </span>
+          }
+        </div>
       </Card.Content>
     </Card>
   );
