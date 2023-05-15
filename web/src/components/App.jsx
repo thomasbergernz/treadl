@@ -108,7 +108,7 @@ function App() {
       <GlobalStyle whiteColor />
       <Helmet defaultTitle={utils.appName()} titleTemplate={`%s | ${utils.appName()}`} />
       <NavBar />
-      <div style={{ flex: '1 0 0' }}>
+      <div style={{ flex: '1' }}>
         <Routes>
           <Route end path="/" element={isAuthenticated
             ? <Home />
@@ -154,41 +154,37 @@ function App() {
         <Divider hidden section />
       </div>
 
-      <div style={{ background: 'rgb(240,240,240)', padding: '30px 0px' }}>
+      <div style={{ background: 'rgba(0,0,0,0.02)', padding: 10}}>
         <Container>
-          <Grid>
-            <Grid.Column computer={8}>
-              <Link to="/"><img alt={`${utils.appName()} logo`} src={logo} style={{ width: '100px', paddingTop: 20, paddingBottom: 20 }} /></Link>
+          <Grid verticalAlign='middle' stackable columns={2}>
+            <Grid.Column>
+              <Link to="/"><img alt={`${utils.appName()} logo`} src={logo} style={{ width: '100px', opacity: 0.5 }} /></Link>
               {import.meta.env.VITE_SOURCE_REPO_URL &&
-                <p style={{marginTop: 10}}><small>{utils.appName()} software is free and open-source. Contributions to the project are always welcome.
+                <p style={{marginTop: 5 }}><small>{utils.appName()} software is free and open-source. Contributions to the project are always welcome.
                   <br />
                   <Icon name="code" /> <a href={import.meta.env.VITE_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer" className='umami--click--source-footer'>Project source homepage</a>
                 </small></p>
               }
             </Grid.Column>
-            <Grid.Column computer={8} textAlign="right">
-              <div style={{ paddingTop: 40 }}>
-                {import.meta.env.VITE_PATREON_URL &&
-                  <p>
-                    <Icon name='trophy' />
-                    <a href={import.meta.env.VITE_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-footer'>Become a patron</a>
-                  </p>
-                }
+            <Grid.Column textAlign="right" style={{ fontSize: 13 }}>
+              {import.meta.env.VITE_PATREON_URL &&
                 <p>
-                  <Icon name='book' />
-                  <a href='/docs' target='_blank' rel='noopener noreferrer'>Documentation</a>
+                  <Icon name='trophy' />
+                  <a href={import.meta.env.VITE_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-footer'>Become a patron</a>
                 </p>
-
-                <Divider />
-                <p>
-                  <Icon name="file alternate outline" />
-                  <Link to="/privacy">Privacy Policy</Link>
-                </p>
-                <p>
-                  <Icon name="file alternate outline" />
-                  <Link to="terms-of-use">Terms of Use</Link>
-                </p>
-              </div>
+              }
+              <p>
+                <Icon name='book' />
+                <a href='/docs' target='_blank' rel='noopener noreferrer'>Documentation</a>
+              </p>
+              <p>
+                <Icon name="file alternate outline" />
+                <Link to="/privacy">Privacy Policy</Link>
+              </p>
+              <p>
+                <Icon name="file alternate outline" />
+                <Link to="terms-of-use">Terms of Use</Link>
+              </p>
             </Grid.Column>
           </Grid>
         </Container>
