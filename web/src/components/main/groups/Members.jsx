@@ -85,7 +85,7 @@ function Members() {
     <div>
       {loading && (!members || !members.length) && <Loader active inline="centered" />}
       {!loading && utils.isGroupAdmin(user, group) &&
-        <Segment raised color='blue' style={{marginBottom: 30}}>
+        <Segment color='blue' style={{marginBottom: 30}}>
           {(members && members.length === 1 && members[0]._id === user._id) ?
             <Header>You're the only person in this group</Header>
           :
@@ -109,7 +109,7 @@ function Members() {
       }
 
       {requests?.length > 0 &&
-        <Segment raised color='green' style={{marginBottom:30}}>
+        <Segment color='green' style={{marginBottom:30}}>
           <h3>You have membership requests</h3>
           <p>The following users want to join {group.name}.</p>
           <Table relaxed='very' basic='very'>
