@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { Grid, Divider, Icon, Container } from 'semantic-ui-react';
+import styled, { createGlobalStyle } from 'styled-components';
 
 import api from '../api';
 import actions from '../actions';
@@ -50,6 +51,17 @@ import DocsDoc from './docs/Doc';
 
 import Root from './main/root';
 
+const StyledContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: rgb(255, 251, 248);
+  }
+`;
 
 function App() {
   const dispatch = useDispatch();
@@ -92,7 +104,8 @@ function App() {
   }, [dispatch, user, driftReady, syncedToDrift]);
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
+    <StyledContent>
+      <GlobalStyle whiteColor />
       <Helmet defaultTitle={utils.appName()} titleTemplate={`%s | ${utils.appName()}`} />
       <NavBar />
       <div style={{ flex: '1 0 0' }}>
@@ -181,7 +194,7 @@ function App() {
         </Container>
       </div>
 
-    </div>
+    </StyledContent>
   );
 }
 

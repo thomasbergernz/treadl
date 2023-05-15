@@ -152,6 +152,7 @@ function Group() {
 
             </Grid.Column>
             <Grid.Column computer={12}>
+              <Segment>
               {user ?
                 <>
                   {!utils.isInGroup(user, group._id) &&
@@ -182,6 +183,7 @@ function Group() {
               :
                 <Message>Please login to view or join this group.</Message>
               }
+              </Segment>
             </Grid.Column>
           </Grid>
         </div>

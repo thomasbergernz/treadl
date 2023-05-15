@@ -9,7 +9,6 @@ import { BrowserTracing } from '@sentry/tracing';
 import 'react-toastify/dist/ReactToastify.css';
 import 'pell/dist/pell.min.css';
 
-import './index.css';
 import reducers from './reducers';
 import App from './components/App';
 

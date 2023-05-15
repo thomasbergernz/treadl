@@ -126,7 +126,7 @@ function Home() {
           }
 
           {(groups && groups.length) ?
-            <Card fluid className='joyride-groups'>
+            <Card fluid className='joyride-groups' style={{opacity: 0.8}}>
               <Card.Content>
                 <Card.Header>Your groups</Card.Header>
 
@@ -154,7 +154,7 @@ function Home() {
           }
 
           {(import.meta.env.VITE_PATREON_URL || import.meta.env.VITE_KOFI_URL) &&
-            <Card fluid color='blue'>
+            <Card fluid style={{opacity: 0.8}}>
               <Card.Content>
                 <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support {utils.appName()}</Card.Header>
                 <Card.Description>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} you may like to consider supporting it.</Card.Description>
@@ -181,15 +181,16 @@ function Home() {
           {user && !loadingProjects && (!projects || !projects.length) &&
             <div style={{textAlign: 'center'}}>
               <h1>
-                <span role="img" aria-label="chequered flag">🚀</span> Let's get started, {user?.username}!
+                <span role="img" aria-label="chequered flag">🚀</span> Let's get started
               </h1>
               <Divider hidden/>
               <Segment placeholder textAlign='center'>
-                <h3>On {utils.appName()} your patterns and files are stored in <strong><span role="img" aria-label="box">📦</span> projects</strong></h3>
-                <p>Projects can contain anything - from rough ideas or design experiments through to commissions and exhibitions. Treat them as if they were just weaving-related <span role="img" aria-label="folder">📁</span> folders on your computer.</p>
+                <h3>On {utils.appName()}, your patterns and files are stored in <strong><span role="img" aria-label="box">📦</span> projects</strong></h3>
+                <p>Projects can contain anything: from rough ideas or design experiments through to commissions and exhibitions. Treat them as if they were just <span role="img" aria-label="folder">📁</span> folders on your computer.</p>
+                <p><HelpLink className='joyride-help' link={`/docs/projects`} text='Learn more about projects' marginTop/></p>
                 <Divider  />
                 <h4>Start by creating a new project. Don't worry, you can keep it private.</h4>
-                <p><HelpLink className='joyride-help' link={`/docs/projects`} text='Learn more about projects' marginTop/></p>
+                
                 <Button className='joyride-createProject' as={Link} to="/projects/new" color="teal" icon="plus" content="Create a project" />
               </Segment>
 

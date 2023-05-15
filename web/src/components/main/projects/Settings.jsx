@@ -64,7 +64,7 @@ function ProjectSettings() {
 
       <HelpLink link={`/docs/projects#changing-the-project-s-settings`} />
 
-      <Divider hidden section />
+      <Divider hidden />
 
       <Segment>
         <h3>General settings</h3>
