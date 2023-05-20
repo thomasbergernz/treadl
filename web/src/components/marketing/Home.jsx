@@ -1,26 +1,30 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Divider, Grid, Button, Container } from 'semantic-ui-react';
+import styled from 'styled-components';
 import utils from '../../utils/utils.js';
 
 import projectImage from '../../images/project.png';
 import toolsImage from '../../images/tools.png';
 import filesImage from '../../images/files.png';
 
+const StyledHero = styled.div`
+  background: linen;
+  min-height: 200px;
+  margin-top: 10px;
+`;
+
 function MarketingHome({ onRegisterClicked }) {
   return (
     <div>
       <Helmet title='Home' />
-      <div style={{
-        minHeight: '200px', backgroundImage: 'linear-gradient(to right, rgb(237,1,118), rgb(221,13,197))', padding: '40px 30px 50px 30px', color: 'white',
-      }}
-      >
+      <StyledHero>
         <Container>
-          <Grid stackable>
+          <Grid stackable verticalAlign='middle'>
             <Grid.Column computer={6} tablet={8}>
-              <h1 style={{ color: 'white' }}>The perfect <span role="img" aria-label="house">🏠</span> home for your weaving projects
+              <h1>The perfect <span role="img" aria-label="house">🏠</span> home for your weaving projects
               </h1>
-              <h4 style={{ color: 'white' }}>Use {utils.appName()} to host your projects, draft your weaving patterns using our fab draft editor, and join weaving communities to discover what others are making.</h4>
+              <h4>Use {utils.appName()} to host your projects, draft your weaving patterns using our fab draft editor, and join weaving communities to discover what others are making.</h4>
               <Divider hidden />
 
               <h2 style={{ marginBottom: 0 }}>Get started today</h2>
@@ -31,9 +35,9 @@ function MarketingHome({ onRegisterClicked }) {
               }}
               >
                 <h4><span role="img" aria-label="party" style={{marginRight: 10}}>🎉</span> {utils.appName()} is free</h4>
-                <p>The {utils.appName()} software is <a style={{color:'white', textDecoration: 'underline'}} href='#why-free'>free to use</a></p>
+                <p>The {utils.appName()} software is <a href='#why-free'>free to use</a></p>
                 <h4><span role="img" aria-label="coder" style={{marginRight: 10}}>🧑‍💻</span> {utils.appName()} is open-source</h4>
-                <p>The code powering {utils.appName()} is <a style={{color:'white', textDecoration: 'underline'}} href={import.meta.env.VITE_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">publicly available</a>.</p>
+                <p>The code powering {utils.appName()} is <a href={import.meta.env.VITE_SOURCE_REPO_URL} target="_blank" rel="noopener noreferrer">publicly available</a>.</p>
               </div>
             </Grid.Column>
 
@@ -49,7 +53,7 @@ function MarketingHome({ onRegisterClicked }) {
             </Grid.Column>
           </Grid>
         </Container>
-      </div>
+      </StyledHero>
 
       <Container style={{ marginTop: 50 }}>
         <Grid stackable centered>

@@ -7,13 +7,13 @@ import api from '../../api';
 import actions from '../../actions';
 import utils from '../../utils/utils.js';
 
-import logoLight from '../../images/logo/light.png';
+import logo from '../../images/logo/main.png';
 import UserChip from './UserChip';
 import SupporterBadge from './SupporterBadge';
 
 const StyledNavBar = styled.div`
   height:60px;
-  background-image: linear-gradient(to right, rgb(237,1,118), rgb(221,13,197));
+  background: linen;
   padding: 5px 0px;
   .logo{
     height:40px;
@@ -25,9 +25,6 @@ const StyledNavBar = styled.div`
     .ui.button{
       margin-right: 8px;
     }
-  }
-  .ui.button.white{
-    background:white;
   }
   .only-mobile{
     @media only screen and (min-width: 768px) {
@@ -45,7 +42,6 @@ const SearchBar = styled.div`
   background-color:rgba(0,0,0,0.1);
   padding-left:5px;
   padding-top: 3px;
-  color:white;
   border: none;
   border-radius:5px;
   transition: background-color 0.5s;
@@ -69,9 +65,6 @@ const SearchBar = styled.div`
     border:none;
     background:none;
     padding:8px;
-    &::placeholder {
-      color:white;
-    }
   }
 `;
 
@@ -105,7 +98,7 @@ function NavBar() {
   return (
     <StyledNavBar>
       <Container style={{display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <Link to="/"><img alt={`${utils.appName()} logo`} src={logoLight} className="logo" /></Link>
+        <Link to="/"><img alt={`${utils.appName()} logo`} src={logo} className="logo" /></Link>
         {isAuthenticated
           ? (
             <div className='nav-links'>
@@ -161,13 +154,13 @@ function NavBar() {
                 </div>} />
 
               <span className='above-mobile'>
-                <Button as={Link} to="/" size="small" className="white" icon='home' content='Home' />
+                <Button as={Link} to="/" size="small" icon='home' basic content='Home' />
               </span>
 
               {groups.length > 0 &&
                 <span className='above-mobile'>
                 <Dropdown icon={null} direction='left' pointing='top right'
-                  trigger={<Button size='small' icon='users' className='white' content='Groups'/>}
+                  trigger={<Button size='small' icon='users' basic content='Groups'/>}
                 >
                   <Dropdown.Menu>
                     <Dropdown.Header icon='users' content='Your groups' />
@@ -182,7 +175,7 @@ function NavBar() {
               }
 
               <span className='above-mobile'>
-                <Button size='small' icon='help' basic inverted onClick={e => dispatch(actions.app.openHelpModal(true))}/>
+                <Button size='small' icon='help' basic onClick={e => dispatch(actions.app.openHelpModal(true))}/>
               </span>
 
               <Dropdown direction="left" pointing="top right" icon={null} style={{marginLeft: 10, marginTop: 5}}
@@ -215,7 +208,7 @@ function NavBar() {
               <span className="only-mobile">
                 <Dropdown
                   icon={null}
-                  trigger={<Button basic inverted icon="bars" />}
+                  trigger={<Button basic icon="bars" />}
                 >
                   <Dropdown.Menu direction="left">
                     <Dropdown.Item onClick={() => dispatch(actions.auth.openLogin())}>Login</Dropdown.Item>
@@ -223,7 +216,7 @@ function NavBar() {
                 </Dropdown>
               </span>
               <span className="above-mobile">
-                <Button inverted basic onClick={() => dispatch(actions.auth.openLogin())}>Login</Button>
+                <Button basic color='teal' onClick={() => dispatch(actions.auth.openLogin())}>Login</Button>
               </span>
               <Button color="teal" onClick={() => dispatch(actions.auth.openRegister())}>
                 <span role="img" aria-label="wave">👋</span> Sign-up
