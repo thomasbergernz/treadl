@@ -45,6 +45,8 @@ import GroupMembers from './main/groups/Members';
 import GroupProjects from './main/groups/Projects';
 import GroupSettings from './main/groups/Settings';
 
+import Explore from './main/explore/Explore'
+
 import Docs from './docs';
 import DocsHome from './docs/Home';
 import DocsDoc from './docs/Doc';
@@ -144,6 +146,7 @@ function App() {
             <Route path=":objectId" element={<ProjectObjects />} />
             <Route path='' element={<ObjectList />} />
           </Route>
+          <Route path='/explore' element={<Explore />} />
           <Route path="/:username" element={<Profile />}>
             <Route path="edit" element={<ProfileEdit />} />
             <Route path='' element={<ProfileProjects />} />

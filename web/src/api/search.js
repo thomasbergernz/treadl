@@ -10,4 +10,7 @@ export const search = {
   discover(success, fail) {
     api.authenticatedRequest('GET', `/search/discover`, null, data => success && success(data), fail);
   },
+  explore(success, fail) {
+    api.unauthenticatedRequest('GET', `/search/explore`, null, data => success && success(data), fail);
+  },
 };

@@ -72,3 +72,25 @@ def discover(user):
     'highlightProjects': projects,
     'highlightUsers': users,
   }
+
+def explore():
+  db = database.get_db()
+  project_map = {}
+  user_map = {}
+  
+  all_public_projects = list(db.projects.find({'name': {'$not': re.compile('my new project', re.IGNORECASE)}, 'visibility': 'public'}, {'name': 1, 'path': 1, 'user': 1}))
+  all_public_project_ids = list(map(lambda p: p['_id'], all_public_projects))
+  for project in all_public_projects:
+    project_map[project['_id']] = project
+  objects = list(db.objects.find({'project': {'$in': all_public_project_ids}, 'name': {'$not': re.compile('untitled pattern', re.IGNORECASE)}, 'preview': {'$exists': True}}, {'project': 1, 'name': 1, 'createdAt': 1, 'preview': 1}).sort('createdAt', pymongo.DESCENDING).limit(20))
+  for object in objects:
+    object['projectObject'] = project_map.get(object['project'])
+  authors = list(db.users.find({'_id': {'$in': list(map(lambda o: o.get('projectObject', {}).get('user'), objects))}}, {'username': 1, 'avatar': 1}))
+  for a in authors:
+    if 'avatar' in a:
+      a['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(a['_id'], a['avatar']))
+    user_map[a['_id']] = a
+  for object in objects:
+    object['userObject'] = user_map.get(object.get('projectObject', {}).get('user'))
+  return {'objects': objects}
+  

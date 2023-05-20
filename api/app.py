@@ -267,6 +267,10 @@ def search_users():
 def search_discover():
   return util.jsonify(search.discover(util.get_user(required=True)))
 
+@app.route('/search/explore', methods=['GET'])
+def search_explore():
+  return util.jsonify(search.explore())
+
 # INVITATIONS
 
 @app.route('/invitations', methods=['GET'])
