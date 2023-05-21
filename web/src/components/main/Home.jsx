@@ -12,11 +12,10 @@ import UserChip from '../includes/UserChip';
 import HelpLink from '../includes/HelpLink';
 import ProjectCard from '../includes/ProjectCard';
 import Tour from '../includes/Tour';
+import DiscoverCard from '../includes/DiscoverCard';
 
 function Home() {
   const [runJoyride, setRunJoyride] = useState(false);
-  const [highlightProjects, setHighlightProjects] = useState([]);
-  const [highlightUsers, setHighlightUsers] = useState([]);
   const dispatch = useDispatch();
   const { user, projects, groups, invitations, loadingProjects } = useSelector(state => {
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
@@ -29,10 +28,6 @@ function Home() {
   useEffect(() => {
     api.invitations.get(({ invitations, sentInvitations}) => {
       dispatch(actions.invitations.receiveInvitations(invitations.concat(sentInvitations)));
-    });
-    api.search.discover(({ highlightProjects, highlightUsers }) => {
-      setHighlightProjects(highlightProjects);
-      setHighlightUsers(highlightUsers);
     });
   }, [dispatch]);
   useEffect(() => {
@@ -92,38 +87,7 @@ function Home() {
 
           <h2><span role="img" aria-label="wave">👋</span> {greeting}{user && <span>, {user.username}</span>}</h2>
 
-          {(highlightProjects?.length > 0 || highlightUsers?.length > 0) &&
-            <Card fluid>
-              <Card.Content>
-                {highlightProjects?.length > 0 && <>
-                  <h4>Discover public projects</h4>
-                  <List relaxed>
-                    {highlightProjects.map(p =>
-                      <List.Item key={p._id}>
-                        <List.Icon name='book' size='large' verticalAlign='middle' />
-                        <List.Content>
-                          <List.Header className='umami--click--discover-project' as={Link} to={p.fullName}>{p.name}</List.Header>
-                        </List.Content>
-                      </List.Item>
-                    )}
-                  </List>
-                </>}
-
-                {highlightUsers?.length > 0 && <>
-                  <h4>Find others on {utils.appName()}</h4>
-                  <List relaxed>
-                    {highlightUsers.map(u =>
-                      <List.Item key={u._id}>
-                        <List.Content>
-                          <UserChip user={u} className='umami--click--discover-user'/>
-                        </List.Content>
-                      </List.Item>
-                    )}
-                  </List>
-                </>}
-              </Card.Content>
-            </Card>
-          }
+          <DiscoverCard count={3} />
 
           {(groups && groups.length) ?
             <Card fluid className='joyride-groups' style={{opacity: 0.8}}>

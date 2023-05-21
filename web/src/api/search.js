@@ -7,10 +7,10 @@ export const search = {
   users(username, success, fail) {
     api.authenticatedRequest('GET', `/search/users?username=${username}`, null, data => success && success(data.users), fail);
   },
-  discover(success, fail) {
-    api.authenticatedRequest('GET', `/search/discover`, null, data => success && success(data), fail);
+  discover(count, success, fail) {
+    api.authenticatedRequest('GET', `/search/discover?count=${count || 3}`, null, data => success && success(data), fail);
   },
-  explore(success, fail) {
-    api.unauthenticatedRequest('GET', `/search/explore`, null, data => success && success(data), fail);
+  explore(page, success, fail) {
+    api.unauthenticatedRequest('GET', `/search/explore?page=${page || 1}`, null, data => success && success(data), fail);
   },
 };

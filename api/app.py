@@ -265,11 +265,15 @@ def search_users():
 
 @app.route('/search/discover', methods=['GET'])
 def search_discover():
-  return util.jsonify(search.discover(util.get_user(required=False)))
+  count = request.args.get('count', 3)
+  if count: count = int(count)
+  return util.jsonify(search.discover(util.get_user(required=False), count=count))
 
 @app.route('/search/explore', methods=['GET'])
 def search_explore():
-  return util.jsonify(search.explore())
+  page = request.args.get('page', 1)
+  if page: page = int(page)
+  return util.jsonify(search.explore(page=page))
 
 # INVITATIONS
 

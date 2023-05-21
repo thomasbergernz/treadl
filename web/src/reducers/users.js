@@ -6,7 +6,6 @@ const initialState = {
   loading: false,
   errorMessage: '',
   users: [],
-  exploreUsers: [],
 };
 
 function users(state = initialState, action) {
@@ -38,8 +37,6 @@ function users(state = initialState, action) {
         users,
       });
     }
-    case actions.users.RECEIVE_EXPLORE:
-      return Object.assign({}, state, { exploreUsers: action.users });
     case actions.users.UPDATE_USER:
       return {
         users: state.users.map((user) => {

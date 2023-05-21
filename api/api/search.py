@@ -42,11 +42,10 @@ def users(user, params):
       u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(u['_id'], u['avatar']))
   return {'users': users}
 
-def discover(user):
+def discover(user, count = 3):
   db = database.get_db()
   projects = []
   users = []
-  count = 3
 
   all_projects_query = {'name': {'$not': re.compile('my new project', re.IGNORECASE)}, 'visibility': 'public'}
   if user and user.get('_id'):
@@ -77,8 +76,9 @@ def discover(user):
     'highlightUsers': users,
   }
 
-def explore():
+def explore(page = 1):
   db = database.get_db()
+  per_page = 10
   
   project_map = {}
   user_map = {}
@@ -86,7 +86,7 @@ def explore():
   all_public_project_ids = list(map(lambda p: p['_id'], all_public_projects))
   for project in all_public_projects:
     project_map[project['_id']] = project
-  objects = list(db.objects.find({'project': {'$in': all_public_project_ids}, 'name': {'$not': re.compile('untitled pattern', re.IGNORECASE)}, 'preview': {'$exists': True}}, {'project': 1, 'name': 1, 'createdAt': 1, 'preview': 1}).sort('createdAt', pymongo.DESCENDING).limit(20))
+  objects = list(db.objects.find({'project': {'$in': all_public_project_ids}, 'name': {'$not': re.compile('untitled pattern', re.IGNORECASE)}, 'preview': {'$exists': True}}, {'project': 1, 'name': 1, 'createdAt': 1, 'preview': 1}).sort('createdAt', pymongo.DESCENDING).skip((page - 1) * per_page).limit(per_page))
   for object in objects:
     object['projectObject'] = project_map.get(object['project'])
   authors = list(db.users.find({'_id': {'$in': list(map(lambda o: o.get('projectObject', {}).get('user'), objects))}}, {'username': 1, 'avatar': 1}))
@@ -96,13 +96,6 @@ def explore():
     user_map[a['_id']] = a
   for object in objects:
     object['userObject'] = user_map.get(object.get('projectObject', {}).get('user'))
-  
-  random.shuffle(all_public_projects)
-  all_public_project_user_ids = list(map(lambda p: p['user'], all_public_projects))
-  users = list(db.users.find({'_id': {'$in': all_public_project_user_ids[0:10]}}, {'username': 1, 'avatar': 1}))
-  for user in users:
-    if 'avatar' in user:
-      user['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(user['_id'], user['avatar']))
         
-  return {'objects': objects, 'users': 1}
+  return {'objects': objects}
   

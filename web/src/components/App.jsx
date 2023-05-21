@@ -80,9 +80,8 @@ function App() {
   }, [dispatch]);
   
   useEffect(() => {
-    api.search.explore(data => {
+    api.search.explore(1, data => { // Page is always 1 on app-load
       dispatch(actions.objects.receiveExplore(data.objects));
-      dispatch(actions.users.receiveExplore(data.users));
     });
   }, []);
 
