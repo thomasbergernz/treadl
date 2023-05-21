@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Grid } from 'semantic-ui-react';
+import { Container, Card, Grid, Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import actions from '../../../actions';
 import api from '../../../api';
 import utils from '../../../utils/utils.js';
 
@@ -11,18 +12,23 @@ import DraftPreview from '../projects/objects/DraftPreview';
 
 export default function Explore() {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   
   const { objects, page } = useSelector(state => {
     return { objects: state.objects.exploreObjects, page: state.objects.explorePage };
   });
   
   useEffect(() => {
-    if (page < 2) {
-      api.search.explore(page + 1, data => {
-        dispatch(actions.objects.receiveExplore(data.objects));
-      });
-    }
+    if (page < 2) loadMoreExplore();
   }, []);
+  
+  function loadMoreExplore() {
+    setLoading(true);
+    api.search.explore(page + 1, data => {
+      dispatch(actions.objects.receiveExplore(data.objects));
+      setLoading(false);
+    });
+  }
   
   return (
     <Container style={{ marginTop: '40px' }}>
@@ -52,6 +58,9 @@ export default function Explore() {
               </Card>
             )}
           </Card.Group>
+          <div style={{display: 'flex', justifyContent: 'center', marginTop: 30}}>
+            <Button loading={loading} onClick={loadMoreExplore}>Load more</Button>
+          </div>
         </Grid.Column>
       </Grid>
     </Container>

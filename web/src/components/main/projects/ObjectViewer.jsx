@@ -119,7 +119,7 @@ function ObjectViewer() {
 
       <div style={{ display: 'flex', justifyContent: 'end' }}>
         {object.type === 'pattern' && (project.user === (user && user._id) || project.openSource || object.preview) && <>
-          <Dropdown icon={null} trigger={<Button size='small' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
+          <Dropdown direction='left' icon={null} trigger={<Button size='small' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
             <Dropdown.Menu>
               {object.preview &&
                 <Dropdown.Item onClick={e => downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />
@@ -136,12 +136,14 @@ function ObjectViewer() {
             </Dropdown.Menu>
           </Dropdown>
 
-          <Dropdown icon={null} trigger={<Button size="small" icon="copy" secondary content="Copy to.." />}>
-            <Dropdown.Menu>
-              <Dropdown.Header>Select a project to copy this pattern to</Dropdown.Header>
-              {myProjects?.map(myProject => <Dropdown.Item content={myProject.name} onClick={e => copyPattern(myProject)} />)}
-            </Dropdown.Menu>
-          </Dropdown>
+          {user &&
+            <Dropdown icon={null} trigger={<Button size="small" icon="copy" secondary content="Copy to.." />}>
+              <Dropdown.Menu>
+                <Dropdown.Header>Select a project to copy this pattern to</Dropdown.Header>
+                {myProjects?.map(myProject => <Dropdown.Item content={myProject.name} onClick={e => copyPattern(myProject)} />)}
+              </Dropdown.Menu>
+            </Dropdown>
+          }
         </>}
 
         {utils.canEditProject(user, project) &&
