@@ -1,9 +1,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Divider, Grid, Button, Container } from 'semantic-ui-react';
+import { Divider, Grid, Button, Container, Card } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import utils from '../../utils/utils.js';
 
+import PatternCard from '../includes/PatternCard';
 import projectImage from '../../images/project.png';
 import toolsImage from '../../images/tools.png';
 import filesImage from '../../images/files.png';
@@ -15,6 +18,10 @@ const StyledHero = styled.div`
 `;
 
 function MarketingHome({ onRegisterClicked }) {
+  const { objects } = useSelector(state => {
+    return { objects: state.objects.exploreObjects };
+  });
+  
   return (
     <div>
       <Helmet title='Home' />
@@ -54,6 +61,22 @@ function MarketingHome({ onRegisterClicked }) {
           </Grid>
         </Container>
       </StyledHero>
+      
+      {objects?.length > 0 &&
+        <div style={{paddingTop: 75, marginBottom: 75, background: 'linear-gradient(linen, rgb(255,251,248)'}}>
+          <Container>
+            <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center'}}>
+              <h2>See what people have been creating</h2>
+              <Button as={Link} to='/explore'>Explore more</Button>
+            </div>
+            <Card.Group stackable doubling itemsPerRow={3} style={{marginTop: 30}}>
+              {objects?.filter(o => o.projectObject && o.userObject).slice(0, 2).map(object =>
+                <PatternCard object={object} project={object.projectObject} user={object.userObject} />
+              )}
+            </Card.Group>
+          </Container>
+        </div>
+      }
 
       <Container style={{ marginTop: 50 }}>
         <Grid stackable centered>
