@@ -78,6 +78,13 @@ function App() {
   useEffect(() => {
     api.auth.autoLogin(token => dispatch(actions.auth.receiveLogin(token)));
   }, [dispatch]);
+  
+  useEffect(() => {
+    api.search.explore(data => {
+      dispatch(actions.objects.receiveExplore(data.objects));
+      dispatch(actions.users.receiveExplore(data.users));
+    });
+  }, []);
 
   useEffect(() => {
     if (!loggedInUserId) return;

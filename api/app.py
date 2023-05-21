@@ -265,7 +265,7 @@ def search_users():
 
 @app.route('/search/discover', methods=['GET'])
 def search_discover():
-  return util.jsonify(search.discover(util.get_user(required=True)))
+  return util.jsonify(search.discover(util.get_user(required=False)))
 
 @app.route('/search/explore', methods=['GET'])
 def search_explore():

@@ -2,6 +2,7 @@ export default {
 
   RECEIVE_OBJECTS: 'RECEIVE_OBJECTS',
   RECEIVE_OBJECT: 'RECEIVE_OBJECT',
+  RECEIVE_EXPLORE_OBJECTS: 'RECEIVE_EXPLORE_OBJECTS',
   CREATE_OBJECT: 'CREATE_OBJECT',
   UPDATE_OBJECT: 'UPDATE_OBJECT',
   DELETE_OBJECT: 'DELETE_OBJECT',
@@ -16,6 +17,10 @@ export default {
 
   receive(object) {
     return { type: this.RECEIVE_OBJECT, object };
+  },
+  
+  receiveExplore(objects) {
+    return { type: this.RECEIVE_EXPLORE_OBJECTS, objects };
   },
 
   create(object) {

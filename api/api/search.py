@@ -43,14 +43,15 @@ def users(user, params):
   return {'users': users}
 
 def discover(user):
-  if not user: raise util.errors.Forbidden('You need to be logged in')
-
   db = database.get_db()
   projects = []
   users = []
   count = 3
 
-  all_projects = list(db.projects.find({'name': {'$not': re.compile('my new project', re.IGNORECASE)}, 'visibility': 'public', 'user': {'$ne': user['_id']}}, {'name': 1, 'path': 1, 'user': 1}))
+  all_projects_query = {'name': {'$not': re.compile('my new project', re.IGNORECASE)}, 'visibility': 'public'}
+  if user and user.get('_id'):
+    all_projects_query['user'] = {'$ne': user['_id']}
+  all_projects = list(db.projects.find(all_projects_query, {'name': 1, 'path': 1, 'user': 1}))
   random.shuffle(all_projects)
   for p in all_projects:
     if db.objects.find_one({'project': p['_id'], 'name': {'$ne': 'Untitled pattern'}}):
@@ -60,7 +61,10 @@ def discover(user):
     if len(projects) >= count: break
 
   interest_fields = ['bio', 'avatar', 'website', 'facebook', 'twitter', 'instagram', 'location']
-  all_users = list(db.users.find({'_id': {'$ne': user['_id']}, '$or': list(map(lambda f: {f: {'$exists': True}}, interest_fields))}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}))
+  all_users_query = {'$or': list(map(lambda f: {f: {'$exists': True}}, interest_fields))}
+  if user and user.get('_id'):
+    all_users_query['_id'] = {'$ne': user['_id']}
+  all_users = list(db.users.find(all_users_query, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}))
   random.shuffle(all_users)
   for u in all_users:
     if 'avatar' in u:
@@ -75,9 +79,9 @@ def discover(user):
 
 def explore():
   db = database.get_db()
+  
   project_map = {}
   user_map = {}
-  
   all_public_projects = list(db.projects.find({'name': {'$not': re.compile('my new project', re.IGNORECASE)}, 'visibility': 'public'}, {'name': 1, 'path': 1, 'user': 1}))
   all_public_project_ids = list(map(lambda p: p['_id'], all_public_projects))
   for project in all_public_projects:
@@ -92,5 +96,13 @@ def explore():
     user_map[a['_id']] = a
   for object in objects:
     object['userObject'] = user_map.get(object.get('projectObject', {}).get('user'))
-  return {'objects': objects}
+  
+  random.shuffle(all_public_projects)
+  all_public_project_user_ids = list(map(lambda p: p['user'], all_public_projects))
+  users = list(db.users.find({'_id': {'$in': all_public_project_user_ids[0:10]}}, {'username': 1, 'avatar': 1}))
+  for user in users:
+    if 'avatar' in user:
+      user['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(user['_id'], user['avatar']))
+        
+  return {'objects': objects, 'users': 1}
   

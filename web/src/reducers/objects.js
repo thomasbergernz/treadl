@@ -3,6 +3,7 @@ import actions from '../actions';
 const initialState = {
   loading: false,
   objects: [],
+  exploreObjects: [],
   comments: [],
   selected: null,
   editor: { tool: 'straight', colour: 'orange', view: 'interlacement' },
@@ -36,6 +37,8 @@ function objects(state = initialState, action) {
       });
       if (!found) objects.push(action.object);
       return Object.assign({}, state, { loading: false, objects });
+    case actions.objects.RECEIVE_EXPLORE_OBJECTS:
+      return Object.assign({}, state, { exploreObjects: action.objects });
     case actions.objects.CREATE_OBJECT:
       const objectList = state.objects;
       objectList.push(action.object);

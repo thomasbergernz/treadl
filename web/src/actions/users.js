@@ -8,6 +8,7 @@ export default {
   REQUEST_USERS: 'REQUEST_USERS',
   REQUEST_FAILED: 'REQUEST_FAILED',
   RECEIVE_USER: 'RECEIVE_USERS',
+  RECEIVE_EXPLORE: 'RECEIVE_EXPLORE',
   UPDATE_USER: 'UPDATE_USER',
   UPDATE_USERNAME: 'UPDATE_USERNAME',
   JOIN_GROUP: 'JOIN_GROUP',
@@ -32,6 +33,10 @@ export default {
 
   receive(user) {
     return { type: this.RECEIVE_USER, user };
+  },
+  
+  receiveExplore(users) {
+    return { type: this.RECEIVE_EXPLORE, users };
   },
 
   update(id, data) {
