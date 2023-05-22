@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Grid, Button } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Instagram } from 'react-content-loader'
 import actions from '../../../actions';
 import api from '../../../api';
 import utils from '../../../utils/utils.js';
 
 import DiscoverCard from '../../includes/DiscoverCard';
 import PatternCard from '../../includes/PatternCard';
+import PatternLoader from '../../includes/PatternLoader';
 import DraftPreview from '../projects/objects/DraftPreview';
 
 export default function Explore() {
@@ -43,9 +43,9 @@ export default function Explore() {
             {objects?.filter(o => o.projectObject && o.userObject).map(object =>
               <PatternCard object={object} project={object.projectObject} user={object.userObject} />
             )}
-            <Card>
-              <Instagram />
-            </Card>
+            {objects?.length === 0 && <>
+              <PatternLoader count={6} />
+            </>}
           </Card.Group>
           <div style={{display: 'flex', justifyContent: 'center', marginTop: 30}}>
             <Button loading={loading} onClick={loadMoreExplore}>View more</Button>
