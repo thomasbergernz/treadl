@@ -20,6 +20,10 @@ const StyledNavBar = styled.div`
     height:40px;
     margin-top:5px;
     margin-right: 50px;
+    transition: opacity 0.3s;
+    &:hover{
+      opacity: 0.5;
+    }
   }
   .only-mobile{
     @media only screen and (min-width: 768px) {
@@ -28,7 +32,7 @@ const StyledNavBar = styled.div`
   }
   .above-mobile{
     @media only screen and (max-width: 767px) {
-      display:none;
+      display:none !important;
     }
   }
 `;
@@ -58,10 +62,10 @@ export default function NavBar() {
           <Link to="/"><img alt={`${utils.appName()} logo`} src={logo} className="logo" /></Link>
           <div style={{flex: 1}}>
             <Menu secondary>
-              <Menu.Item as={Link} to='/' name='home' active={location.pathname === '/'} />
-              <Menu.Item as={Link} to='/explore' name='explore' active={location.pathname === '/explore'} />
-              <Menu.Item active={location.pathname.startsWith('/groups')} name='Groups'>
-                <Dropdown active={location.pathname.startsWith('/groups')} pointing='top left'
+              <Menu.Item className='above-mobile' as={Link} to='/' name='home' active={location.pathname === '/'} />
+              <Menu.Item className='above-mobile' as={Link} to='/explore' name='explore' active={location.pathname === '/explore'} />
+              <Menu.Item className='above-mobile' active={location.pathname.startsWith('/groups')} name='Groups'>
+                <Dropdown pointing='top left'
                   trigger={<span>Groups</span>}
                 >
                   <Dropdown.Menu>
@@ -77,7 +81,7 @@ export default function NavBar() {
               
               <Menu.Menu position='right'>
                 {isAuthenticated && <>
-                  <Menu.Item><SearchBar /></Menu.Item>
+                  <Menu.Item className='above-mobile'><SearchBar /></Menu.Item>
                   <Dropdown direction="left" pointing="top right" icon={null} style={{ marginTop: 10}}
                     trigger={<UserChip user={user} withoutLink avatarOnly />}
                     >

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import UserChip from './UserChip';
 
 export default function PatternCard({ object, project, user }) {
-  console.log(object);
   if (!object) return null;
   return (
     <Card raised key={object._id} style={{ cursor: 'pointer' }} as={Link} to={`/${user?.username}/${project?.path}/${object._id}`}>

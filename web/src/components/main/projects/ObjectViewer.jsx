@@ -137,10 +137,11 @@ function ObjectViewer() {
           </Dropdown>
 
           {user &&
-            <Dropdown icon={null} trigger={<Button size="small" icon="copy" secondary content="Copy to.." />}>
+            <Dropdown direction='left' icon={null} trigger={<Button size="small" icon="copy" secondary content="Copy to.." />}>
               <Dropdown.Menu>
                 <Dropdown.Header>Select a project to copy this pattern to</Dropdown.Header>
                 {myProjects?.map(myProject => <Dropdown.Item content={myProject.name} onClick={e => copyPattern(myProject)} />)}
+                {myProjects?.length === 0 && <Dropdown.Item>You don't have any projects.</Dropdown.Item>}
               </Dropdown.Menu>
             </Dropdown>
           }

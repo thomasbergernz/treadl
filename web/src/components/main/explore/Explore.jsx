@@ -18,9 +18,9 @@ export default function Explore() {
     return { objects: state.objects.exploreObjects, page: state.objects.explorePage };
   });
   
-  useEffect(() => {
+  /*useEffect(() => {
     if (page < 2) loadMoreExplore();
-  }, []);
+  }, []);*/
   
   function loadMoreExplore() {
     setLoading(true);
@@ -41,7 +41,7 @@ export default function Explore() {
           
           <Card.Group stackable doubling itemsPerRow={3} style={{marginTop: 30}}>
             {objects?.filter(o => o.projectObject && o.userObject).map(object =>
-              <PatternCard object={object} project={object.projectObject} user={object.userObject} />
+              <PatternCard key={object._id} object={object} project={object.projectObject} user={object.userObject} />
             )}
             {objects?.length === 0 && <>
               <PatternLoader count={6} />
