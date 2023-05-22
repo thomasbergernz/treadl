@@ -71,7 +71,7 @@ function MarketingHome({ onRegisterClicked }) {
           </div>
           <Card.Group stackable doubling itemsPerRow={3} style={{marginTop: 30}}>
             {objects?.length > 0 &&
-              (objects?.filter(o => o.projectObject && o.userObject).slice(0, 2).map(object =>
+              (objects?.filter(o => o.projectObject && o.userObject).sort(() => (Math.random() > .5) ? 1 : -1).slice(0, 3).map(object =>
                 <PatternCard object={object} project={object.projectObject} user={object.userObject} />
               ))
             }

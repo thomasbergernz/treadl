@@ -1,11 +1,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Icon, Form, Grid, Input, Checkbox, Button, Divider } from 'semantic-ui-react';
+import { Container, Icon, Form, Grid, Input, Checkbox, Button, Divider } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import actions from '../../../actions';
 import api from '../../../api';
+import utils from '../../../utils/utils.js';
 
 import HelpLink from '../../includes/HelpLink';
 
@@ -13,9 +14,10 @@ function NewGroup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { newGroupName, newGroupDescription, newGroupClosed, loading } = useSelector(state => {
+  const { user, newGroupName, newGroupDescription, newGroupClosed, loading } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     const { loading, newGroupName, newGroupDescription, newGroupClosed } = state.groups;
-    return { newGroupName, newGroupDescription, newGroupClosed, loading };
+    return { user, newGroupName, newGroupDescription, newGroupClosed, loading };
   });
 
   const createGroup = () => {
@@ -28,6 +30,15 @@ function NewGroup() {
       dispatch(actions.groups.request(false));
       toast.error(err.message);
     });
+  }
+  
+  if (!user) {
+    return (
+      <Container style={{marginTop: 40}}>
+        <h1>Login required</h1>
+        <p>You need to have a {utils.appName()} account in order to create a group. Please register or login first.</p>
+      </Container>
+    );
   }
 
   return (
