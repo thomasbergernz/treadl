@@ -17,6 +17,7 @@
     "react-app-polyfill": "^0.2.0",
     "react-color": "^2.19.3",
     "react-confirm": "^0.1.18",
+    "react-content-loader": "^6.2.1",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.0.0",
     "react-joyride": "^2.4.0",

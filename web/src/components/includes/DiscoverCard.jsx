@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card, List } from 'semantic-ui-react';
+import { Card, List, Dimmer } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { BulletList } from 'react-content-loader'
 import UserChip from './UserChip';
 import api from '../../api';
 import utils from '../../utils/utils.js';
@@ -8,23 +9,25 @@ import utils from '../../utils/utils.js';
 export default function ExploreCard({ count }) {
   const [highlightProjects, setHighlightProjects] = useState([]);
   const [highlightUsers, setHighlightUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
   
   useEffect(() => {
+    setLoading(true);
     api.search.discover(count || 3, ({ highlightProjects, highlightUsers }) => {
       setHighlightProjects(highlightProjects);
       setHighlightUsers(highlightUsers);
+      setLoading(false);
     });
   }, []);
   
-  if ((highlightProjects?.length === 0 || highlightUsers?.length === 0)) return null;
-
   return (
     <Card fluid>
       <Card.Content>
+        <h4>Discover a project</h4>
+        {loading && <BulletList />}
         {highlightProjects?.length > 0 && <>
-          <h4>Discover a project</h4>
           <List relaxed>
-            {highlightProjects.map(p =>
+            {highlightProjects?.map(p =>
               <List.Item key={p._id}>
                 <List.Icon name='book' size='large' verticalAlign='middle' />
                 <List.Content>
@@ -35,10 +38,11 @@ export default function ExploreCard({ count }) {
           </List>
         </>}
   
+        <h4>Find others on {utils.appName()}</h4>
+        {loading && <BulletList />}
         {highlightUsers?.length > 0 && <>
-          <h4>Find others on {utils.appName()}</h4>
           <List relaxed>
-            {highlightUsers.map(u =>
+            {highlightUsers?.map(u =>
               <List.Item key={u._id}>
                 <List.Content>
                   <UserChip user={u} className='umami--click--discover-user'/>

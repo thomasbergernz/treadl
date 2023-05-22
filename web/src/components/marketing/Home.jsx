@@ -67,7 +67,7 @@ function MarketingHome({ onRegisterClicked }) {
           <Container>
             <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center'}}>
               <h2>See what people have been creating</h2>
-              <Button as={Link} to='/explore'>Explore more</Button>
+              <Button as={Link} to='/explore' primary>Explore patterns</Button>
             </div>
             <Card.Group stackable doubling itemsPerRow={3} style={{marginTop: 30}}>
               {objects?.filter(o => o.projectObject && o.userObject).slice(0, 2).map(object =>
