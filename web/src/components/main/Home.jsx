@@ -144,7 +144,7 @@ function Home() {
         </Grid.Column>
 
         <Grid.Column computer={11} className='joyride-projects'>
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <h2><Icon name='book' /> Your projects</h2>
             <div><Button className='joyride-createProject' as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' /></div>
           </div>

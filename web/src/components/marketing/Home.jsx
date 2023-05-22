@@ -15,7 +15,7 @@ import filesImage from '../../images/files.png';
 const StyledHero = styled.div`
   background: linen;
   min-height: 200px;
-  margin-top: 10px;
+  padding-top: 50px;
 `;
 
 function MarketingHome({ onRegisterClicked }) {

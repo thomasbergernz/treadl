@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Loader, List, Popup, Modal, Grid, Icon, Button, Container, Dropdown } from 'semantic-ui-react';
+import { Modal, Grid, Icon, Button, Container, Dropdown } from 'semantic-ui-react';
 import api from '../../api';
 import actions from '../../actions';
 import utils from '../../utils/utils.js';
@@ -10,6 +10,7 @@ import utils from '../../utils/utils.js';
 import logo from '../../images/logo/main.png';
 import UserChip from './UserChip';
 import SupporterBadge from './SupporterBadge';
+import SearchBar from './SearchBar';
 
 const StyledNavBar = styled.div`
   height:60px;
@@ -38,50 +39,16 @@ const StyledNavBar = styled.div`
   }
 `;
 
-const SearchBar = styled.div`
-  background-color:rgba(0,0,0,0.1);
-  padding-left:5px;
-  padding-top: 3px;
-  border: none;
-  border-radius:5px;
-  transition: background-color 0.5s;
-  margin-right:8px;
-  display:inline-block;
-  &:before{
-    display:inline-block;
-    content: '🔍';
-  }
-  &:focus-within{
-    background-color:rgba(250,250,250,0.5);
-    color:rgb(50,50,50);
-    input {
-      outline: none;
-    }
-    input::placeholder {
-      color:black;
-    }
-  }
-  input{
-    border:none;
-    background:none;
-    padding:8px;
-  }
-`;
-
 function NavBar() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuthenticated, user, groups, helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching } = useSelector(state => {
+  const { isAuthenticated, user, groups, helpModalOpen } = useSelector(state => {
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
     const { isAuthenticated } = state.auth;
-    const { helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching } = state.app;
-    return { isAuthenticated, user, groups, helpModalOpen, searchPopupOpen, searchTerm, searchResults, searching };
+    const { helpModalOpen } = state.app;
+    return { isAuthenticated, user, groups, helpModalOpen };
   });
-
-  const navigate = useNavigate();
-  useEffect(() => {
-    dispatch(actions.app.openSearchPopup(false));
-  }, [dispatch]);
 
   const logout = () => api.auth.logout(() => {
     dispatch(actions.auth.logout());
@@ -90,11 +57,6 @@ function NavBar() {
     navigate('/');
   });
 
-  const search = () => {
-    dispatch(actions.app.updateSearching(true));
-    api.search.all(searchTerm, r => dispatch(actions.app.updateSearchResults(r)));
-  };
-
   return (
     <StyledNavBar>
       <Container style={{display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -102,59 +64,10 @@ function NavBar() {
         {isAuthenticated
           ? (
             <div className='nav-links'>
-              <Popup basic on='focus' open={searchPopupOpen}
-                onOpen={e => dispatch(actions.app.openSearchPopup(true))} onClose={e => dispatch(actions.app.openSearchPopup(false))}
-                trigger={<SearchBar><input placeholder='Click to search...' value={searchTerm} onChange={e => dispatch(actions.app.updateSearchTerm(e.target.value))} onKeyDown={e => e.keyCode === 13 && search()} /></SearchBar>}
-                content={<div style={{width: 300}} className='joyride-search'>
-                  {!searchResults?.users && !searchResults?.groups ?
-                    <small>
-                      {searching
-                        ? <span><Loader size='tiny' inline active style={{marginRight: 10}}/> Searching...</span>
-                        : <span>Type something and press enter to search</span>
-                      }
-                    </small>
-                    : <>
-                    {(!searchResults.users?.length && !searchResults?.groups?.length && !searchResults?.projects?.length) ?
-                      <span><small>No results found</small></span>
-                    :
-                    <Grid stackable>
-                      {searchResults?.users?.length > 0 &&
-                        <Grid.Column width={6}>
-                          {searchResults?.users?.map(u =>
-                            <div style={{marginBottom: 5}}><UserChip user={u} key={u._id} /></div>
-                          )}
-                        </Grid.Column>
-                      }
-                      {(searchResults?.projects.length > 0 || searchResults.groups.length > 0) &&
-                        <Grid.Column width={10}>
-                          <List>
-                            {searchResults?.projects?.map(p =>
-                              <List.Item key={p._id}>
-                                <List.Icon name='book' size='large' verticalAlign='middle' />
-                                <List.Content>
-                                  <List.Header as={Link} to={'/' + p.fullName}>{p.name}</List.Header>
-                                  <List.Description><UserChip compact user={p.owner} /></List.Description>
-                                </List.Content>
-                              </List.Item>
-                            )}
-                            {searchResults?.groups?.map(g =>
-                              <List.Item key={g._id}>
-                                <List.Icon name='users' size='large' verticalAlign='middle' />
-                                <List.Content>
-                                  <List.Header as={Link} to={`/groups/${g._id}`}>{g.name}</List.Header>
-                                  <List.Description><small>{g.closed ? <span><Icon name='lock' /> Closed group</span> : <span>Open group</span>}</small></List.Description>
-                                </List.Content>
-                              </List.Item>
-                            )}
-                          </List>
-                        </Grid.Column>
-                      }
-                    </Grid>
-                  }</>}
-                </div>} />
-
+              <SearchBar />
               <span className='above-mobile'>
                 <Button as={Link} to="/" size="small" icon='home' basic content='Home' />
+                <Button as={Link} to='/explore' size='small' icon='binoculars' basic content='Explore' />
               </span>
 
               {groups.length > 0 &&
@@ -216,7 +129,8 @@ function NavBar() {
                 </Dropdown>
               </span>
               <span className="above-mobile">
-                <Button basic color='teal' onClick={() => dispatch(actions.auth.openLogin())}>Login</Button>
+                <Button as={Link} to='/explore' size='small' icon='binoculars' basic content='Explore' />
+                <Button onClick={() => dispatch(actions.auth.openLogin())}>Login</Button>
               </span>
               <Button color="teal" onClick={() => dispatch(actions.auth.openRegister())}>
                 <span role="img" aria-label="wave">👋</span> Sign-up
