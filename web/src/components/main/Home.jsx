@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Loader, Divider, Button, Message, Container, Segment, Grid, Card, Icon, List } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { BulletList } from 'react-content-loader'
 import { toast } from 'react-toastify';
 import actions from '../../actions';
 import api from '../../api';
@@ -11,18 +12,19 @@ import utils from '../../utils/utils.js';
 import UserChip from '../includes/UserChip';
 import HelpLink from '../includes/HelpLink';
 import ProjectCard from '../includes/ProjectCard';
+import PatternLoader from '../includes/PatternLoader';
 import Tour from '../includes/Tour';
 import DiscoverCard from '../includes/DiscoverCard';
 
 function Home() {
   const [runJoyride, setRunJoyride] = useState(false);
   const dispatch = useDispatch();
-  const { user, projects, groups, invitations, loadingProjects } = useSelector(state => {
+  const { user, projects, groups, invitations, loadingProjects, loadingGroups } = useSelector(state => {
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     const groups = state.groups.groups.filter(g => utils.isInGroup(user, g._id));
     const invitations = state.invitations.invitations.filter(i => i.recipient === user?._id);
     const projects = state.projects.projects.filter(p => p.user === user?._id);
-    return { user, projects, groups, invitations, loadingProjects: state.projects.loading };
+    return { user, projects, groups, invitations, loadingProjects: state.projects.loading, loadingGroups: state.groups.loading };
   });
 
   useEffect(() => {
@@ -88,42 +90,49 @@ function Home() {
           <h2><span role="img" aria-label="wave">👋</span> {greeting}{user && <span>, {user.username}</span>}</h2>
 
           <DiscoverCard count={3} />
+  
+          <Card fluid className='joyride-groups' style={{opacity: 0.8}}>
+            <Card.Content>
+              <Card.Header>Your groups</Card.Header>
 
-          {(groups && groups.length) ?
-            <Card fluid className='joyride-groups' style={{opacity: 0.8}}>
-              <Card.Content>
-                <Card.Header>Your groups</Card.Header>
-
-                <List relaxed>
-                  {groups.map(g =>
-                    <List.Item key={g._id}>
-                      <List.Icon name='users' size='large' verticalAlign='middle' />
-                      <List.Content>
-                        <List.Header as={Link} to={`/groups/${g._id}`}>{g.name}</List.Header>
-                        <List.Description>{utils.isGroupAdmin(user, g) ? 'Administrator' : 'Member'}</List.Description>
-                      </List.Content>
-                    </List.Item>
-                  )}
-                </List>
-                <Button className='joyride-createGroup' fluid size='small' icon='plus' content='Create a new group' as={Link} to='/groups/new' />
-                <HelpLink link={`/docs/groups`} text='Learn more about groups' marginTop/>
-              </Card.Content>
-            </Card>
-          :
-            <Message>
-              <Message.Header>Groups</Message.Header>
-              <p>Groups enable you to build communities of weavers and makers with similar interests. Create one for your weaving group or class today.</p>
-              <Button className='joyride-createGroup' as={Link} to='/groups/new' size='small' color='purple' icon='plus' content='Create a group' />
-            </Message>
-          }
+              {(loadingGroups && !groups?.length) ?
+                <div>
+                  <BulletList />
+                  <BulletList />
+                </div>
+                :
+                (groups?.length > 0 ?
+                  <List relaxed>
+                    {groups.map(g =>
+                      <List.Item key={g._id}>
+                        <List.Icon name='users' size='large' verticalAlign='middle' />
+                        <List.Content>
+                          <List.Header as={Link} to={`/groups/${g._id}`}>{g.name}</List.Header>
+                          <List.Description>{utils.isGroupAdmin(user, g) ? 'Administrator' : 'Member'}</List.Description>
+                        </List.Content>
+                      </List.Item>
+                    )}
+                  </List>
+                :
+                  <Card.Description>
+                    Groups enable you to join or build communities of weavers and makers with similar interests.
+                  </Card.Description>
+                )
+              }
+              <Divider hidden />
+              <Button className='joyride-createGroup' fluid size='small' icon='plus' content='Create a new group' as={Link} to='/groups/new' />
+              <HelpLink link={`/docs/groups`} text='Learn more about groups' marginTop/>
+            </Card.Content>
+          </Card>
 
           {(import.meta.env.VITE_PATREON_URL || import.meta.env.VITE_KOFI_URL) &&
             <Card fluid style={{opacity: 0.8}}>
               <Card.Content>
                 <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support {utils.appName()}</Card.Header>
                 <Card.Description>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} you may like to consider supporting it.</Card.Description>
+                <Divider hidden />
                 {import.meta.env.VITE_KOFI_URL &&
-                  <Button style={{marginTop: 10}} size='small' fluid as='a' href={import.meta.env.VITE_KOFI_URL} target='_blank' rel='noopener noreferrer' className='umami--click--kofi-button'><span role='img' aria-label='Coffee' style={{marginRight: 5}}>☕️</span> Buy me a coffee</Button>
+                  <Button size='small' fluid as='a' href={import.meta.env.VITE_KOFI_URL} target='_blank' rel='noopener noreferrer' className='umami--click--kofi-button'><span role='img' aria-label='Coffee' style={{marginRight: 5}}>☕️</span> Buy me a coffee</Button>
                 }
                 {import.meta.env.VITE_PATREON_URL &&
                   <Button style={{marginTop: 10}} size='small' fluid as='a' href={import.meta.env.VITE_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-button'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
@@ -135,42 +144,39 @@ function Home() {
         </Grid.Column>
 
         <Grid.Column computer={11} className='joyride-projects'>
-          {loadingProjects && !projects.length &&
-            <div style={{textAlign: 'center'}}>
-              <h4>Loading your projects...</h4>
-              <Loader active inline="centered" />
-            </div>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <h2><Icon name='book' /> Your projects</h2>
+            <div><Button className='joyride-createProject' as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' /></div>
+          </div>
+          <p>Projects contain the patterns and files that make up your creations.
+            <HelpLink className='joyride-help' link={`/docs/projects`} text='Learn more about projects' marginLeft/>
+          </p>
+          
+          <Divider hidden />
+        
+          {loadingProjects && !projects?.length &&
+            <Card.Group itemsPerRow={2} stackable>
+              <PatternLoader isCompact count={3} />
+            </Card.Group>
           }
 
-          {user && !loadingProjects && (!projects || !projects.length) &&
+          {user && !loadingProjects && !projects?.length &&
             <div style={{textAlign: 'center'}}>
-              <h1>
-                <span role="img" aria-label="chequered flag">🚀</span> Let's get started
-              </h1>
-              <Divider hidden/>
               <Segment placeholder textAlign='center'>
                 <h3>On {utils.appName()}, your patterns and files are stored in <strong><span role="img" aria-label="box">📦</span> projects</strong></h3>
                 <p>Projects can contain anything: from rough ideas or design experiments through to commissions and exhibitions. Treat them as if they were just <span role="img" aria-label="folder">📁</span> folders on your computer.</p>
-                <p><HelpLink className='joyride-help' link={`/docs/projects`} text='Learn more about projects' marginTop/></p>
-                <Divider  />
-                <h4>Start by creating a new project. Don't worry, you can keep it private.</h4>
+                <Divider  section hidden />
+                <h4>Start by creating your first project. You can keep it private if you prefer.</h4>
                 
                 <Button className='joyride-createProject' as={Link} to="/projects/new" color="teal" icon="plus" content="Create a project" />
               </Segment>
-
             </div>
           }
 
-          {projects && projects.length > 0 &&
+          {projects?.length > 0 &&
             <div>
-              <Button className='joyride-createProject' as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' floated='right'/>
-              <h2><Icon name='book' /> Your projects</h2>
-              <p>Projects contain the patterns and files that make up your creations.
-                <HelpLink className='joyride-help' link={`/docs/projects`} text='Learn more about projects' marginLeft/>
-              </p>
-              <Divider clearing hidden />
               <Card.Group itemsPerRow={2} stackable>
-                {projects && projects.map(proj => (
+                {projects.map(proj => (
                   <ProjectCard key={proj._id} project={proj} />
                 ))}
               </Card.Group>

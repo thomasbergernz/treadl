@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import utils from '../../utils/utils.js';
 
 import PatternCard from '../includes/PatternCard';
+import PatternLoader from '../includes/PatternLoader';
 import projectImage from '../../images/project.png';
 import toolsImage from '../../images/tools.png';
 import filesImage from '../../images/files.png';
@@ -62,21 +63,24 @@ function MarketingHome({ onRegisterClicked }) {
         </Container>
       </StyledHero>
       
-      {objects?.length > 0 &&
-        <div style={{paddingTop: 75, marginBottom: 75, background: 'linear-gradient(linen, rgb(255,251,248)'}}>
-          <Container>
-            <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center'}}>
-              <h2>See what people have been creating</h2>
-              <Button as={Link} to='/explore' primary>Explore patterns</Button>
-            </div>
-            <Card.Group stackable doubling itemsPerRow={3} style={{marginTop: 30}}>
-              {objects?.filter(o => o.projectObject && o.userObject).slice(0, 2).map(object =>
+      <div style={{paddingTop: 75, marginBottom: 75, background: 'linear-gradient(linen, rgb(255,251,248)'}}>
+        <Container>
+          <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center'}}>
+            <h2>See what people have been creating</h2>
+            <Button size='large' as={Link} to='/explore' primary>Explore {utils.appName()}</Button>
+          </div>
+          <Card.Group stackable doubling itemsPerRow={3} style={{marginTop: 30}}>
+            {objects?.length > 0 &&
+              (objects?.filter(o => o.projectObject && o.userObject).slice(0, 2).map(object =>
                 <PatternCard object={object} project={object.projectObject} user={object.userObject} />
-              )}
-            </Card.Group>
-          </Container>
-        </div>
-      }
+              ))
+            }
+            {objects?.length === 0 && <>
+              <PatternLoader count={3} />
+            </>}
+          </Card.Group>
+        </Container>
+      </div>
 
       <Container style={{ marginTop: 50 }}>
         <Grid stackable centered>

@@ -1,4 +1,6 @@
 import api from '.';
+import actions from '../actions';
+import { store } from '..';
 
 export const groups = {
   create(data, success, fail) {
@@ -8,6 +10,7 @@ export const groups = {
     api.authenticatedRequest('DELETE', `/groups/${id}`, null, success, fail);
   },
   getMine(success, fail) {
+    store.dispatch(actions.groups.request());
     api.authenticatedRequest('GET', '/groups', null, data => success && success(data.groups), fail);
   },
   get(id, success, fail) {
