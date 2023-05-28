@@ -17,11 +17,6 @@ const StyledWarp = styled.div`
     border-top:1px solid rgb(150,150,150);
   }
 `;
-const StyledSelectedOptions = styled.div`
-  position: absolute;
-  top: -100px;
-  right: 0px;
-`;
 
 const squares = {};
 const markers = {};
@@ -32,7 +27,6 @@ let startThread = null;
 let warpTouchListeners = {};
 
 function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
-  const [selectedThreads, setSelectedThreads] = useState([]);
   const [draggingColourway, setDraggingColourway] = useState(false);
 
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
@@ -141,12 +135,6 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
 
       let x = xDirection > 0 ? lX : hX;
       let y = yDirection > 0 ? lY : hY;
-      /*if (editor.tool === 'select') {
-        const selectedIndex = selectedThreads.indexOf(thread);
-        if (selectedIndex === -1) selectedThreads.push(thread);
-        else selectedThreads.splice(selectedIndex, 1);
-        console.log(selectedThreads);
-      }*/
       if (editor.tool === 'colour') {
         if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
         newWarp.threading[thread].colour = editor.colour;
@@ -182,12 +170,11 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
       updatePattern({ warp: newWarp });
     }
     if (editor.tool === 'select') {
-      const newSelected = Object.assign([], selectedThreads);
-      const selectedIndex = newSelected.indexOf(thread);
-      if (selectedIndex === -1) newSelected.push(thread);
-      else newSelected.splice(selectedIndex, 1);
-      setSelectedThreads(newSelected);
-      //paintDrawdown();
+      const newWarp = Object.assign({}, warp);
+      if (thread > warp.threading.length || warp.threading.length - thread < 5) fillUpTo(newWarp, thread + 5);
+      const warpThread = newWarp.threading[thread];
+      warpThread.isSelected = !warpThread.isSelected;
+      updatePattern({ warp: newWarp });
     }
   };
 
@@ -212,7 +199,6 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     return m_canvas;
   };
   const getSelectedMarker = (size, height) => {
-    //if (selectedMarkers[size]) return selectedMarkers[size];
     const m_canvas = document.createElement('canvas');
     m_canvas.width = baseSize;
     m_canvas.height = height;
@@ -259,9 +245,8 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     const marker = getMarker(baseSize);
     for (let thread = 0; thread < warp.threading.length; thread++) {
       const shaft = warp.threading[thread].shaft;
-      const isSelected = selectedThreads.indexOf(thread) > -1;
+      const isSelected = warp.threading[thread].isSelected;
       if (isSelected) {
-        console.log('SELEC');
         ctx.drawImage(selectedMarker, canvas.width - ((thread + 1) * baseSize), 0);
       }
       ctx.drawImage(marker, canvas.width - ((thread + 1) * baseSize), canvas.height - (shaft * baseSize));
@@ -270,8 +255,6 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     }
   };
   
-  console.log(selectedThreads.length);
-
   return (
     <StyledWarp treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize}>
       <canvas className='warp-colourway joyride-warpColourway' ref={colourwayRef} width={warp.threading.length * baseSize} height={10}
@@ -297,12 +280,6 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
         onMouseUp={mouseUp}
         onMouseLeave={mouseUp}
       />
-      {selectedThreads?.length > 0 &&
-        <StyledSelectedOptions>
-          <p>Threads selected</p>
-          <Button icon='trash' />
-        </StyledSelectedOptions>
-      }
     </StyledWarp>
   );
 }
