@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
+import { Button } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
 import utils from '../../../../utils/utils.js';
 
@@ -8,22 +9,30 @@ const StyledWarp = styled.div`
   right:0px;
   position: absolute;
   right: ${props => (props.treadles * props.baseSize) + 20}px;
-  height: ${props => (props.shafts * props.baseSize) + 10}px;
-  width: ${props => (props.threading * props.baseSize) + 10}px;
+  height: ${props => (props.shafts * props.baseSize) + 40}px;
+  width: 100%;
+  overflow: visible;
   .warp-colourway td{
     border:none;
     border-top:1px solid rgb(150,150,150);
   }
 `;
+const StyledSelectedOptions = styled.div`
+  position: absolute;
+  top: -100px;
+  right: 0px;
+`;
 
 const squares = {};
 const markers = {};
+const selectedMarkers = {};
 let dragging = false;
 let startShaft = null;
 let startThread = null;
 let warpTouchListeners = {};
 
 function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
+  const [selectedThreads, setSelectedThreads] = useState([]);
   const [draggingColourway, setDraggingColourway] = useState(false);
 
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
@@ -132,6 +141,12 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
 
       let x = xDirection > 0 ? lX : hX;
       let y = yDirection > 0 ? lY : hY;
+      /*if (editor.tool === 'select') {
+        const selectedIndex = selectedThreads.indexOf(thread);
+        if (selectedIndex === -1) selectedThreads.push(thread);
+        else selectedThreads.splice(selectedIndex, 1);
+        console.log(selectedThreads);
+      }*/
       if (editor.tool === 'colour') {
         if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
         newWarp.threading[thread].colour = editor.colour;
@@ -158,13 +173,21 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     }
   };
   const click = (event) => {
+    const { thread, shaft } = getThreadShaft(event, warpRef.current);
     if (editor.tool === 'point' || editor.tool === 'straight') {
-      const { thread, shaft } = getThreadShaft(event, warpRef.current);
       const newWarp = Object.assign({}, warp);
       if (thread > warp.threading.length || warp.threading.length - thread < 5) fillUpTo(newWarp, thread + 5);
       const warpThread = newWarp.threading[thread];
       warpThread.shaft = warpThread.shaft === shaft ? 0 : shaft;
       updatePattern({ warp: newWarp });
+    }
+    if (editor.tool === 'select') {
+      const newSelected = Object.assign([], selectedThreads);
+      const selectedIndex = newSelected.indexOf(thread);
+      if (selectedIndex === -1) newSelected.push(thread);
+      else newSelected.splice(selectedIndex, 1);
+      setSelectedThreads(newSelected);
+      //paintDrawdown();
     }
   };
 
@@ -186,6 +209,17 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     mc.fillStyle = 'black';
     mc.fillRect(0, 0, baseSize, baseSize);
     markers[size] = m_canvas;
+    return m_canvas;
+  };
+  const getSelectedMarker = (size, height) => {
+    //if (selectedMarkers[size]) return selectedMarkers[size];
+    const m_canvas = document.createElement('canvas');
+    m_canvas.width = baseSize;
+    m_canvas.height = height;
+    const mc = m_canvas.getContext('2d');
+    mc.fillStyle = 'lightblue';
+    mc.fillRect(0, 0, baseSize, height);
+    selectedMarkers[size] = m_canvas;
     return m_canvas;
   };
 
@@ -220,15 +254,23 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     }
     ctx.strokeStyle = 'rgba(0,0,0,0.3)';
     ctx.stroke();
-
+    
+    const selectedMarker = getSelectedMarker(baseSize, canvas.height);
+    const marker = getMarker(baseSize);
     for (let thread = 0; thread < warp.threading.length; thread++) {
       const shaft = warp.threading[thread].shaft;
-      const marker = getMarker(baseSize);
+      const isSelected = selectedThreads.indexOf(thread) > -1;
+      if (isSelected) {
+        console.log('SELEC');
+        ctx.drawImage(selectedMarker, canvas.width - ((thread + 1) * baseSize), 0);
+      }
       ctx.drawImage(marker, canvas.width - ((thread + 1) * baseSize), canvas.height - (shaft * baseSize));
       const colourSquare = getSquare(baseSize, warp.threading[thread].colour || warp.defaultColour);
       ctx2.drawImage(colourSquare, canvas.width - ((thread + 1) * baseSize), 0);
     }
   };
+  
+  console.log(selectedThreads.length);
 
   return (
     <StyledWarp treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize}>
@@ -255,6 +297,12 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
         onMouseUp={mouseUp}
         onMouseLeave={mouseUp}
       />
+      {selectedThreads?.length > 0 &&
+        <StyledSelectedOptions>
+          <p>Threads selected</p>
+          <Button icon='trash' />
+        </StyledSelectedOptions>
+      }
     </StyledWarp>
   );
 }
