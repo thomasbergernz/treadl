@@ -40,7 +40,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const [activeDrawers, setActiveDrawers] = useState(['properties', 'drawing', 'palette']);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [newColour, setNewColour] = useState('#22194D');
-  const [hasSelectedThreads, setHasSelectedThreads] = useState(false);
+  const [selectedThreadCount, setSelectedThreadCount] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { objectId, username, projectPath } = useParams();
@@ -56,20 +56,10 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   useEffect(() => {
     if (!pattern) return;
     const { warp, weft } = pattern;
-    let selectedFound = false;
-    for (let i = 0; i < warp?.threading?.length; i++) {
-      if (warp.threading[i].isSelected) {
-        selectedFound = true;
-        break;
-      }
-    }
-    for (let i = 0; i < weft?.treadling?.length; i++) {
-      if (weft.treadling[i].isSelected) {
-        selectedFound = true;
-        break;
-      }
-    }
-    setHasSelectedThreads(selectedFound);
+    let selected = 0;
+    selected += warp?.threading?.filter(t => t.isSelected)?.length;
+    selected += weft?.treadling?.filter(t => t.isSelected)?.length;
+    setSelectedThreadCount(selected);
   }, [pattern]);
 
   const enableTool = (tool) => {
@@ -97,16 +87,15 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   };
   
   const deleteSelectedThreads = () => {
+    const newWarp = Object.assign({}, pattern.warp);
+    const newWeft = Object.assign({}, pattern.weft);
     if (pattern?.warp?.threading) {
-      const newWarp = Object.assign({}, pattern.warp);
-      newWarp.threading = warp.threading.filter(t => !t.isSelected);
-      updatePattern({ warp: newWarp });
+      newWarp.threading = newWarp.threading.filter(t => !t.isSelected);
     }
     if (pattern?.weft?.treadling) {
-      const newWeft = Object.assign({}, pattern.weft);
       newWeft.treadling = newWeft.treadling.filter(t => !t.isSelected);
-      updatePattern({ weft: newWeft });
     }
+    updatePattern({ warp: newWarp, weft: newWeft });
   }
 
   const onZoomChange = zoom => updatePattern({ baseSize: zoom || 10 });
@@ -176,8 +165,8 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
 
   return (
     <div className="pattern-toolbox joyride-tools">
-      {hasSelectedThreads &&
-        <Button onClick={deleteSelectedThreads}>Delete selected</Button>
+      {selectedThreadCount > 0 &&
+        <Button size='small' fluid danger onClick={deleteSelectedThreads}>Delete {selectedThreadCount} selected threads</Button>
       }
       
       {unsaved &&
