@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -31,7 +30,6 @@ function Draft() {
   const [saving, setSaving] = useState(false);
   const [object, setObject] = useState();
   const [pattern, setPattern] = useState();
-  const [hasSelectedThreads, setHasSelectedThreads] = useState(false);
   const [name] = useState();
   const { objectId } = useParams();
   const dispatch = useDispatch();
@@ -44,19 +42,6 @@ function Draft() {
       setPattern(o.pattern);
     });
   }, [objectId]);
-  
-  useEffect(() => {
-    if (!pattern) return;
-    const { warp } = pattern;
-    let selectedFound = false;
-    for (let i = 0; i < warp?.threading?.length; i++) {
-      if (warp.threading[i].isSelected) {
-        selectedFound = true;
-        break;
-      }
-    }
-    setHasSelectedThreads(selectedFound);
-  }, [pattern]);
 
   const updateObject = (update) => {
     setObject(Object.assign({}, object, update));
@@ -85,14 +70,6 @@ function Draft() {
       setSaving(false);
     });
   };
-  
-  const deleteSelectedThreads = () => {
-    if (pattern?.warp?.threading) {
-      const newWarp = Object.assign({}, pattern.warp);
-      newWarp.threading = warp.threading.filter(t => !t.isSelected);
-      updatePattern({ warp: newWarp });
-    }
-  }
 
   if (!pattern) return null;
   const { warp, weft, tieups, baseSize } = pattern;
@@ -128,9 +105,6 @@ function Draft() {
         <div style={{width: 300, marginLeft: 20}}>
           <HelpLink className='joyride-help' link={`/docs/patterns#using-the-pattern-editor`} marginBottom/>
           <ReRunTour id='pattern' />
-          {hasSelectedThreads &&
-            <Button onClick={deleteSelectedThreads}>Delete selected</Button>
-          }
           <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
         </div>
 

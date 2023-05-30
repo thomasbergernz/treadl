@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Confirm, Select, Segment, Accordion, Grid, Icon, Input, Button, Popup
 } from 'semantic-ui-react';
@@ -40,6 +40,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const [activeDrawers, setActiveDrawers] = useState(['properties', 'drawing', 'palette']);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [newColour, setNewColour] = useState('#22194D');
+  const [hasSelectedThreads, setHasSelectedThreads] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { objectId, username, projectPath } = useParams();
@@ -51,6 +52,19 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     });
     return { project, editor: state.objects.editor };
   });
+  
+  useEffect(() => {
+    if (!pattern) return;
+    const { warp } = pattern;
+    let selectedFound = false;
+    for (let i = 0; i < warp?.threading?.length; i++) {
+      if (warp.threading[i].isSelected) {
+        selectedFound = true;
+        break;
+      }
+    }
+    setHasSelectedThreads(selectedFound);
+  }, [pattern]);
 
   const enableTool = (tool) => {
     dispatch(actions.objects.updateEditor({ tool, colour: editor.colour }));
@@ -75,6 +89,14 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const setTreadles = (event) => {
     updatePattern({ weft: { ...weft, treadles: parseInt(event.target.value, 10) || 1 } });
   };
+  
+  const deleteSelectedThreads = () => {
+    if (pattern?.warp?.threading) {
+      const newWarp = Object.assign({}, pattern.warp);
+      newWarp.threading = warp.threading.filter(t => !t.isSelected);
+      updatePattern({ warp: newWarp });
+    }
+  }
 
   const onZoomChange = zoom => updatePattern({ baseSize: zoom || 10 });
 
@@ -143,6 +165,10 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
 
   return (
     <div className="pattern-toolbox joyride-tools">
+      {hasSelectedThreads &&
+        <Button onClick={deleteSelectedThreads}>Delete selected</Button>
+      }
+      
       {unsaved &&
         <Segment attached="top">
           <Button fluid color="teal" icon="save" content="Save pattern" onClick={() => saveObject(/*this.refs.canvas*/)} loading={saving}/>

@@ -204,7 +204,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     m_canvas.height = height;
     const mc = m_canvas.getContext('2d');
     mc.fillStyle = 'lightblue';
-    mc.fillRect(0, 0, baseSize, height);
+    mc.fillRect(0, 1, baseSize, height);
     selectedMarkers[size] = m_canvas;
     return m_canvas;
   };
