@@ -151,7 +151,6 @@ def loads(wif_file):
     while int(x) >= len(draft['warp']['threading']) - 1:
       draft['warp']['threading'].append({'shaft': 0})
     draft['warp']['threading'][int(x) - 1] = {'shaft': shaft}
-  draft['warp']['threads'] = len(draft['warp']['threading'])
   try:
     warp_colours = config['warp colors']
     for x in warp_colours:
@@ -180,7 +179,6 @@ def loads(wif_file):
     while int(x) >= len(draft['weft']['treadling']) - 1:
       draft['weft']['treadling'].append({'treadle': 0})
     draft['weft']['treadling'][int(x) - 1] = {'treadle': shaft}
-  draft['weft']['threads'] = len(draft['weft']['treadling'])
   try:
     weft_colours = config['weft colors']
     for x in weft_colours:

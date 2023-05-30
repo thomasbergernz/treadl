@@ -87,6 +87,8 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   };
   
   const deleteSelectedThreads = () => {
+    const sure = window.confirm('Really delete the selected threads?');
+    if (!sure) return;
     const newWarp = Object.assign({}, pattern.warp);
     const newWeft = Object.assign({}, pattern.weft);
     if (pattern?.warp?.threading) {

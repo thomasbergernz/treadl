@@ -6,7 +6,6 @@ from api import uploads
 default_pattern = {
   'warp': {
     'shafts': 8,
-    'threads': 100,
     'threading': [{'shaft': 0}] * 100,
     'defaultColour': '178,53,111',
     'defaultSpacing': 1,
@@ -14,7 +13,6 @@ default_pattern = {
   },
   'weft': {
     'treadles': 8,
-    'threads': 50,
     'treadling': [{'treadle': 0}] * 50,
     'defaultColour': '53,69,178',
     'defaultSpacing': 1,
