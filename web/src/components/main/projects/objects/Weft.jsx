@@ -12,6 +12,7 @@ const StyledWeft = styled.div`
   min-height: 1000px;
   width: ${props => (props.treadles * props.baseSize)}px;
   height: ${props => props.threads * props.baseSize}px;
+  cursor: ${props => props.tool === 'insert' ? 's-resize': 'initial'};
   .weft-colourway{
     border:none;
     border-right:1px solid rgb(150,150,150);
@@ -188,7 +189,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
       if (number && number > 0) {
         const newThreads = [...new Array(number)].map(() => ({ treadle: 0 }));
         const newWeft = Object.assign({}, weft);
-        newWeft.treadling?.splice(thread, 0, ...newThreads);
+        newWeft.treadling?.splice(thread - 1, 0, ...newThreads);
         updatePattern({ weft: newWeft });
       }
     }
@@ -277,20 +278,21 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
     }
   }
 
+  const threadCount = weft.treadling?.length || 0;
   return (
-    <StyledWeft baseSize={baseSize} treadles={weft.treadles} shafts={warp.shafts} threads={weft.threads}>
-      <canvas className='weft-colourway' ref={colourwayRef} width={10} height={weft.threads * baseSize}
-        style={{ position: 'absolute', top: 0, right: 0, width: 10, height: weft.threads * baseSize}}
+    <StyledWeft baseSize={baseSize} treadles={weft.treadles} shafts={warp.shafts} threads={threadCount} tool={tool}>
+      <canvas className='weft-colourway' ref={colourwayRef} width={10} height={threadCount * baseSize}
+        style={{ position: 'absolute', top: 0, right: 0, width: 10, height: threadCount * baseSize}}
         onClick={mouseClickColourway}
         onMouseDown={mouseDownColourway}
         onMouseMove={mouseMoveColourway}
         onMouseUp={mouseUpColourway}
         onMouseLeave={mouseUpColourway}
       />
-      <canvas className='weft-threads joyride-weft' ref={weftRef} width={weft.treadles * baseSize} height={weft.threads * baseSize}
+      <canvas className='weft-threads joyride-weft' ref={weftRef} width={weft.treadles * baseSize} height={threadCount * baseSize}
         style={{
           position: 'absolute',
-          top: 0, right: 10, height: weft.threads * baseSize, width: weft.treadles * baseSize,
+          top: 0, right: 10, height: threadCount * baseSize, width: weft.treadles * baseSize,
           borderRadius: 4, boxShadow: '0px 0px 10px rgba(0,0,0,0.15)',
         }}
         onClick={click}
