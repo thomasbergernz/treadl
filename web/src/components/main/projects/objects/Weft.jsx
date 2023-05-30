@@ -157,18 +157,40 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
           if (x > hX || x <= lX) xDirection = 0 - xDirection;
         }
       }
+      if (editor.tool === 'select') {
+        while (y <= hY && y >= lY) {
+          newWeft.treadling[y - 1].isSelected = true;
+          y += yDirection;
+          if (y > hY || y <= lY) yDirection = 0 - yDirection;
+        }
+      }
       updatePattern({ weft: newWeft });
     }
   };
   const click = (event) => {
+    let { thread, treadle } = getThreadTreadle(event, weftRef.current);
     if (editor.tool === 'point' || editor.tool === 'straight') {
-      let { thread, treadle } = getThreadTreadle(event, weftRef.current);
       treadle += 1;
       const newWeft = Object.assign({}, weft);
       if (thread >= newWeft.treadling.length || newWeft.treadling.length - thread < 5) fillUpTo(newWeft, thread + 5);
       const weftThread = newWeft.treadling[thread - 1];
       weftThread.treadle = weftThread.treadle === treadle ? 0 : treadle;
       updatePattern({ weft: newWeft });
+    }
+    if (editor.tool === 'select') {
+      const newWeft = Object.assign({}, weft);
+      const weftThread = newWeft.treadling[thread - 1];
+      weftThread.isSelected = !weftThread.isSelected;
+      updatePattern({ weft: newWeft });
+    }
+    if (editor.tool === 'insert') {
+      const number = parseInt(prompt('Enter a number of threads to insert above this point.'));
+      if (number && number > 0) {
+        const newThreads = [...new Array(number)].map(() => ({ treadle: 0 }));
+        const newWeft = Object.assign({}, weft);
+        newWeft.treadling?.splice(thread, 0, ...newThreads);
+        updatePattern({ weft: newWeft });
+      }
     }
   };
 
@@ -190,6 +212,22 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
     mc.fillStyle = 'black';
     mc.fillRect(0, 0, baseSize, baseSize);
     markers[size] = m_canvas;
+    return m_canvas;
+  };
+  const getSelectedMarker = (size, width) => {
+    const m_canvas = document.createElement('canvas');
+    m_canvas.width = width + 1;
+    m_canvas.height = baseSize;
+    const mc = m_canvas.getContext('2d');
+    mc.fillStyle = 'rgb(233,245,248)';
+    mc.fillRect(0, 1, width, baseSize);
+    mc.moveTo(0, 0);
+    mc.lineTo(width+1, 0);
+    mc.lineTo(width+1, baseSize);
+    mc.lineTo(0, baseSize);
+    mc.lineTo(0, 0);
+    mc.strokeStyle = 'rgb(99,184,205)';
+    mc.stroke();
     return m_canvas;
   };
 
@@ -225,9 +263,14 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
     ctx.strokeStyle = 'rgba(0,0,0,0.3)';
     ctx.stroke();
 
-    for (let thread = 0; thread < weft.threads; thread++) {
+    const marker = getMarker(baseSize);
+    const selectedMarker = getSelectedMarker(baseSize, canvas.width);
+    for (let thread = 0; thread < weft.treadling.length; thread++) {
       const treadle = weft.treadling[thread].treadle;
-      const marker = getMarker(baseSize);
+      const isSelected = weft.treadling[thread].isSelected;
+      if (isSelected) {
+        ctx.drawImage(selectedMarker, 0, ((thread) * baseSize));
+      }
       ctx.drawImage(marker, ((treadle - 1) * baseSize), ((thread) * baseSize));
       const colourSquare = getSquare(baseSize, weft.treadling[thread].colour || weft.defaultColour);
       ctx2.drawImage(colourSquare, 0, (thread * baseSize));

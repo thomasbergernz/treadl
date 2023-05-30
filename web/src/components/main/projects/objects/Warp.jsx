@@ -159,11 +159,9 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
       }
       if (editor.tool === 'select') {
         while (x <= hX && x >= lX) {
-          if (x >= warp.threading.length || warp.threading.length - x < 5) fillUpTo(newWarp, x + 5);
           newWarp.threading[x].isSelected = true;
           x += xDirection;
           if (y > hY || y <= lY) yDirection = 0 - yDirection;
-          console.log(x);
         }
       }
       updatePattern({ warp: newWarp });

@@ -55,10 +55,16 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   
   useEffect(() => {
     if (!pattern) return;
-    const { warp } = pattern;
+    const { warp, weft } = pattern;
     let selectedFound = false;
     for (let i = 0; i < warp?.threading?.length; i++) {
       if (warp.threading[i].isSelected) {
+        selectedFound = true;
+        break;
+      }
+    }
+    for (let i = 0; i < weft?.treadling?.length; i++) {
+      if (weft.treadling[i].isSelected) {
         selectedFound = true;
         break;
       }
@@ -95,6 +101,11 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
       const newWarp = Object.assign({}, pattern.warp);
       newWarp.threading = warp.threading.filter(t => !t.isSelected);
       updatePattern({ warp: newWarp });
+    }
+    if (pattern?.weft?.treadling) {
+      const newWeft = Object.assign({}, pattern.weft);
+      newWeft.treadling = newWeft.treadling.filter(t => !t.isSelected);
+      updatePattern({ weft: newWeft });
     }
   }
 

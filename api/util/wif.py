@@ -62,7 +62,7 @@ def dumps(obj):
   wif.append('\n[WARP]')
   wif.append('Units=centimeters')
   wif.append('Color={0}'.format(get_colour_index(obj['pattern']['colours'], obj['pattern']['warp']['defaultColour'])))
-  wif.append('Threads={0}'.format(obj['pattern']['warp']['threads']))
+  wif.append('Threads={0}'.format(len(obj['pattern']['warp']['threading'])))
   wif.append('Spacing=0.212')
   wif.append('Thickness=0.212')
 
@@ -78,7 +78,7 @@ def dumps(obj):
   wif.append('\n[WEFT]')
   wif.append('Units=centimeters')
   wif.append('Color={0}'.format(get_colour_index(obj['pattern']['colours'], obj['pattern']['weft']['defaultColour'])))
-  wif.append('Threads={0}'.format(obj['pattern']['weft']['threads']))
+  wif.append('Threads={0}'.format(len(obj['pattern']['weft']['treadling'])))
   wif.append('Spacing=0.212')
   wif.append('Thickness=0.212')
 
