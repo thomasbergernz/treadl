@@ -40,7 +40,7 @@ function Tieups({ cellStyle, warp, weft, tieups, updatePattern, baseSize }) {
 
   const paintTieups = () => {
     const canvas = tieupRef.current;
-    const ctx = canvas.getContext('2d');// , { alpha: false });
+    const ctx = canvas.getContext('2d');
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
