@@ -168,7 +168,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   return (
     <div className="pattern-toolbox joyride-tools">
       {selectedThreadCount > 0 &&
-        <Button size='small' fluid danger onClick={deleteSelectedThreads}>Delete {selectedThreadCount} selected threads</Button>
+        <Button size='small' fluid color='orange' onClick={deleteSelectedThreads}>Delete {selectedThreadCount} selected threads</Button>
       }
       
       {unsaved &&

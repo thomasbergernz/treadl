@@ -91,6 +91,26 @@ To begin, select the **colour** tool, click a colour from the **palette**, and t
 
 As you paint, you'll notice the drawdown update to show your new colours.
 
+### Selecting and deleting threads
+
+You can delete threads from the warp and weft.
+
+First, enable the **select** tool from the toolbox. Once selected, you can click on individual threads, or click and drag along the warp or weft, in order to select threads.
+
+Once you have threads selected, a button will display to allow you to delete the selected threads.
+
+![Deleting threads](/images/docs/editing19.png)
+
+### Inserting threads
+
+Threads can be inserted at any point along the warp or weft.
+
+To do so, select the **insert** tool from the toolbox and then click on the thread that you'd like to shift leftwards along the warp or downwards along the weft.
+
+You'll be asked how many threads you'd like to insert before completing the process.
+
+![Inserting threads](/images/docs/editing20.png)
+
 ### Configuring your pattern
 
 You can rename and adjust the number of **treadles** and **shafts** your pattern uses in the **properties** menu. This information can be changed at any time.
