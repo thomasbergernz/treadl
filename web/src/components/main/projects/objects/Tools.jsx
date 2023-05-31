@@ -52,7 +52,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     });
     return { project, editor: state.objects.editor };
   });
-  
+
   useEffect(() => {
     if (!pattern) return;
     const { warp, weft } = pattern;
@@ -85,7 +85,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const setTreadles = (event) => {
     updatePattern({ weft: { ...weft, treadles: parseInt(event.target.value, 10) || 1 } });
   };
-  
+
   const deleteSelectedThreads = () => {
     const sure = window.confirm('Really delete the selected threads?');
     if (!sure) return;
@@ -181,7 +181,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
           <Button color='orange' onClick={deleteSelectedThreads}>Delete threads</Button>
         </Segment>
       }
-      
+
       {unsaved &&
         <Segment attached>
           <Button fluid color="teal" icon="save" content="Save pattern" onClick={() => saveObject(/*this.refs.canvas*/)} loading={saving}/>

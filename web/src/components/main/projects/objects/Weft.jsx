@@ -162,7 +162,6 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
         while (y <= hY && y >= lY) {
           newWeft.treadling[y - 1].isSelected = true;
           y += yDirection;
-          if (y > hY || y <= lY) yDirection = 0 - yDirection;
         }
       }
       updatePattern({ weft: newWeft });

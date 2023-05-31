@@ -8,8 +8,6 @@ const StyledDrawdown = styled.canvas`
   border:1px dashed rgb(70,70,70);
   top: ${props => (props.warp.shafts * props.baseSize) + 20}px;
   right: ${props => (props.weft.treadles * props.baseSize) + 20}px;
-  hhheight: ${props => props.weft.treadling?.length * props.baseSize}px;
-  hhwidth: ${props => props.warp.threading?.length * props.baseSize}px;
 `;
 
 // Cache

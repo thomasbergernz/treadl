@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { Button } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
 import utils from '../../../../utils/utils.js';
 
@@ -161,7 +160,6 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
         while (x <= hX && x >= lX) {
           newWarp.threading[x].isSelected = true;
           x += xDirection;
-          if (y > hY || y <= lY) yDirection = 0 - yDirection;
         }
       }
       updatePattern({ warp: newWarp });
@@ -261,7 +259,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     }
     ctx.strokeStyle = 'rgba(0,0,0,0.3)';
     ctx.stroke();
-    
+
     const selectedMarker = getSelectedMarker(baseSize, canvas.height);
     const marker = getMarker(baseSize);
     for (let thread = 0; thread < warp.threading.length; thread++) {
@@ -275,7 +273,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
       ctx2.drawImage(colourSquare, canvas.width - ((thread + 1) * baseSize), 0);
     }
   };
-  
+
   return (
     <StyledWarp treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize} tool={tool}>
       <canvas className='warp-colourway joyride-warpColourway' ref={colourwayRef} width={warp.threading.length * baseSize} height={10}
