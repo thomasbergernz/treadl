@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Confirm, Select, Segment, Accordion, Grid, Icon, Input, Button, Popup
+  Confirm, Header, Select, Segment, Accordion, Grid, Icon, Input, Button, Popup
 } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -99,6 +99,13 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     }
     updatePattern({ warp: newWarp, weft: newWeft });
   }
+  const deselectThreads = () => {
+    const newWarp = Object.assign({}, pattern.warp);
+    const newWeft = Object.assign({}, pattern.weft);
+    newWarp.threading = newWarp?.threading?.map(t => ({ ...t, isSelected: undefined }));
+    newWeft.treadling = newWeft?.treadling?.map(t => ({ ...t, isSelected: undefined }));
+    updatePattern({ warp: newWarp, weft: newWeft });
+  }
 
   const onZoomChange = zoom => updatePattern({ baseSize: zoom || 10 });
 
@@ -168,11 +175,15 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   return (
     <div className="pattern-toolbox joyride-tools">
       {selectedThreadCount > 0 &&
-        <Button size='small' fluid color='orange' onClick={deleteSelectedThreads}>Delete {selectedThreadCount} selected threads</Button>
+        <Segment attached="top">
+          <Header>{selectedThreadCount} threads selected</Header>
+          <Button basic onClick={deselectThreads}>De-select all</Button>
+          <Button color='orange' onClick={deleteSelectedThreads}>Delete threads</Button>
+        </Segment>
       }
       
       {unsaved &&
-        <Segment attached="top">
+        <Segment attached>
           <Button fluid color="teal" icon="save" content="Save pattern" onClick={() => saveObject(/*this.refs.canvas*/)} loading={saving}/>
           <Button style={{marginTop: 5}} fluid icon='refresh' content='Undo changes' onClick={revertChanges} />
         </Segment>
