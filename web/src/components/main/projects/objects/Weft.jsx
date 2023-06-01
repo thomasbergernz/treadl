@@ -22,13 +22,14 @@ const StyledWeft = styled.div`
 const squares = {};
 const markers = {};
 let dragging = false;
+let highlightMode = false; // true for highlighting, false for removing highlight
 let startTreadle = null;
 let startThread = null;
 let weftTouchListeners = {};
 
 function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
   const [draggingColourway, setDraggingColourway] = useState(false);
-
+  const [hoveredThread, setHoveredThread] = useState(null);
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
   const { tool, colour } = editor;
   const weftRef = useRef(null);
@@ -108,19 +109,26 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
     }
   };
 
-  const mouseUp = event => dragging = false;
+  const mouseUp = event => {
+    dragging = false;
+    setHoveredThread(null);
+  };
   const mouseDown = (event) => {
     event.preventDefault();
     const { treadle, thread } = getThreadTreadle(event, weftRef.current);
     startTreadle = treadle;
     startThread = thread;
     dragging = true;
+    highlightMode = !weft?.treadling[thread - 1]?.isSelected;
   };
   const mouseMove = (event) => {
+    const { treadle, thread } = getThreadTreadle(event, weftRef.current);
+    if (!dragging && editor.tool) {
+      setHoveredThread(thread - 1);
+    }
     if (dragging && editor.tool) {
+      setHoveredThread(null);
       const newWeft = Object.assign({}, weft);
-      const { treadle, thread } = getThreadTreadle(event, weftRef.current);
-
       let lX = startTreadle; let hX = treadle; let lY = startThread; let hY = thread;
       let xDirection = 1; let
         yDirection = 1;
@@ -160,7 +168,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
       }
       if (editor.tool === 'select') {
         while (y <= hY && y >= lY) {
-          newWeft.treadling[y - 1].isSelected = true;
+          newWeft.treadling[y - 1].isSelected = highlightMode;
           y += yDirection;
         }
       }
@@ -180,7 +188,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
     if (editor.tool === 'select') {
       const newWeft = Object.assign({}, weft);
       const weftThread = newWeft.treadling[thread - 1];
-      weftThread.isSelected = !weftThread.isSelected;
+      weftThread.isSelected = highlightMode;
       updatePattern({ weft: newWeft });
     }
     if (editor.tool === 'insert') {
@@ -230,6 +238,22 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
     mc.stroke();
     return m_canvas;
   };
+  const getHoveredMarker = (size, width) => {
+    const m_canvas = document.createElement('canvas');
+    m_canvas.width = width + 1;
+    m_canvas.height = baseSize;
+    const mc = m_canvas.getContext('2d');
+    mc.fillStyle = 'azure';
+    mc.fillRect(0, 1, width, baseSize);
+    mc.moveTo(0, 0);
+    mc.lineTo(width+1, 0);
+    mc.lineTo(width+1, baseSize);
+    mc.lineTo(0, baseSize);
+    mc.lineTo(0, 0);
+    mc.strokeStyle = 'rgb(99,184,205)';
+    mc.stroke();
+    return m_canvas;
+  };
 
   const getSquare = (size, colour) => {
     if (squares[size] && squares[size][colour]) return squares[size][colour];
@@ -265,11 +289,16 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
 
     const marker = getMarker(baseSize);
     const selectedMarker = getSelectedMarker(baseSize, canvas.width);
+    const hoveredMarker = getHoveredMarker(baseSize, canvas.height);
     for (let thread = 0; thread < weft.treadling.length; thread++) {
       const treadle = weft.treadling[thread].treadle;
       const isSelected = weft.treadling[thread].isSelected;
+      const isHovered = hoveredThread === thread;
       if (isSelected) {
         ctx.drawImage(selectedMarker, 0, ((thread) * baseSize));
+      }
+      if (isHovered) {
+        ctx.drawImage(hoveredMarker, 0, ((thread) * baseSize));
       }
       ctx.drawImage(marker, ((treadle - 1) * baseSize), ((thread) * baseSize));
       const colourSquare = getSquare(baseSize, weft.treadling[thread].colour || weft.defaultColour);

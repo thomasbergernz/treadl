@@ -21,13 +21,14 @@ const squares = {};
 const markers = {};
 const selectedMarkers = {};
 let dragging = false;
+let highlightMode = false; // true for highlighting, false for removing highlight
 let startShaft = null;
 let startThread = null;
 let warpTouchListeners = {};
 
 function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   const [draggingColourway, setDraggingColourway] = useState(false);
-
+  const [hoveredThread, setHoveredThread] = useState(null);
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
   const { tool, colour } = editor;
   const warpRef = useRef(null);
@@ -107,18 +108,26 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     }
   };
 
-  const mouseUp = event => dragging = false;
+  const mouseUp = event => {
+    dragging = false;
+    setHoveredThread(null);
+  };
   const mouseDown = (event) => {
     event.preventDefault();
     const { shaft, thread } = getThreadShaft(event, warpRef.current);
     startShaft = shaft;
     startThread = thread;
     dragging = true;
+    highlightMode = !warp?.threading[thread]?.isSelected;
   };
   const mouseMove = (event) => {
+    const { shaft, thread } = getThreadShaft(event, warpRef.current);
+    if (!dragging && editor.tool) {
+      setHoveredThread(thread);
+    }
     if (dragging && editor.tool) {
+      setHoveredThread(null);
       const newWarp = Object.assign({}, warp);
-      const { shaft, thread } = getThreadShaft(event, warpRef.current);
       let lX = startThread; let hX = thread; let lY = startShaft; let hY = shaft;
       let xDirection = 1; let yDirection = 1;
       if (thread < startThread) {
@@ -158,7 +167,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
       }
       if (editor.tool === 'select') {
         while (x <= hX && x >= lX) {
-          newWarp.threading[x].isSelected = true;
+          newWarp.threading[x].isSelected = highlightMode;
           x += xDirection;
         }
       }
@@ -177,7 +186,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     if (editor.tool === 'select') {
       const newWarp = Object.assign({}, warp);
       const warpThread = newWarp.threading[thread];
-      warpThread.isSelected = !warpThread.isSelected;
+      warpThread.isSelected = highlightMode;
       updatePattern({ warp: newWarp });
     }
     if (editor.tool === 'insert') {
@@ -227,6 +236,22 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     mc.stroke();
     return m_canvas;
   };
+  const getHoveredMarker = (size, height) => {
+    const m_canvas = document.createElement('canvas');
+    m_canvas.width = baseSize + 1;
+    m_canvas.height = height;
+    const mc = m_canvas.getContext('2d');
+    mc.fillStyle = 'azure';
+    mc.fillRect(0, 1, baseSize, height);
+    mc.moveTo(0, 0);
+    mc.lineTo(baseSize+1, 0);
+    mc.lineTo(baseSize+1, height);
+    mc.lineTo(0, height);
+    mc.lineTo(0, 0);
+    mc.strokeStyle = 'rgb(99,184,205)';
+    mc.stroke();
+    return m_canvas;
+  };
 
   const getSquare = (size, colour) => {
     if (squares[size] && squares[size][colour]) return squares[size][colour];
@@ -261,12 +286,17 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     ctx.stroke();
 
     const selectedMarker = getSelectedMarker(baseSize, canvas.height);
+    const hoveredMarker = getHoveredMarker(baseSize, canvas.height);
     const marker = getMarker(baseSize);
     for (let thread = 0; thread < warp.threading.length; thread++) {
       const shaft = warp.threading[thread].shaft;
       const isSelected = warp.threading[thread].isSelected;
+      const isHovered = hoveredThread === thread;
       if (isSelected) {
         ctx.drawImage(selectedMarker, canvas.width - ((thread + 1) * baseSize), 0);
+      }
+      if (isHovered) {
+        ctx.drawImage(hoveredMarker, canvas.width - ((thread + 1) * baseSize), 0);
       }
       ctx.drawImage(marker, canvas.width - ((thread + 1) * baseSize), canvas.height - (shaft * baseSize));
       const colourSquare = getSquare(baseSize, warp.threading[thread].colour || warp.defaultColour);
