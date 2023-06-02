@@ -4,6 +4,7 @@ from util import database, util
 from api import uploads
 
 def me(user):
+  db = database.get_db()
   return {
     '_id': user['_id'],
     'username': user['username'],
@@ -17,6 +18,7 @@ def me(user):
     'finishedTours': user.get('completedTours', []) + user.get('skippedTours', []),
     'isSilverSupporter': user.get('isSilverSupporter'),
     'isGoldSupporter': user.get('isGoldSupporter'),
+    'followerCount': db.users.find({'following.user': user['_id']}).count(),
   }
 
 def get(user, username):
@@ -33,6 +35,8 @@ def get(user, username):
     project['fullName'] = fetch_user['username'] + '/' + project['path']
   if 'avatar' in fetch_user:
     fetch_user['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(str(fetch_user['_id']), fetch_user['avatar']))
+  if user:
+    fetch_user['following'] = fetch_user['_id'] in list(map(lambda f: f['user'], user.get('following', [])))
   return fetch_user
 
 def update(user, username, data):
@@ -100,15 +104,15 @@ def create_follower(user, username):
   if not target_user: raise util.errors.NotFound('User not found')
   if target_user['_id'] == user['_id']: raise util.errors.BadRequest('Cannot follow yourself')
   follow_object = {
-    'user': user['_id'],
+    'user': target_user['_id'],
     'followedAt': datetime.datetime.utcnow(),
   }
-  db.users.update_one({'_id': target_user['_id']}, {'$addToSet': {'followers': follow_object}})
+  db.users.update_one({'_id': user['_id']}, {'$addToSet': {'following': follow_object}})
   return follow_object
   
 def delete_follower(user, username):
   db = database.get_db()
   target_user = db.users.find_one({'username': username.lower()})
   if not target_user: raise util.errors.NotFound('User not found')
-  db.users.update_one({'_id': target_user['_id']}, {'$pull': {'followers': {'user': user['_id']}}})
+  db.users.update_one({'_id': user['_id']}, {'$pull': {'following': {'user': target_user['_id']}}})
   return {'unfollowed': True}

@@ -90,15 +90,6 @@ function Profile() {
                       Joined {moment(profileUser.createdAt).fromNow()}
                     </span>
                   </Card.Meta>
-                  {profileUser._id !== user?._id &&
-                    <Card.Content style={{marginTop: 10}}>
-                      {profileUser.following ?
-                        <Button fluid size='small' basic color='blue' onClick={e => follow(false)}><Icon name='check' /> Following</Button>
-                      :
-                        <Button fluid size='small' color='blue' onClick={e => follow(true)}>Follow</Button>
-                      }
-                    </Card.Content>
-                  }
                   {profileUser.isGoldSupporter &&
                     <div style={{marginTop: 10}}><SupporterBadge type='gold' /></div>
                   }
@@ -106,6 +97,20 @@ function Profile() {
                     <div style={{marginTop: 10}}><SupporterBadge type='silver' /></div>
                   }
                 </Card.Content>
+                {profileUser._id !== user?._id &&
+                  <Card.Content style={{marginTop: 10}}>
+                    {profileUser.following ?
+                      <Button fluid size='small' basic color='blue' onClick={e => follow(false)}><Icon name='check' /> Following</Button>
+                    :
+                      <Button fluid size='small' color='blue' onClick={e => follow(true)}>Follow</Button>
+                    }
+                  </Card.Content>
+                }
+                {profileUser._id === user?._id &&
+                  <Card.Content extra textAlign='right'>
+                    <p><Icon name='users' /> You have {user?.followerCount || 0} followers</p>
+                  </Card.Content>
+                }
                 {profileUser.location
                   && (
                   <Card.Content extra textAlign="right">
