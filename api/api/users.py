@@ -120,9 +120,9 @@ def delete_follower(user, username):
 def get_feed(user, username):
   db = database.get_db()
   if user['username'] != username: raise util.errors.Forbidden('Forbidden')
-  following_user_ids = list(map(lambda f: f['user'], user.get('following, []')))
+  following_user_ids = list(map(lambda f: f['user'], user.get('following', [])))
   following_project_ids = list(map(lambda p: p['_id'], db.projects.find({'user': {'$in': following_user_ids}, 'visibility': 'public'}, {'_id': 1})))
-  one_year_ago = datetime.datetime.utcnow() - datetime.timedelta(years = 1)
+  one_year_ago = datetime.datetime.utcnow() - datetime.timedelta(days = 365)
   
   recent_projects = list(db.projects.find({
     '_id': {'$in': following_project_ids},
@@ -148,7 +148,7 @@ def get_feed(user, username):
     c['feedType'] = 'comment'
     feed_items.append(c)
   
-  feed_items.sort(key = 'createdAt', reverse = True)
+  feed_items.sort(key=lambda d: d['createdAt'], reverse = True)
   feed_items = feed_items[:20]
   
   feed_user_ids = set()
@@ -156,15 +156,15 @@ def get_feed(user, username):
   for f in feed_items:
     feed_user_ids.add(f.get('user'))
     feed_project_ids.add(f.get('feed_projects'))
-  feed_users = list(db.users.find({'_id': {'$in': feed_user_ids}}, {'username': 1, 'avatar': 1}))
-  feed_projects = list(db.projects.find({'_id': {'$in': feed_project_ids}}, {'name': 1, 'path': 1}))
+  feed_users = list(db.users.find({'_id': {'$in': list(feed_user_ids)}}, {'username': 1, 'avatar': 1}))
+  feed_projects = list(db.projects.find({'_id': {'$in': list(feed_project_ids)}}, {'name': 1, 'path': 1}))
   feed_user_map = {}
   feed_project_map = {}
-  for u in feed_users: feed_user_map[u['_id']] = u
-  for p in feed_projects: feed_project_map[['_id']] = p
+  for u in feed_users: feed_user_map[str(u['_id'])] = u
+  for p in feed_projects: feed_project_map[str(p['_id'])] = p
   for f in feed_items:
-    if f.get('user'): f['userObject'] = feed_user_map[f['user']]
-    if f.get('project'): f['projectObject'] = feed_project_map[f['project']]
+    if f.get('user'): f['userObject'] = feed_user_map.get(str(f['user']))
+    if f.get('project'): f['projectObject'] = feed_project_map.get(str(f['project']))
   return {'feed': feed_items}
       
   

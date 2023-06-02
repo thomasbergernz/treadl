@@ -15,6 +15,7 @@ import ProjectCard from '../includes/ProjectCard';
 import PatternLoader from '../includes/PatternLoader';
 import Tour from '../includes/Tour';
 import DiscoverCard from '../includes/DiscoverCard';
+import Feed from '../includes/Feed';
 
 function Home() {
   const [runJoyride, setRunJoyride] = useState(false);
@@ -89,6 +90,7 @@ function Home() {
 
           <h2><span role="img" aria-label="wave">👋</span> {greeting}{user && <span>, {user.username}</span>}</h2>
 
+          <Feed />
           <DiscoverCard count={3} />
   
           <Card fluid className='joyride-groups' style={{opacity: 0.8}}>
