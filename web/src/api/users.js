@@ -30,5 +30,8 @@ export const users = {
   },
   unfollow(username, success, fail) {
     api.authenticatedRequest('DELETE', `/users/${username}/followers`, null, success, fail);
+  },
+  getFeed(username, success, fail) {
+    api.authenticatedRequest('GET', `/users/${username}/feed`, null, success, fail);
   }
 };

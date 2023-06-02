@@ -116,3 +116,55 @@ def delete_follower(user, username):
   if not target_user: raise util.errors.NotFound('User not found')
   db.users.update_one({'_id': user['_id']}, {'$pull': {'following': {'user': target_user['_id']}}})
   return {'unfollowed': True}
+  
+def get_feed(user, username):
+  db = database.get_db()
+  if user['username'] != username: raise util.errors.Forbidden('Forbidden')
+  following_user_ids = list(map(lambda f: f['user'], user.get('following, []')))
+  following_project_ids = list(map(lambda p: p['_id'], db.projects.find({'user': {'$in': following_user_ids}, 'visibility': 'public'}, {'_id': 1})))
+  one_year_ago = datetime.datetime.utcnow() - datetime.timedelta(years = 1)
+  
+  recent_projects = list(db.projects.find({
+    '_id': {'$in': following_project_ids},
+    'createdAt': {'$gt': one_year_ago}
+  }, {'user': 1, 'createdAt': 1, 'name': 1, 'path': 1}).sort('createdAt', -1).limit(20))
+  recent_objects = list(db.objects.find({
+    'project': {'$in': following_project_ids},
+    'createdAt': {'$gt': one_year_ago}
+  }, {'project': 1, 'createdAt': 1, 'name': 1, 'project': 1}).sort('createdAt', -1).limit(30))
+  recent_comments = list(db.comments.find({
+    'user': {'$in': following_user_ids},
+    'createdAt': {'$gt': one_year_ago}
+  }, {'user': 1, 'createdAt': 1, 'object': 1, 'content': 1}).sort('createdAt', -1).limit(30))
+  
+  feed_items = []
+  for p in recent_projects:
+    p['feedType'] = 'project'
+    feed_items.append(p)
+  for o in recent_objects:
+    o['feedType'] = 'object'
+    feed_items.append(o)
+  for c in recent_comments:
+    c['feedType'] = 'comment'
+    feed_items.append(c)
+  
+  feed_items.sort(key = 'createdAt', reverse = True)
+  feed_items = feed_items[:20]
+  
+  feed_user_ids = set()
+  feed_project_ids = set()
+  for f in feed_items:
+    feed_user_ids.add(f.get('user'))
+    feed_project_ids.add(f.get('feed_projects'))
+  feed_users = list(db.users.find({'_id': {'$in': feed_user_ids}}, {'username': 1, 'avatar': 1}))
+  feed_projects = list(db.projects.find({'_id': {'$in': feed_project_ids}}, {'name': 1, 'path': 1}))
+  feed_user_map = {}
+  feed_project_map = {}
+  for u in feed_users: feed_user_map[u['_id']] = u
+  for p in feed_projects: feed_project_map[['_id']] = p
+  for f in feed_items:
+    if f.get('user'): f['userObject'] = feed_user_map[f['user']]
+    if f.get('project'): f['projectObject'] = feed_project_map[f['project']]
+  return {'feed': feed_items}
+      
+  
