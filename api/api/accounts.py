@@ -155,6 +155,8 @@ def delete(user, password):
   for project in db.projects.find({'user': user['_id']}):
     db.objects.remove({'project': project['_id']})
     db.projects.remove({'_id': project['_id']})
+  db.comments.remove({'user': user['_id']})
+  db.users.update_many({'following.user': user['_id']}, {'$pull': {'following': {'user': user['_id']}}})
   db.users.remove({'_id': user['_id']})
   return {'deletedUser': user['_id']}
 
