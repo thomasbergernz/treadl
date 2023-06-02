@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Loader, Icon, List, Container, Card, Grid, Message } from 'semantic-ui-react';
+import { Loader, Icon, List, Container, Card, Grid, Message, Button } from 'semantic-ui-react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import Avatar from 'boring-avatars';
 import moment from 'moment';
 import utils from '../../../utils/utils';
@@ -34,6 +35,15 @@ function Profile() {
       setLoading(false);
     });
   }, [dispatch, username])
+  
+  function follow(following) {
+    const f = following ? api.users.follow : api.users.unfollow;
+    f(profileUser?.username, result => {
+      dispatch(actions.users.receive({ ...profileUser, following }));
+    }, err => {
+      toast.error(err.message);
+    });
+  }
 
   return (
     <Container style={{ marginTop: '40px' }}>
@@ -80,6 +90,15 @@ function Profile() {
                       Joined {moment(profileUser.createdAt).fromNow()}
                     </span>
                   </Card.Meta>
+                  {profileUser._id !== user?._id &&
+                    <Card.Content style={{marginTop: 10}}>
+                      {profileUser.following ?
+                        <Button fluid size='small' basic color='blue' onClick={e => follow(false)}><Icon name='check' /> Following</Button>
+                      :
+                        <Button fluid size='small' color='blue' onClick={e => follow(true)}>Follow</Button>
+                      }
+                    </Card.Content>
+                  }
                   {profileUser.isGoldSupporter &&
                     <div style={{marginTop: 10}}><SupporterBadge type='gold' /></div>
                   }

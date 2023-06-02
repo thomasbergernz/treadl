@@ -93,3 +93,22 @@ def delete_email_subscription(user, username, subscription):
   db.users.update({'_id': u['_id']}, {'$pull': {'subscriptions.email': subscription}})
   subs = db.users.find_one(u['_id'], {'subscriptions': 1})
   return {'subscriptions': subs.get('subscriptions', {})}
+
+def create_follower(user, username):
+  db = database.get_db()
+  target_user = db.users.find_one({'username': username.lower()})
+  if not target_user: raise util.errors.NotFound('User not found')
+  if target_user['_id'] == user['_id']: raise util.errors.BadRequest('Cannot follow yourself')
+  follow_object = {
+    'user': user['_id'],
+    'followedAt': datetime.datetime.utcnow(),
+  }
+  db.users.update_one({'_id': target_user['_id']}, {'$addToSet': {'followers': follow_object}})
+  return follow_object
+  
+def delete_follower(user, username):
+  db = database.get_db()
+  target_user = db.users.find_one({'username': username.lower()})
+  if not target_user: raise util.errors.NotFound('User not found')
+  db.users.update_one({'_id': target_user['_id']}, {'$pull': {'followers': {'user': user['_id']}}})
+  return {'unfollowed': True}

@@ -25,4 +25,10 @@ export const users = {
   deleteEmailSubscription(username, sub, success, fail) {
     api.authenticatedRequest('DELETE', `/users/${username}/subscriptions/email/${sub}`, null, success, fail);
   },
+  follow(username, success, fail) {
+    api.authenticatedRequest('POST', `/users/${username}/followers`, null, success, fail);
+  },
+  unfollow(username, success, fail) {
+    api.authenticatedRequest('DELETE', `/users/${username}/followers`, null, success, fail);
+  }
 };

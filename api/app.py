@@ -104,6 +104,11 @@ def users_me():
 def users_username(username):
   if request.method == 'GET': return util.jsonify(users.get(util.get_user(required=False), username))
   if request.method == 'PUT': return util.jsonify(users.update(util.get_user(), username, request.json))
+  
+@app.route('/users/<username>/followers', methods=['POST', 'DELETE'])
+def users_followers(username):
+  if request.method == 'POST': return util.jsonify(users.create_follower(util.get_user(), username))
+  if request.method == 'DELETE': return util.jsonify(users.delete_follower(util.get_user(), username))
 
 @app.route('/users/<username>/tours/<tour>', methods=['PUT'])
 def users_tour(username, tour):
