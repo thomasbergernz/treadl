@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import api from '../../api';
 import UserChip from './UserChip';
 
@@ -26,20 +27,28 @@ export default function Feed() {
     <div>
       <h2>Feed</h2>
       {feed?.map(item =>
-        <div key={item._id} style={{display: 'flex', alignItems: 'center'}}>
+        <div key={item._id} style={{display: 'flex', alignItems: 'center', marginBottom: 10}}>
           <div style={{marginRight: 5}}>
             <UserChip user={item.userObject} avatarOnly />
           </div>
           <div>
-            <span style={{marginRight: 5}}>{item.userObject?.username}</span>
+            <span style={{marginRight: 5}}><Link to={`/${item.userObject?.username}`}>{item.userObject?.username}</Link></span>
             {item.feedType === 'comment' &&
-              <span>commented on an item</span>
+              <span>wrote a comment
+              {item.projectObject?.userObject && item.object &&
+                <span> on <Link to={`/${item.projectObject.userObject.username}/${item.projectObject.path}/${item.object}`}>an item</Link> in {item.projectObject.name}</span>
+              }
+              </span>
             }
             {item.feedType === 'object' &&
-              <span>created a new item</span>
+              <span>created a new item 
+                {item.projectObject?.userObject &&
+                  <span> in <Link to={`/${item.projectObject.userObject.username}/${item.projectObject.path}`}>{item.projectObject.name}</Link></span>
+                }
+              </span>
             }
             {item.feedType === 'project' &&
-              <span>started a new project</span>
+              <span>started a new project: {item.name}</span>
             }
           </div>
         </div>

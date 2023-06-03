@@ -124,19 +124,36 @@ def get_feed(user, username):
   following_project_ids = list(map(lambda p: p['_id'], db.projects.find({'user': {'$in': following_user_ids}, 'visibility': 'public'}, {'_id': 1})))
   one_year_ago = datetime.datetime.utcnow() - datetime.timedelta(days = 365)
   
+  # Fetch the items for the feed
   recent_projects = list(db.projects.find({
     '_id': {'$in': following_project_ids},
-    'createdAt': {'$gt': one_year_ago}
+    'createdAt': {'$gt': one_year_ago},
+    'visibility': 'public',
   }, {'user': 1, 'createdAt': 1, 'name': 1, 'path': 1}).sort('createdAt', -1).limit(20))
   recent_objects = list(db.objects.find({
     'project': {'$in': following_project_ids},
     'createdAt': {'$gt': one_year_ago}
-  }, {'project': 1, 'createdAt': 1, 'name': 1, 'project': 1}).sort('createdAt', -1).limit(30))
+  }, {'project': 1, 'createdAt': 1, 'name': 1}).sort('createdAt', -1).limit(30))
   recent_comments = list(db.comments.find({
     'user': {'$in': following_user_ids},
     'createdAt': {'$gt': one_year_ago}
   }, {'user': 1, 'createdAt': 1, 'object': 1, 'content': 1}).sort('createdAt', -1).limit(30))
   
+  # Process objects (as don't know the user)
+  object_project_ids = list(map(lambda o: o['project'], recent_objects))
+  object_projects = list(db.projects.find({'_id': {'$in': object_project_ids}, 'visibility': 'public'}, {'user': 1}))
+  for obj in recent_objects:
+    for proj in object_projects:
+      if obj['project'] == proj['_id']: obj['user'] = proj.get('user')
+      
+  # Process comments as don't know the project
+  comment_object_ids = list(map(lambda c: c['object'], recent_comments))
+  comment_objects = list(db.objects.find({'_id': {'$in': comment_object_ids}}, {'project': 1}))
+  for com in recent_comments:
+    for obj in comment_objects:
+      if com['object'] == obj['_id']: com['project'] = obj.get('project')
+  
+  # Prepare the feed items, and sort it
   feed_items = []
   for p in recent_projects:
     p['feedType'] = 'project'
@@ -147,17 +164,20 @@ def get_feed(user, username):
   for c in recent_comments:
     c['feedType'] = 'comment'
     feed_items.append(c)
-  
   feed_items.sort(key=lambda d: d['createdAt'], reverse = True)
   feed_items = feed_items[:20]
   
+  # Post-process the feed, adding user/project objects
   feed_user_ids = set()
   feed_project_ids = set()
   for f in feed_items:
     feed_user_ids.add(f.get('user'))
-    feed_project_ids.add(f.get('feed_projects'))
-  feed_users = list(db.users.find({'_id': {'$in': list(feed_user_ids)}}, {'username': 1, 'avatar': 1}))
-  feed_projects = list(db.projects.find({'_id': {'$in': list(feed_project_ids)}}, {'name': 1, 'path': 1}))
+    feed_project_ids.add(f.get('project'))
+  feed_projects = list(db.projects.find({'_id': {'$in': list(feed_project_ids)}, 'visibility': 'public'}, {'name': 1, 'path': 1, 'user': 1}))
+  feed_users = list(db.users.find({'$or': [
+    {'_id': {'$in': list(feed_user_ids)}},
+    {'_id': {'$in': list(map(lambda p: p['user'], feed_projects))}},
+  ]}, {'username': 1, 'avatar': 1}))
   feed_user_map = {}
   feed_project_map = {}
   for u in feed_users: feed_user_map[str(u['_id'])] = u
@@ -165,6 +185,8 @@ def get_feed(user, username):
   for f in feed_items:
     if f.get('user'): f['userObject'] = feed_user_map.get(str(f['user']))
     if f.get('project'): f['projectObject'] = feed_project_map.get(str(f['project']))
+    if f.get('projectObject', {}).get('user'): f['projectObject']['userObject'] = feed_user_map.get(str(f['projectObject']['user']))
+
   return {'feed': feed_items}
       
   

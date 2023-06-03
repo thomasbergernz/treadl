@@ -5,6 +5,7 @@ from util import database, wif, util, mail
 from api import uploads
 
 APP_NAME = os.environ.get('APP_NAME')
+APP_URL = os.environ.get('APP_URL')
 
 def delete(user, id):
   db = database.get_db()
