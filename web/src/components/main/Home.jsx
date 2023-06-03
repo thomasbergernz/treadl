@@ -91,7 +91,6 @@ function Home() {
           <h2><span role="img" aria-label="wave">👋</span> {greeting}{user && <span>, {user.username}</span>}</h2>
 
           <Feed />
-          <DiscoverCard count={3} />
   
           <Card fluid className='joyride-groups' style={{opacity: 0.8}}>
             <Card.Content>

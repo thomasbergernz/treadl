@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { Message, Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { BulletList } from 'react-content-loader'
 import api from '../../api';
 import UserChip from './UserChip';
+import DiscoverCard from './DiscoverCard';
 
 export default function Feed() {
   const [feed, setFeed] = useState([]);
@@ -17,16 +20,27 @@ export default function Feed() {
     if (!username) return;
     setLoading(true);
     api.users.getFeed(username, result => {
-      console.log(result);
       setFeed(result.feed);
       setLoading(false);
     });  
   }, [username]);
   
   return (
-    <div>
-      <h2>Feed</h2>
-      {feed?.map(item =>
+    <Card fluid>
+      <Card.Content style={{maxHeight: 300, overflowY: 'scroll'}}>
+      <Card.Header style={{marginBottom: 10}}>Recent activity</Card.Header>
+      {loading &&
+        <div>
+          <BulletList />
+        </div>
+      }
+      {!loading && !feed?.length &&
+        <div>
+          <Message size='tiny'>Your feed is empty. You can <Link to='/explore'>follow others</Link> to stay up-to-date.</Message>
+          <DiscoverCard />
+        </div>
+      }
+      {!loading && feed?.map(item =>
         <div key={item._id} style={{display: 'flex', alignItems: 'center', marginBottom: 10}}>
           <div style={{marginRight: 5}}>
             <UserChip user={item.userObject} avatarOnly />
@@ -53,6 +67,7 @@ export default function Feed() {
           </div>
         </div>
       )}
-    </div>
+      </Card.Content>
+    </Card>
   );
 }
