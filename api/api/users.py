@@ -181,6 +181,9 @@ def get_feed(user, username):
     {'_id': {'$in': list(feed_user_ids)}},
     {'_id': {'$in': list(map(lambda p: p['user'], feed_projects))}},
   ]}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}))
+  for u in feed_users:
+    if 'avatar' in u:
+      u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(str(u['_id']), u['avatar']))
   feed_user_map = {}
   feed_project_map = {}
   for u in feed_users: feed_user_map[str(u['_id'])] = u
