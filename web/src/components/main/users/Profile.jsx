@@ -37,6 +37,7 @@ function Profile() {
   }, [dispatch, username])
   
   function follow(following) {
+    if (!user) return;
     const f = following ? api.users.follow : api.users.unfollow;
     f(profileUser?.username, result => {
       dispatch(actions.users.receive({ ...profileUser, following }));
@@ -102,7 +103,7 @@ function Profile() {
                     {profileUser.following ?
                       <Button fluid size='small' basic color='blue' onClick={e => follow(false)}><Icon name='check' /> Following</Button>
                     :
-                      <Button fluid size='small' color='blue' onClick={e => follow(true)}>Follow</Button>
+                      <Button fluid size='small' color='blue' onClick={e => follow(true)} data-tooltip={user ? null : 'You need to be logged-in to follow someone'}>Follow</Button>
                     }
                   </Card.Content>
                 }
