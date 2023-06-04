@@ -16,7 +16,7 @@ export default function FollowButton({ targetUser, compact, onChange }) {
     const f = following ? api.users.follow : api.users.unfollow;
     f(targetUser?.username, result => {
       dispatch(actions.users.receive({ ...targetUser, following }));
-      onChange(following);
+      onChange && onChange(following);
     }, err => {
       toast.error(err.message);
     });
