@@ -68,6 +68,8 @@ def discover(user, count = 3):
   for u in all_users:
     if 'avatar' in u:
       u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(u['_id'], u['avatar']))
+    if user:
+      u['following'] = u['_id'] in list(map(lambda f: f['user'], user.get('following', [])))
     users.append(u)
     if len(users) >= count: break
 

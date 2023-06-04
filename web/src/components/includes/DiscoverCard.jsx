@@ -2,14 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Card, List, Dimmer } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { BulletList } from 'react-content-loader'
+import { useSelector } from 'react-redux';
 import UserChip from './UserChip';
 import api from '../../api';
 import utils from '../../utils/utils.js';
+import FollowButton from './FollowButton';
 
 export default function ExploreCard({ count, asCard }) {
   const [highlightProjects, setHighlightProjects] = useState([]);
   const [highlightUsers, setHighlightUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  
+  const { user } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
+    return { user };
+  });
+  const userId = user?._id;
   
   useEffect(() => {
     setLoading(true);
@@ -18,7 +26,15 @@ export default function ExploreCard({ count, asCard }) {
       setHighlightUsers(highlightUsers);
       setLoading(false);
     });
-  }, []);
+  }, [userId]);
+  
+  function updateFollowing(updateUserId, following) {
+    const newHighlightUsers = Object.assign([], highlightUsers).map(u => {
+      if (u._id === updateUserId) return { ...u, following };
+      else return u;
+    });
+    setHighlightUsers(newHighlightUsers);
+  }
   
   function getContent() {
     return (
@@ -45,7 +61,12 @@ export default function ExploreCard({ count, asCard }) {
             {highlightUsers?.map(u =>
               <List.Item key={u._id}>
                 <List.Content>
-                  <UserChip user={u} className='umami--click--discover-user'/>
+                  <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <UserChip user={u} className='umami--click--discover-user'/>
+                    <div>
+                      <FollowButton compact targetUser={u} onChange={f => updateFollowing(u._id, f)} />
+                    </div>
+                  </div>
                 </List.Content>
               </List.Item>
             )}

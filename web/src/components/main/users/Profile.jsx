@@ -12,6 +12,7 @@ import api from '../../../api';
 
 import BlurrableImage from '../../includes/BlurrableImage';
 import SupporterBadge from '../../includes/SupporterBadge';
+import FollowButton from '../../includes/FollowButton';
 
 function Profile() {
   const [loading, setLoading] = useState(false);
@@ -36,16 +37,6 @@ function Profile() {
       setLoading(false);
     });
   }, [dispatch, username, userId])
-  
-  function follow(following) {
-    if (!user) return;
-    const f = following ? api.users.follow : api.users.unfollow;
-    f(profileUser?.username, result => {
-      dispatch(actions.users.receive({ ...profileUser, following }));
-    }, err => {
-      toast.error(err.message);
-    });
-  }
 
   return (
     <Container style={{ marginTop: '40px' }}>
@@ -101,11 +92,7 @@ function Profile() {
                 </Card.Content>
                 {profileUser._id !== user?._id &&
                   <Card.Content style={{marginTop: 10}}>
-                    {profileUser.following ?
-                      <Button fluid size='small' basic color='blue' onClick={e => follow(false)}><Icon name='check' /> Following</Button>
-                    :
-                      <Button fluid size='small' color='blue' onClick={e => follow(true)} data-tooltip={user ? null : 'You need to be logged-in to follow someone'}>Follow</Button>
-                    }
+                    <FollowButton targetUser={profileUser} />
                   </Card.Content>
                 }
                 {profileUser._id === user?._id &&

@@ -66,7 +66,7 @@ export default function NavBar() {
               <Menu.Item className='above-mobile' as={Link} to='/' name='home' active={location.pathname === '/'} />
               <Menu.Item className='above-mobile' as={Link} to='/explore' name='explore' active={location.pathname === '/explore'} />
               <Menu.Item className='above-mobile' active={location.pathname.startsWith('/groups')} name='Groups'>
-                <Dropdown pointing='top left'
+                <Dropdown pointing='top left' icon={null}
                   trigger={<span>Groups</span>}
                 >
                   <Dropdown.Menu>
@@ -82,7 +82,7 @@ export default function NavBar() {
               {user && !isSupporter && (import.meta.env.VITE_PATREON_URL || import.meta.env.VITE_KOFI_URL) &&
                 <Menu.Item className='above-mobile'>
                   <Popup pointing='top left' on='hover' hoverable
-                    trigger={<div style={{padding: 5, background: 'rgba(0,0,0,0.05)', borderRadius: 5}}><span role='img' aria-label='Celebrate' style={{marginRight: 5}}>🙌</span> Help {utils.appName()}</div>}
+                    trigger={<div style={{padding: '5px 10px', background: 'rgba(0,0,0,0.03)', borderRadius: 5}}><span role='img' aria-label='Celebrate' style={{marginRight: 5}}>🙌</span> Help {utils.appName()}</div>}
                     content={
                       <div>
                         <h3><Icon name='trophy' />Support {utils.appName()}</h3>
