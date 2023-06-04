@@ -76,7 +76,10 @@ def get_projects(user, id):
   if not u: raise util.errors.NotFound('User not found')
   if 'avatar' in u: u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(str(u['_id']), u['avatar']))
   projects = []
-  for project in db.projects.find({'user': ObjectId(id)}):
+  project_query = {'user': ObjectId(id)}
+  if not user or not user['_id'] == ObjectId(id):
+    project_query['visibility'] = 'public'
+  for project in db.projects.find(project_query):
     project['owner'] = u
     project['fullName'] = u['username'] + '/' + project['path']
     projects.append(project)

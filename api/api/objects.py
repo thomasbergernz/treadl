@@ -22,9 +22,13 @@ def delete(user, id):
 
 def get(user, id):
   db = database.get_db()
-  obj = db.objects.find_one(ObjectId(id))
-  if not obj:
-    raise util.errors.NotFound('Object not found')
+  obj = db.objects.find_one({'_id': ObjectId(id)})
+  if not obj: raise util.errors.NotFound('Object not found')
+  proj = db.projects.find_one({'_id': obj['project']})
+  if not proj: raise util.errors.NotFound('Project not found')
+  owner = user and (user.get('_id') == proj['user'])
+  if not owner and proj['visibility'] != 'public':
+    raise util.errors.BadRequest('Forbidden')
   return obj
 
 def copy_to_project(user, id, project_id):
@@ -34,8 +38,10 @@ def copy_to_project(user, id, project_id):
   original_project = db.projects.find_one(obj['project'])
   if not original_project:
     raise util.errors.NotFound('Project not found')
-  if not original_project.get('openSource') and not (user and user['_id'] == original_project['user']):
+  if not original_project.get('openSource') and not (user['_id'] == original_project['user']):
     raise util.errors.Forbidden('This project is not open-source')
+  if original_project.get('visibility') != 'public' and user['_id'] != original_project['user']:
+    raise util.errors.Forbidden('This project is not public')
   target_project = db.projects.find_one(ObjectId(project_id))
   if not target_project or target_project['user'] != user['_id']:
     raise util.errors.Forbidden('You don\'t own the target project')
@@ -52,8 +58,10 @@ def get_wif(user, id):
   obj = db.objects.find_one(ObjectId(id))
   if not obj: raise util.errors.NotFound('Object not found')
   project = db.projects.find_one(obj['project'])
-  if not project.get('openSource') and not (user and user['_id'] == project['user']):
+  if not project.get('openSource') and user['_id'] != project['user']:
     raise util.errors.Forbidden('This project is not open-source')
+  if project.get('visibility') != 'public' and user['_id'] != project['user']:
+    raise util.errors.Forbidden('This project is not public')
   try:
     output = wif.dumps(obj).replace('\n', '\\n')
     return {'wif': output}
@@ -65,8 +73,10 @@ def get_pdf(user, id):
   obj = db.objects.find_one(ObjectId(id))
   if not obj: raise util.errors.NotFound('Object not found')
   project = db.projects.find_one(obj['project'])
-  if not project.get('openSource') and not (user and user['_id'] == project['user']):
+  if not project.get('openSource') and user['_id'] != project['user']:
     raise util.errors.Forbidden('This project is not open-source')
+  if project.get('visibility') != 'public' and user['_id'] != project['user']:
+    raise util.errors.Forbidden('This project is not public')
   try:
     response = requests.get('https://h2io6k3ovg.execute-api.eu-west-1.amazonaws.com/prod/pdf?object=' + id + '&landscape=true&paperWidth=23.39&paperHeight=33.11')
     response.raise_for_status()
@@ -131,8 +141,16 @@ def create_comment(user, id, data):
   return comment
 
 def get_comments(user, id):
+  id = ObjectId(id)
   db = database.get_db()
-  comments = list(db.comments.find({'object': ObjectId(id)}))
+  obj = db.objects.find_one({'_id': id}, {'project': 1})
+  if not obj: raise util.errors.NotFound('Object not found')
+  proj = db.projects.find_one({'_id': obj['project']}, {'user': 1, 'visibility': 1})
+  if not proj: raise util.errors.NotFound('Project not found')
+  is_owner = user and (user.get('_id') == proj['user'])
+  if not is_owner and proj['visibility'] != 'public':
+    raise util.errors.Forbidden('This project is private')
+  comments = list(db.comments.find({'object': id}))
   user_ids = list(map(lambda c:c['user'], comments))
   users = list(db.users.find({'_id': {'$in': user_ids}}, {'username': 1, 'avatar': 1}))
   for comment in comments:
