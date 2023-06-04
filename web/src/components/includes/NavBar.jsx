@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Modal, Menu, Button, Container, Dropdown } from 'semantic-ui-react';
+import { Modal, Menu, Button, Container, Dropdown, Popup, Icon } from 'semantic-ui-react';
 import api from '../../api';
 import actions from '../../actions';
 import utils from '../../utils/utils.js';
@@ -55,6 +55,7 @@ export default function NavBar() {
     if (window.drift) window.drift.reset();
     navigate('/');
   });
+  const isSupporter = user?.isSilverSupporter || user?.isGoldSupporter;
 
   return (
     <StyledNavBar>
@@ -78,6 +79,26 @@ export default function NavBar() {
                   </Dropdown.Menu>
                 </Dropdown>
               </Menu.Item>
+              {user && !isSupporter && (import.meta.env.VITE_PATREON_URL || import.meta.env.VITE_KOFI_URL) &&
+                <Menu.Item className='above-mobile'>
+                  <Popup pointing='top left' on='hover' hoverable
+                    trigger={<span>Support {utils.appName()}</span>}
+                    content={
+                      <div>
+                        <h3><Icon name='trophy' /> Support {utils.appName()}</h3>
+                        <p>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} you may like to consider supporting it.</p>
+                    <Menu vertical>
+                      {import.meta.env.VITE_KOFI_URL &&
+                        <Menu.Item as='a' href={import.meta.env.VITE_KOFI_URL} target='_blank' rel='noopener noreferrer' className='umami--click--kofi-button'><span role='img' aria-label='Coffee' style={{marginRight: 5}}>☕️</span> Buy me a coffee</Menu.Item>
+                      }
+                      {import.meta.env.VITE_PATREON_URL &&
+                        <Menu.Item as='a' href={import.meta.env.VITE_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--kofi-button'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Menu.Item>
+                      }
+                    </Menu></div>
+                  }
+                  />
+                </Menu.Item>
+              }
               
               <Menu.Menu position='right'>
                 {isAuthenticated && <>

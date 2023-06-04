@@ -126,22 +126,6 @@ function Home() {
             </Card.Content>
           </Card>
 
-          {(import.meta.env.VITE_PATREON_URL || import.meta.env.VITE_KOFI_URL) &&
-            <Card fluid style={{opacity: 0.8}}>
-              <Card.Content>
-                <Card.Header><span role="img" aria-label="Dancer">🕺</span> Support {utils.appName()}</Card.Header>
-                <Card.Description>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} you may like to consider supporting it.</Card.Description>
-                <Divider hidden />
-                {import.meta.env.VITE_KOFI_URL &&
-                  <Button size='small' fluid as='a' href={import.meta.env.VITE_KOFI_URL} target='_blank' rel='noopener noreferrer' className='umami--click--kofi-button'><span role='img' aria-label='Coffee' style={{marginRight: 5}}>☕️</span> Buy me a coffee</Button>
-                }
-                {import.meta.env.VITE_PATREON_URL &&
-                  <Button style={{marginTop: 10}} size='small' fluid as='a' href={import.meta.env.VITE_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-button'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Button>
-                }
-              </Card.Content>
-            </Card>
-          }
-
         </Grid.Column>
 
         <Grid.Column computer={11} className='joyride-projects'>
