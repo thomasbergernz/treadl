@@ -180,7 +180,7 @@ def get_feed(user, username):
   feed_users = list(db.users.find({'$or': [
     {'_id': {'$in': list(feed_user_ids)}},
     {'_id': {'$in': list(map(lambda p: p['user'], feed_projects))}},
-  ]}, {'username': 1, 'avatar': 1}))
+  ]}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}))
   feed_user_map = {}
   feed_project_map = {}
   for u in feed_users: feed_user_map[str(u['_id'])] = u
