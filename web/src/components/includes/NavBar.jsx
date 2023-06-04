@@ -102,7 +102,7 @@ export default function NavBar() {
                               <List.Icon name='patreon' size='large' verticalAlign='middle' />
                               <List.Content>
                                 <List.Header as='a'>Join us on Patreon</List.Header>
-                                <List.Description as='a'>You can get a special badge on your profile</List.Description>
+                                <List.Description as='a'>You can get a supporter badge on your profile</List.Description>
                               </List.Content>
                             </List.Item>
                           }

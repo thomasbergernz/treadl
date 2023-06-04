@@ -6,7 +6,7 @@ import UserChip from './UserChip';
 import api from '../../api';
 import utils from '../../utils/utils.js';
 
-export default function ExploreCard({ count }) {
+export default function ExploreCard({ count, asCard }) {
   const [highlightProjects, setHighlightProjects] = useState([]);
   const [highlightUsers, setHighlightUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,9 +20,9 @@ export default function ExploreCard({ count }) {
     });
   }, []);
   
-  return (
-    <Card fluid>
-      <Card.Content>
+  function getContent() {
+    return (
+      <div>
         <h4>Discover a project</h4>
         {loading && <BulletList />}
         {highlightProjects?.length > 0 && <>
@@ -37,7 +37,7 @@ export default function ExploreCard({ count }) {
             )}
           </List>
         </>}
-  
+        
         <h4>Find others on {utils.appName()}</h4>
         {loading && <BulletList />}
         {highlightUsers?.length > 0 && <>
@@ -51,7 +51,18 @@ export default function ExploreCard({ count }) {
             )}
           </List>
         </>}
-      </Card.Content>
-    </Card>
-  );
+      </div>
+    );
+  }
+  
+  if (asCard)
+    return (
+      <Card fluid>
+        <Card.Content>
+          {getContent()}
+        </Card.Content>
+      </Card>
+    );
+  
+  return getContent();
 }

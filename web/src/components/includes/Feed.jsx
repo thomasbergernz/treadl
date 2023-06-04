@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Message, Card } from 'semantic-ui-react';
+import { Message, Card, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { BulletList } from 'react-content-loader'
 import api from '../../api';
@@ -27,7 +27,7 @@ export default function Feed() {
   
   return (
     <Card fluid>
-      <Card.Content style={{maxHeight: 300, overflowY: 'scroll'}}>
+      <Card.Content style={{maxHeight: 500, overflowY: 'scroll'}}>
       <Card.Header style={{marginBottom: 10}}>Recent activity</Card.Header>
       {loading &&
         <div>
@@ -36,13 +36,13 @@ export default function Feed() {
       }
       {!loading && !feed?.length &&
         <div>
-          <Message size='tiny'>Your feed is empty. You can <Link to='/explore'>follow others</Link> to stay up-to-date.</Message>
+          <p style={{background: 'rgba(0,0,0,0.05)', padding: 5, borderRadius: 5}}><Icon name='feed' /> Your feed is empty. You can <Link to='/explore'>follow others</Link> to stay up-to-date.</p>
           <DiscoverCard />
         </div>
       }
       {!loading && feed?.map(item =>
         <div key={item._id} style={{display: 'flex', alignItems: 'center', marginBottom: 10}}>
-          <div style={{marginRight: 5}}>
+          <div style={{marginRight: 10}}>
             <UserChip user={item.userObject} avatarOnly />
           </div>
           <div>
@@ -55,14 +55,18 @@ export default function Feed() {
               </span>
             }
             {item.feedType === 'object' &&
-              <span>created a new item 
+              <span>added an item 
                 {item.projectObject?.userObject &&
-                  <span> in <Link to={`/${item.projectObject.userObject.username}/${item.projectObject.path}`}>{item.projectObject.name}</Link></span>
+                  <span> to <Link to={`/${item.projectObject.userObject.username}/${item.projectObject.path}`}>{item.projectObject.name}</Link></span>
                 }
               </span>
             }
             {item.feedType === 'project' &&
-              <span>started a new project: {item.name}</span>
+              <span>started a new project
+              {item.userObject && item.path &&
+                <span>: <Link to={`/${item.userObject.username}/${item.path}`}>{item.name}</Link></span>
+              }
+              </span>
             }
           </div>
         </div>

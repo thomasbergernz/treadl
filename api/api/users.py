@@ -129,7 +129,7 @@ def get_feed(user, username):
     '_id': {'$in': following_project_ids},
     'createdAt': {'$gt': one_year_ago},
     'visibility': 'public',
-  }, {'user': 1, 'createdAt': 1, 'name': 1, 'path': 1}).sort('createdAt', -1).limit(20))
+  }, {'user': 1, 'createdAt': 1, 'name': 1, 'path': 1, 'visibility': 1}).sort('createdAt', -1).limit(20))
   recent_objects = list(db.objects.find({
     'project': {'$in': following_project_ids},
     'createdAt': {'$gt': one_year_ago}
@@ -173,7 +173,7 @@ def get_feed(user, username):
   for f in feed_items:
     feed_user_ids.add(f.get('user'))
     feed_project_ids.add(f.get('project'))
-  feed_projects = list(db.projects.find({'_id': {'$in': list(feed_project_ids)}, 'visibility': 'public'}, {'name': 1, 'path': 1, 'user': 1}))
+  feed_projects = list(db.projects.find({'_id': {'$in': list(feed_project_ids)}, 'visibility': 'public'}, {'name': 1, 'path': 1, 'user': 1, 'visibility': 1}))
   feed_users = list(db.users.find({'$or': [
     {'_id': {'$in': list(feed_user_ids)}},
     {'_id': {'$in': list(map(lambda p: p['user'], feed_projects))}},
@@ -183,10 +183,21 @@ def get_feed(user, username):
   for u in feed_users: feed_user_map[str(u['_id'])] = u
   for p in feed_projects: feed_project_map[str(p['_id'])] = p
   for f in feed_items:
-    if f.get('user'): f['userObject'] = feed_user_map.get(str(f['user']))
-    if f.get('project'): f['projectObject'] = feed_project_map.get(str(f['project']))
-    if f.get('projectObject', {}).get('user'): f['projectObject']['userObject'] = feed_user_map.get(str(f['projectObject']['user']))
-
+    if f.get('user') and feed_user_map.get(str(f['user'])):
+      f['userObject'] = feed_user_map.get(str(f['user']))
+    if f.get('project') and feed_project_map.get(str(f['project'])):
+      f['projectObject'] = feed_project_map.get(str(f['project']))
+    if f.get('projectObject', {}).get('user') and feed_user_map.get(str(f['projectObject']['user'])):
+      f['projectObject']['userObject'] = feed_user_map.get(str(f['projectObject']['user']))
+  
+  # Filter out orphaned or non-public comments/objects
+  def filter_func(f):
+    if f['feedType'] == 'comment' and not f.get('projectObject'):
+      return False
+    if f['feedType'] == 'object' and not f.get('projectObject'):
+      return False
+    return True
+  feed_items = list(filter(filter_func, feed_items))
+  
   return {'feed': feed_items}
-      
   

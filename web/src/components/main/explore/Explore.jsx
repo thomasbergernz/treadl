@@ -18,10 +18,6 @@ export default function Explore() {
     return { objects: state.objects.exploreObjects, page: state.objects.explorePage };
   });
   
-  /*useEffect(() => {
-    if (page < 2) loadMoreExplore();
-  }, []);*/
-  
   function loadMoreExplore() {
     setLoading(true);
     api.search.explore(page + 1, data => {
@@ -34,7 +30,7 @@ export default function Explore() {
     <Container style={{ marginTop: '40px' }}>
       <Grid stackable>
         <Grid.Column computer={5} tablet={8}>
-          <DiscoverCard count={7} />
+          <DiscoverCard asCard count={7} />
         </Grid.Column>
         <Grid.Column computer={11} tablet={8}>
           <h1>Recent patterns on {utils.appName()}</h1>
