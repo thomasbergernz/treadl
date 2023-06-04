@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Modal, Menu, Button, Container, Dropdown, Popup, Icon } from 'semantic-ui-react';
+import { Modal, Menu, Button, Container, Dropdown, Popup, Icon, List } from 'semantic-ui-react';
 import api from '../../api';
 import actions from '../../actions';
 import utils from '../../utils/utils.js';
@@ -82,20 +82,33 @@ export default function NavBar() {
               {user && !isSupporter && (import.meta.env.VITE_PATREON_URL || import.meta.env.VITE_KOFI_URL) &&
                 <Menu.Item className='above-mobile'>
                   <Popup pointing='top left' on='hover' hoverable
-                    trigger={<span>Support {utils.appName()}</span>}
+                    trigger={<div style={{padding: 5, background: 'rgba(0,0,0,0.05)', borderRadius: 5}}><span role='img' aria-label='Celebrate' style={{marginRight: 5}}>🙌</span> Help {utils.appName()}</div>}
                     content={
                       <div>
-                        <h3><Icon name='trophy' /> Support {utils.appName()}</h3>
+                        <h3><Icon name='trophy' />Support {utils.appName()}</h3>
                         <p>{utils.appName()} is offered free of charge, but costs money to run and build. If you get value out of {utils.appName()} you may like to consider supporting it.</p>
-                    <Menu vertical>
-                      {import.meta.env.VITE_KOFI_URL &&
-                        <Menu.Item as='a' href={import.meta.env.VITE_KOFI_URL} target='_blank' rel='noopener noreferrer' className='umami--click--kofi-button'><span role='img' aria-label='Coffee' style={{marginRight: 5}}>☕️</span> Buy me a coffee</Menu.Item>
-                      }
-                      {import.meta.env.VITE_PATREON_URL &&
-                        <Menu.Item as='a' href={import.meta.env.VITE_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--kofi-button'><span role='img' aria-label='Party' style={{marginRight: 5}}>🥳</span> Become a patron</Menu.Item>
-                      }
-                    </Menu></div>
-                  }
+                        <List relaxed='very'>
+                          {import.meta.env.VITE_KOFI_URL &&
+                            <List.Item as='a' href={import.meta.env.VITE_KOFI_URL} target='_blank' rel='noopener noreferrer' className='umami--click--kofi-button'>
+                              <List.Icon name='coffee' size='large' verticalAlign='middle' />
+                              <List.Content>
+                                <List.Header as='a'>Buy us a coffee</List.Header>
+                                <List.Description as='a'>One-off  or monthly support</List.Description>
+                              </List.Content>
+                            </List.Item>
+                          }
+                          {import.meta.env.VITE_PATREON_URL &&
+                            <List.Item as='a' href={import.meta.env.VITE_PATREON_URL} target='_blank' rel='noopener noreferrer' className='umami--click--patreon-button'>
+                              <List.Icon name='patreon' size='large' verticalAlign='middle' />
+                              <List.Content>
+                                <List.Header as='a'>Join us on Patreon</List.Header>
+                                <List.Description as='a'>You can get a special badge on your profile</List.Description>
+                              </List.Content>
+                            </List.Item>
+                          }
+                        </List>
+                      </div>
+                    }
                   />
                 </Menu.Item>
               }
