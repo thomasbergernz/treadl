@@ -24,6 +24,7 @@ function Profile() {
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     return { user, profileUser, errorMessage: state.users.errorMessage };
   });
+  const userId = user?._id;
 
   useEffect(() => {
     setLoading(true);
@@ -34,7 +35,7 @@ function Profile() {
       dispatch(actions.users.requestFailed(err));
       setLoading(false);
     });
-  }, [dispatch, username])
+  }, [dispatch, username, userId])
   
   function follow(following) {
     if (!user) return;
