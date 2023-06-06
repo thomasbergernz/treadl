@@ -122,6 +122,8 @@ def get_objects(user, username, path):
   for obj in objs:
     if obj['type'] == 'file' and 'storedName' in obj:
       obj['url'] = uploads.get_presigned_url('projects/{0}/{1}'.format(project['_id'], obj['storedName']))
+    if obj['type'] == 'pattern' and 'preview' in obj and '.png' in obj['preview']:
+      obj['previewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(project['_id'], obj['preview']))
   return objs
 
 def create_object(user, username, path, data):

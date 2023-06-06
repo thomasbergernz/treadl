@@ -8,7 +8,7 @@ export const uploads = {
   },
   uploadFile(forType, forId, name, file, success, fail) {
     uploads.generateFileUploadRequest({
-      forType, forId, name, size: file.length, type: file.type || 'image/png',
+      forType, forId, name, size: file.size, type: file.type || 'image/png',
     }, (response) => {
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', response.signedRequest);

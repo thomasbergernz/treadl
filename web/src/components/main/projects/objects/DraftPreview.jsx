@@ -20,20 +20,16 @@ function DraftPreview({ object }) {
   const generatePreview = useCallback(() => {
     setTimeout(() => {
       const c = document.getElementsByClassName('drawdown')[0];
-      const preview = c?.toDataURL();
-      if (preview) {
-        let previewImage = preview.replace('data:image/png;base64,', '');
-        console.log(previewImage)
-        //previewImage = atob(previewImage);
-        api.uploads.uploadFile('project', object.project, `preview-${objectId}.png`, previewImage, response => {
-          console.log(response);
-          api.objects.update(objectId, { preview }, () => {
-            dispatch(actions.objects.update(objectId, 'preview', preview));
+      c.toBlob(blob => {
+        if (blob) {
+          api.uploads.uploadFile('project', object.project, `preview-${objectId}.png`, blob, response => {
+            api.objects.update(objectId, { preview: response.storedName }, ({ previewUrl }) => {
+              console.log(previewUrl);
+              dispatch(actions.objects.update(objectId, 'previewUrl', previewUrl));
+            });
           });
-        }, err => {
-          
-        });
-      }
+        }
+      });
     }, 1000);
   }, [dispatch, objectId]);
 

@@ -106,7 +106,7 @@ function ObjectList({ compact }) {
                 }
                 {object.type === 'pattern' && (object.preview
                   ? (
-                    <div style={{ height: 40, width:40, backgroundImage: `url(${object.preview})`, backgroundSize: 'cover', backgroundPosition: 'top right' }}
+                    <div style={{ height: 40, width:40, backgroundImage: `url(${object.previewUrl})`, backgroundSize: 'cover', backgroundPosition: 'top right' }}
                     />
                   )
                   : <div style={{ height: 40, width:40, backgroundImage: `url(${logoGreyShort})`, backgroundSize: '50px' }} />
@@ -147,7 +147,7 @@ function ObjectList({ compact }) {
                 {object.type === 'pattern'
                 && (object.preview
                   ? (
-                    <div style={{ height: 200, backgroundImage: `url(${object.preview})`, backgroundSize: 'cover', backgroundPosition: 'top right' }}
+                    <div style={{ height: 200, backgroundImage: `url(${object.previewUrl})`, backgroundSize: 'cover', backgroundPosition: 'top right' }}
                     />
                   )
                   : <div style={{ height: 200, backgroundImage: `url(${logoGreyShort})`, backgroundSize: '50px' }} />
