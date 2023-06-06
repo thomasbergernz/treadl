@@ -22,8 +22,16 @@ function DraftPreview({ object }) {
       const c = document.getElementsByClassName('drawdown')[0];
       const preview = c?.toDataURL();
       if (preview) {
-        api.objects.update(objectId, { preview }, () => {
-          dispatch(actions.objects.update(objectId, 'preview', preview));
+        let previewImage = preview.replace('data:image/png;base64,', '');
+        console.log(previewImage)
+        //previewImage = atob(previewImage);
+        api.uploads.uploadFile('project', object.project, `preview-${objectId}.png`, previewImage, response => {
+          console.log(response);
+          api.objects.update(objectId, { preview }, () => {
+            dispatch(actions.objects.update(objectId, 'preview', preview));
+          });
+        }, err => {
+          
         });
       }
     }, 1000);
@@ -36,7 +44,9 @@ function DraftPreview({ object }) {
       setLoading(false);
       if (o.pattern && o.pattern.warp) {
         setPattern(o.pattern);
-        if (!o.preview) generatePreview();
+        console.log(o.preview);
+        //if (!o.preview) generatePreview();
+        generatePreview();
       }
     }, err => setLoading(false));
   }, [dispatch, objectId, generatePreview]);

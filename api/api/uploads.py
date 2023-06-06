@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 import boto3
 from botocore.client import Config
 import blurhash
-from util import database
+from util import database, util
 
 def sanitise_filename(s):
   bad_chars = re.compile('[^a-zA-Z0-9_.]')

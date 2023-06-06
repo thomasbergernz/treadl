@@ -8,7 +8,6 @@ import utils from '../../../utils/utils.js';
 import DiscoverCard from '../../includes/DiscoverCard';
 import PatternCard from '../../includes/PatternCard';
 import PatternLoader from '../../includes/PatternLoader';
-import DraftPreview from '../projects/objects/DraftPreview';
 
 export default function Explore() {
   const [loading, setLoading] = useState(false);
