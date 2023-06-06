@@ -91,6 +91,8 @@ def explore(page = 1):
   objects = list(db.objects.find({'project': {'$in': all_public_project_ids}, 'name': {'$not': re.compile('untitled pattern', re.IGNORECASE)}, 'preview': {'$exists': True}}, {'project': 1, 'name': 1, 'createdAt': 1, 'preview': 1}).sort('createdAt', pymongo.DESCENDING).skip((page - 1) * per_page).limit(per_page))
   for object in objects:
     object['projectObject'] = project_map.get(object['project'])
+    if 'preview' in object and '.png' in object['preview']:
+      object['previewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(object['project'], object['preview']))
   authors = list(db.users.find({'_id': {'$in': list(map(lambda o: o.get('projectObject', {}).get('user'), objects))}}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}))
   for a in authors:
     if 'avatar' in a:

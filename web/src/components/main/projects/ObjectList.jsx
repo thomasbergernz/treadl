@@ -104,7 +104,7 @@ function ObjectList({ compact }) {
                 {object.isImage &&
                   <div style={{width:40, height:40, backgroundImage:`url(${utils.resizeUrl(object.url, 50)})`, backgroundSize:'cover', backgroundPosition:'center center'}} />
                 }
-                {object.type === 'pattern' && (object.preview
+                {object.type === 'pattern' && (object.previewUrl
                   ? (
                     <div style={{ height: 40, width:40, backgroundImage: `url(${object.previewUrl})`, backgroundSize: 'cover', backgroundPosition: 'top right' }}
                     />
@@ -145,7 +145,7 @@ function ObjectList({ compact }) {
             {filteredObjects.map((object, index) => (
               <Card raised key={object._id} style={{ cursor: 'pointer' }} as={Link} to={`/${fullProjectPath}/${object._id}`}>
                 {object.type === 'pattern'
-                && (object.preview
+                && (object.previewUrl
                   ? (
                     <div style={{ height: 200, backgroundImage: `url(${object.previewUrl})`, backgroundSize: 'cover', backgroundPosition: 'top right' }}
                     />

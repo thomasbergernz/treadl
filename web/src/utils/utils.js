@@ -1,5 +1,6 @@
 import { createConfirmation } from 'react-confirm';
 import ConfirmModal from '../components/includes/ConfirmModal';
+import api from '../api';
 
 import avatar1 from '../images/avatars/1.png';
 import avatar2 from '../images/avatars/2.png';
@@ -103,6 +104,18 @@ const utils = {
     if (IMAGE_SERVER) return `${import.meta.env.VITE_IMAGINARY_URL}/resize?width=${width}&url=${url}`;
     return url;
   },
+  generatePatternPreview(object, callback) {
+    const c = document.getElementsByClassName('drawdown')[0];
+    c?.toBlob(blob => {
+      if (blob) {
+        api.uploads.uploadFile('project', object.project, `preview-${object._id}.png`, blob, response => {
+          api.objects.update(object._id, { preview: response.storedName }, ({ previewUrl }) => {
+            callback && callback(previewUrl);
+          });
+        });
+      }
+    });
+  }
 };
 
 export default utils;

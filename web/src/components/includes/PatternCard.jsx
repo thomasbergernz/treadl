@@ -7,7 +7,7 @@ export default function PatternCard({ object, project, user }) {
   if (!object) return null;
   return (
     <Card raised key={object._id} style={{ cursor: 'pointer' }} as={Link} to={`/${user?.username}/${project?.path}/${object._id}`}>
-      <div style={{ height: 200, backgroundImage: `url(${object.preview})`, backgroundSize: 'cover', backgroundPosition: 'top right', position: 'relative' }}>
+      <div style={{ height: 200, backgroundImage: `url(${object.previewUrl})`, backgroundSize: 'cover', backgroundPosition: 'top right', position: 'relative' }}>
         {user && 
           <div style={{position: 'absolute', top: 5, left: 5, padding: '3px 6px', background: 'rgba(250,250,250,0.8)', borderRadius: 5}}>
             <UserChip user={user} />

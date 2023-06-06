@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import ElementPan from '../../../includes/ElementPan';
 import HelpLink from '../../../includes/HelpLink';
 import Tour, { ReRunTour } from '../../../includes/Tour';
+import util from '../../../../utils/utils.js';
 
 import Warp from './Warp';
 import Weft from './Weft';
@@ -56,9 +57,10 @@ function Draft() {
 
   const saveObject = () => {
     setSaving(true);
-    const canvas = document.getElementsByClassName('drawdown')[0];
+    util.generatePatternPreview(object, previewUrl => {
+      dispatch(actions.objects.update(objectId, 'previewUrl', previewUrl));
+    });
     const newObject = Object.assign({}, object);
-    newObject.preview = canvas.toDataURL();
     newObject.pattern = pattern;
     api.objects.update(objectId, newObject, (o) => {
       toast.success('Pattern saved');

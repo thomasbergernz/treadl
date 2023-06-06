@@ -85,7 +85,7 @@ function ObjectViewer() {
 
   const downloadDrawdownImage = (object) => {
     const element = document.createElement('a');
-    element.setAttribute('href', object.preview);
+    element.setAttribute('href', object.previewUrl);
     element.setAttribute('download', `${object.name.replace(/ /g, '_')}-drawdown.png`);
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -118,10 +118,10 @@ function ObjectViewer() {
       <Helmet title={`${object.name || 'Project Item'} | ${project?.name || 'Project'}`} />
 
       <div style={{ display: 'flex', justifyContent: 'end' }}>
-        {object.type === 'pattern' && (project.user === (user && user._id) || project.openSource || object.preview) && <>
+        {object.type === 'pattern' && (project.user === (user && user._id) || project.openSource || object.previewUrl) && <>
           <Dropdown direction='left' icon={null} trigger={<Button size='small' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
             <Dropdown.Menu>
-              {object.preview &&
+              {object.previewUrl &&
                 <Dropdown.Item onClick={e => downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />
               }
               {(project.user === (user && user._id) || project.openSource) &&

@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Loader } from 'semantic-ui-react';
 import actions from '../../../../actions';
 import api from '../../../../api';
+import util from '../../../../utils/utils.js';
 
 import ElementPan from '../../../includes/ElementPan';
 import { StyledPattern } from '../../../main/projects/objects/Draft';
@@ -17,22 +18,6 @@ function DraftPreview({ object }) {
   const dispatch = useDispatch();
   const objectId = object?._id;
 
-  const generatePreview = useCallback(() => {
-    setTimeout(() => {
-      const c = document.getElementsByClassName('drawdown')[0];
-      c.toBlob(blob => {
-        if (blob) {
-          api.uploads.uploadFile('project', object.project, `preview-${objectId}.png`, blob, response => {
-            api.objects.update(objectId, { preview: response.storedName }, ({ previewUrl }) => {
-              console.log(previewUrl);
-              dispatch(actions.objects.update(objectId, 'previewUrl', previewUrl));
-            });
-          });
-        }
-      });
-    }, 1000);
-  }, [dispatch, objectId]);
-
   useEffect(() => {
     dispatch(actions.objects.updateEditor({ tool: 'pan' }));
     setLoading(true);
@@ -40,12 +25,17 @@ function DraftPreview({ object }) {
       setLoading(false);
       if (o.pattern && o.pattern.warp) {
         setPattern(o.pattern);
-        console.log(o.preview);
-        //if (!o.preview) generatePreview();
-        generatePreview();
+        // Generate the preview if not yet set (e.g. if from uploaded WIF)
+        if (!o.previewUrl) {
+          setTimeout(() => {
+            util.generatePatternPreview(object, previewUrl => {
+              dispatch(actions.objects.update(objectId, 'previewUrl', previewUrl));
+            });
+          }, 1000);
+        }
       }
     }, err => setLoading(false));
-  }, [dispatch, objectId, generatePreview]);
+  }, [dispatch, objectId]);
 
   const unifyCanvas = useCallback(() => {
     if (!pattern) return;
