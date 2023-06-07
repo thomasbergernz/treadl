@@ -196,7 +196,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     showCupertinoModalPopup(context: context, builder: (BuildContext context) => settingsDialog);
   }
 
-  Widget getImageBox(data, [bool isMemory, bool isNetwork]) {
+  Widget getImageBox(data, [bool? isMemory, bool? isNetwork]) {
     return new AspectRatio(
       aspectRatio: 1 / 1,
       child: new Container(

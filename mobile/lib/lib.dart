@@ -13,8 +13,8 @@ class Alert extends StatelessWidget {
   final String title;
   final String description;
   final String actionText;
-  final Widget descriptionWidget;
-  final Function action;
+  final Widget? descriptionWidget;
+  final Function? action;
   Alert({this.type = 'info', this.title = '', this.description = '', this.descriptionWidget = null, this.actionText = 'Click here', this.action}) {}
 
   @override
@@ -61,8 +61,8 @@ class Alert extends StatelessWidget {
 
 class NoticeboardPost extends StatefulWidget {
   final Map<String,dynamic> _entry;
-  final Function onDelete;
-  final Function onReply;
+  final Function? onDelete;
+  final Function? onReply;
   NoticeboardPost(this._entry, {this.onDelete = null, this.onReply = null});
   _NoticeboardPostState createState() => _NoticeboardPostState(_entry, onDelete: onDelete, onReply: onReply);
 }
@@ -70,8 +70,8 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
   final Map<String,dynamic> _entry;
   final Util utils = new Util();
   final Api api = new Api();
-  final Function onDelete;
-  final Function onReply;
+  final Function? onDelete;
+  final Function? onReply;
   final TextEditingController _replyController = TextEditingController();
   bool _isReplying = false;
   bool _replying = false;

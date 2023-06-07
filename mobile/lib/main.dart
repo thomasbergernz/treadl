@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'api.dart';
 import 'store.dart';
 import 'welcome.dart';
@@ -42,7 +42,7 @@ class _AppState extends State<MyApp> {
           title: 'Treadl',
           theme: ThemeData(
             primarySwatch: Colors.pink,
-            textSelectionColor: Colors.blue,
+            //textSelectionColor: Colors.blue,
           ),   
           home: Startup(),
           routes: <String, WidgetBuilder>{
@@ -64,12 +64,12 @@ class Startup extends StatelessWidget {
   Startup() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
-        print(message.notification.body);
+        print(message.notification!);
         String text = '';
-        if (message.notification != null && message.notification.body != null) {
-          text = message.notification.body;
+        if (message.notification != null && message.notification!.body != null) {
+          text = message.notification!.body!;
         }
-        Fluttertoast.showToast(
+        /*Fluttertoast.showToast(
           msg: text,
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
@@ -77,7 +77,7 @@ class Startup extends StatelessWidget {
           backgroundColor: Colors.grey[100],
           textColor: Colors.black,
           fontSize: 16.0
-        );
+        );*/
       }
     });
   }
@@ -86,9 +86,9 @@ class Startup extends StatelessWidget {
     if (_handled) return;
     _handled = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();      
-    final String token = prefs.getString('apiToken');
+    String? token = prefs.getString('apiToken');
     if (token != null) {
-      Provider.of<Store>(context, listen: false).setToken(token);
+      Provider.of<Store>(context, listen: false).setToken(token!);
       
       FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
       await _firebaseMessaging.requestPermission(
@@ -100,16 +100,14 @@ class Startup extends StatelessWidget {
         provisional: false,
         sound: true,
       );
-      String _pushToken = await _firebaseMessaging.getToken();
+      String? _pushToken = await _firebaseMessaging.getToken();
       if (_pushToken != null) {
         print("sending push");
         Api api = Api();
-        api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken});
+        api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken!});
       }
-      print('111');  
       // Push without including current route in stack:
       Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-      print('222');
     } else {
       Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (Route<dynamic> route) => false);
     }

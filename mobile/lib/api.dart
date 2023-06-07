@@ -12,7 +12,7 @@ class Api {
 
   Future<String> loadToken() async {
     if (_token != null) {
-      return _token;
+      return _token!;
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();      
     final String token = prefs.getString('apiToken');
@@ -22,7 +22,7 @@ class Api {
     Map<String,String> headers = {};
     String token = await loadToken();
     if (token != null) {
-      headers['Authorization'] = 'Bearer ' + token;
+      headers['Authorization'] = 'Bearer ' + token!;
     }
     if (method == 'POST' || method == 'DELETE') {
       headers['Content-Type'] = 'application/json';
@@ -44,7 +44,7 @@ class Api {
     http.Client client = http.Client();
     return await client.put(url, headers: await getHeaders('POST'), body: json);
   }
-  Future<http.Response> _delete(Uri url, [Map<String, dynamic> data]) async {
+  Future<http.Response> _delete(Uri url, [Map<String, dynamic>? data]) async {
     http.Client client = http.Client();
     if (data != null) {
       String json = jsonEncode(data);
@@ -54,7 +54,7 @@ class Api {
     }
   }
 
-  Future<Map<String, dynamic>> request(String method, String path, [Map<String, dynamic> data]) async {
+  Future<Map<String, dynamic>> request(String method, String path, [Map<String, dynamic>? data]) async {
     String url = apiBase + path;
     Uri uri = Uri.parse(url);
     http.Response response;
