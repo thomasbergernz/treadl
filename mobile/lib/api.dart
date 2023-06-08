@@ -6,21 +6,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Api {
 
-  String _token;
+  String? _token;
   final String apiBase = 'https://api.treadl.com';
   //final String apiBase = 'http://localhost:2001';
 
-  Future<String> loadToken() async {
+  Future<String?> loadToken() async {
     if (_token != null) {
       return _token!;
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();      
-    final String token = prefs.getString('apiToken');
+    String? token = prefs.getString('apiToken');
     return token;
   }
   Future<Map<String,String>> getHeaders(method) async {
     Map<String,String> headers = {};
-    String token = await loadToken();
+    String? token = await loadToken();
     if (token != null) {
       headers['Authorization'] = 'Bearer ' + token!;
     }
@@ -34,13 +34,19 @@ class Api {
     http.Client client = http.Client();
     return await client.get(url, headers: await getHeaders('GET'));
   }
-  Future<http.Response> _post(Uri url, Map<String, dynamic> data) async {
-    String json = jsonEncode(data);
+  Future<http.Response> _post(Uri url, Map<String, dynamic>? data) async {
+    String? json = null;
+    if (data != null) {
+      json = jsonEncode(data!);
+    }
     http.Client client = http.Client();
     return await client.post(url, headers: await getHeaders('POST'), body: json);
   }
-  Future<http.Response> _put(Uri url, Map<String, dynamic> data) async {
-    String json = jsonEncode(data);
+  Future<http.Response> _put(Uri url, Map<String, dynamic>? data) async {
+    String? json = null;
+    if (data != null) {
+      json = jsonEncode(data!);
+    }
     http.Client client = http.Client();
     return await client.put(url, headers: await getHeaders('POST'), body: json);
   }
@@ -57,7 +63,7 @@ class Api {
   Future<Map<String, dynamic>> request(String method, String path, [Map<String, dynamic>? data]) async {
     String url = apiBase + path;
     Uri uri = Uri.parse(url);
-    http.Response response;
+    http.Response? response;
     if (method == 'POST') {
       response = await _post(uri, data);
     }
@@ -70,16 +76,19 @@ class Api {
     if (method == 'DELETE') {
       response = await _delete(uri, data);
     }
-    int status = response.statusCode;
+    if (response == null) {
+      return {'success': false, 'message': 'No response for your request'};
+    }
+    int status = response!.statusCode;
     if (status == 200) {
       print('SUCCESS');
-      Map<String, dynamic> respData = jsonDecode(response.body);
+      Map<String, dynamic> respData = jsonDecode(response!.body);
       return {'success': true, 'payload': respData};
     }
     else {
       print('ERROR');
-      Map<String, dynamic> respData = jsonDecode(response.body);
-      return {'success': false, 'code': response.statusCode, 'message': respData['message']};
+      Map<String, dynamic> respData = jsonDecode(response!.body);
+      return {'success': false, 'code': status, 'message': respData['message']};
     }
   }
 

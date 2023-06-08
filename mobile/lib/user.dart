@@ -33,7 +33,7 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String created;
+    String? created;
     if (_user['createdAt'] != null) {
       DateTime createdAt = DateTime.parse(_user['createdAt']);
       created = DateFormat('MMMM y').format(createdAt);
@@ -68,7 +68,7 @@ class _UserScreenState extends State<UserScreen> {
                         Text(_user['location'])
                       ]) : SizedBox(height: 1),
                     SizedBox(height: 10),
-                    Text('Member' + (created != null ? (' since ' + created) : ''),
+                    Text('Member' + (created != null ? (' since ' + created!) : ''),
                       style: TextStyle(color: Colors.grey[500])
                     ),
                     SizedBox(height: 10),

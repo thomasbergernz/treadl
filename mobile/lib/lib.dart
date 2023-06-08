@@ -39,7 +39,7 @@ class Alert extends StatelessWidget {
         color: accentColor,
         borderRadius: new BorderRadius.all(Radius.circular(10.0)),
         boxShadow: [
-          BoxShadow(color: Colors.grey[50], spreadRadius: 5),
+          BoxShadow(color: Colors.grey[50]!, spreadRadius: 5),
         ],
       ),
       child: Column(
@@ -51,7 +51,7 @@ class Alert extends StatelessWidget {
           descriptionWidget,
           action != null ? CupertinoButton(
             child: Text(actionText),
-            onPressed: action,
+            onPressed: () => action(),
           ) : null
         ].where((o) => o != null).toList()
       )

@@ -196,7 +196,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     showCupertinoModalPopup(context: context, builder: (BuildContext context) => settingsDialog);
   }
 
-  Widget getImageBox(data, [bool? isMemory, bool? isNetwork]) {
+  Widget getMemoryImageBox(data, [bool? isMemory, bool? isNetwork]) {
     return new AspectRatio(
       aspectRatio: 1 / 1,
       child: new Container(
@@ -204,7 +204,21 @@ class _ProjectScreenState extends State<ProjectScreen> {
           image: new DecorationImage(
             fit: BoxFit.fitWidth,
             alignment: FractionalOffset.topCenter,
-            image: isMemory == true ? new MemoryImage(data) : new NetworkImage(data)
+            image: new MemoryImage(data),
+          )
+        ),
+      ),
+    );
+  }
+  Widget getNetworkImageBox(String url) {
+    return new AspectRatio(
+      aspectRatio: 1 / 1,
+      child: new Container(
+        decoration: new BoxDecoration(
+          image: new DecorationImage(
+            fit: BoxFit.fitWidth,
+            alignment: FractionalOffset.topCenter,
+            image: new NetworkImage(url),
           )
         ),
       ),
@@ -232,16 +246,30 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
     if (object['isImage'] == true) {
       type = 'Image';
-      leader = getImageBox(object['url']);
+      if (object['url'] != null) {
+        leader = getNetworkImageBox(object['url']!);
+      }
+      else {
+        leader = getIconBox(Icon(Icons.photo));
+      }
     }
     else if (object['type'] == 'pattern' && object['preview'] != null) {
       type = 'Weaving pattern';
       var dat = Uri.parse(object['preview']).data;
-      leader = getImageBox(dat.contentAsBytes(), true);
+      if (dat != null) {
+        leader = getMemoryImageBox(dat!.contentAsBytes(), true);
+      }
+      else {
+        leader = getIconBox(Icon(Icons.pattern));
+      }
     }
     else if (object['type'] == 'file') {
       type = 'File';
       leader = getIconBox(Icon(Icons.insert_drive_file));
+    }
+    else {
+      type = 'Unknown';
+      leader = getIconBox(Icon(Icons.file_present));
     }
 
     return new Card(
