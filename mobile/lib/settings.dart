@@ -31,11 +31,11 @@ class SettingsScreen extends StatelessWidget {
         ),
       ]),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text('Cancel'),
           onPressed: () { Navigator.of(context).pop(); }
         ),
-        RaisedButton(
+        ElevatedButton(
           child: Text('Delete Account'),
           onPressed: () async {
             Api api = Api();

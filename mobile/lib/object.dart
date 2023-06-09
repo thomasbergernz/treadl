@@ -72,10 +72,15 @@ class _ObjectScreenState extends State<ObjectScreen> {
     }
     else if (_object['type'] == 'pattern') {
       var dat = Uri.parse(_object['preview']).data;
-      return Image.memory(dat.contentAsBytes());
+      if (dat != null) {
+        return Image.memory(dat!.contentAsBytes());
+      }
+      else {
+        return Icon(Icons.pattern);
+      }
     }
     else {
-      return RaisedButton(child: Text('View file'), onPressed: () {
+      return ElevatedButton(child: Text('View file'), onPressed: () {
         launch(_object['url']);
       });
     }

@@ -48,12 +48,12 @@ class Alert extends StatelessWidget {
           Icon(icon, color: color),
           SizedBox(height: 20),
           Text(description, textAlign: TextAlign.center),
-          descriptionWidget,
+          descriptionWidget != null ? descriptionWidget! : Text(""),
           action != null ? CupertinoButton(
             child: Text(actionText),
-            onPressed: () => action(),
-          ) : null
-        ].where((o) => o != null).toList()
+            onPressed: () => action!(),
+          ) : Text("")
+        ]
       )
     );
   }
@@ -84,7 +84,9 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
     if (data['success'] == true) {
       _replyController.value = TextEditingValue(text: '');
       FocusScope.of(context).requestFocus(FocusNode());
-      onReply(data['payload']);
+      if (onReply != null) {
+        onReply!(data['payload']);
+      }
       setState(() {
         _replying = false;
         _isReplying = false;
@@ -95,7 +97,9 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
   void _deletePost() async {
     var data = await api.request('DELETE', '/groups/' + _entry['group'] + '/entries/' + _entry['_id']);
     if (data['success'] == true) {
-      onDelete(_entry);
+      if (onDelete != null) {
+        onDelete!(_entry);
+      }
       Navigator.of(context).pop();
     }
   }
@@ -104,17 +108,17 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
   Widget build(BuildContext context) {
     var createdAt = DateTime.parse(_entry['createdAt']);
     bool isReply = _entry['inReplyTo'] != null;
-    int replyCount = _entry['replies'] == null ? 0 : _entry['replies'].length;
+    int replyCount = _entry['replies'] == null ? 0 : _entry['replies']!.length;
     String replyText = 'Write a reply...';
     if (replyCount == 1) replyText = '1 Reply';
     if (replyCount > 1) replyText = replyCount.toString() + ' replies';
     if (_isReplying) replyText = 'Cancel reply';
     List<Widget> replyWidgets = [];
     if (_entry['replies'] != null) {
-      for (int i = 0; i < _entry['replies'].length; i++) {
+      for (int i = 0; i < _entry['replies']!.length; i++) {
         replyWidgets.add(new Container(
-          key: Key(_entry['replies'][i]['_id']),
-          child: NoticeboardPost(_entry['replies'][i], onDelete: onDelete)
+          key: Key(_entry['replies']![i]['_id']),
+          child: NoticeboardPost(_entry['replies']![i], onDelete: onDelete)
         ));
       }
     }
@@ -127,20 +131,20 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
-                  color: Colors.orange,
+                ElevatedButton(
+                  //color: Colors.orange,
                   onPressed: () {
                     launch('https://www.treadl.com');
                   },
                   child: Text('Report this post'),
                 ),
                 SizedBox(height: 10),
-                RaisedButton(
-                  color: Colors.red,
+                ElevatedButton(
+                  //color: Colors.red,
                   onPressed: _deletePost,
                   child: Text('Delete post'),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -176,18 +180,18 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
               !isReply ? GestureDetector(
                 onTap: () => setState(() => _isReplying = !_isReplying),
                 child: Text(replyText, style: TextStyle(color: replyCount > 0 ? Colors.pink : Colors.black, fontSize: 10, fontWeight: FontWeight.bold)),
-              ): null,
-            ].where((o) => o != null).toList(),
+              ): SizedBox(width: 0),
+            ],
           ),
           Row(children: [
             SizedBox(width: 45),
             Expanded(child: Text(_entry['content'], textAlign: TextAlign.left))
           ]),
-          _isReplying ? NoticeboardInput(_replyController, _sendReply, _replying, label: 'Reply to this post') : null,
+          _isReplying ? NoticeboardInput(_replyController, _sendReply, _replying, label: 'Reply to this post') : SizedBox(width: 0),
           Column(
             children: replyWidgets
           ),
-        ].where((o) => o != null).toList(),
+        ],
       ))
     );
   }
@@ -215,7 +219,7 @@ class NoticeboardInput extends StatelessWidget {
             ),
           )),
           IconButton(
-            onPressed: _onPost,
+            onPressed: () => _onPost!(),
             color: Colors.pink,
             icon: _posting ? CircularProgressIndicator() : Icon(Icons.send),
           )

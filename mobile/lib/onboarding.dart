@@ -9,7 +9,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   );
   final Api api = Api();
   bool _loading = false;
-  String _pushToken;
+  String? _pushToken;
 
   @override
   void dispose() {
@@ -36,7 +36,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
     _pushToken = await _firebaseMessaging.getToken();*/
     if (_pushToken != null) {
-      api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken});
+      api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken!});
     }
     setState(() => _loading = false);
     _controller.animateToPage(2, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
@@ -63,7 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 SizedBox(height: 10),
                 Text('You can create as many projects as you like. Upload weaving draft patterns, images, and other files to your projects to store and showcase your work.', style: TextStyle(color: Colors.white, fontSize: 13), textAlign: TextAlign.center),
                 SizedBox(height: 10),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('OK, I know what projects are!'),
                   onPressed: () => _controller.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut),
                 )
@@ -84,12 +84,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 SizedBox(height: 10),
                 Text('We recommend enabling push notifications so you can keep up-to-date with your groups and projects.', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 SizedBox(height: 10),
-                RaisedButton(
+                ElevatedButton(
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    _loading ? CircularProgressIndicator() : null,
-                    _loading ? SizedBox(width: 5) : null,
+                    _loading ? CircularProgressIndicator() : SizedBox(width: 0),
+                    _loading ? SizedBox(width: 5) : SizedBox(width: 0),
                     Text('What\'s next?'),
-                  ].where((o) => o != null).toList()),
+                  ]),
                   onPressed: _requestPushPermissions,
                 )
               ]
@@ -107,7 +107,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 SizedBox(height: 10),
                 Text('You\'re ready to get started. If you have any questions or want to get in touch then just send us a quick tweet.', style: TextStyle(color: Colors.white, fontSize: 13), textAlign: TextAlign.center),
                 SizedBox(height: 10),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('Let\'s go'),
                   onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false),
                 ),

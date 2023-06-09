@@ -97,9 +97,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               SizedBox(height: 20),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () => _submit(context),
-                color: Colors.pink,
+                //color: Colors.pink,
                 child: _registering ? SizedBox(height: 20, width: 20, child:CircularProgressIndicator(backgroundColor: Colors.white)) : Text("Register",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white, fontSize: 15)

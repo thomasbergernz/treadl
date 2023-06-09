@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 class Store extends ChangeNotifier {
-  String apiToken;
+  String? apiToken;
 
-  void setToken(String newToken) {
+  void setToken(String? newToken) {
     apiToken = newToken;
   }
 }

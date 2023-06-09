@@ -161,7 +161,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
               ),
               /*ButtonBar(
                 children: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: const Text('VIEW'),
                     onPressed: () {
                       
