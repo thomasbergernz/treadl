@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Api {
 
   String? _token;
-  final String apiBase = 'https://api.treadl.com';
-  //final String apiBase = 'http://localhost:2001';
+  //final String apiBase = 'https://api.treadl.com';
+  final String apiBase = 'http://192.168.5.86:2001';
 
   Future<String?> loadToken() async {
     if (_token != null) {
