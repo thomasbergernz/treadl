@@ -253,11 +253,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
         leader = getIconBox(Icon(Icons.photo));
       }
     }
-    else if (object['type'] == 'pattern' && object['preview'] != null) {
+    else if (object['type'] == 'pattern') {
       type = 'Weaving pattern';
-      var dat = Uri.parse(object['preview']).data;
-      if (dat != null) {
-        leader = getMemoryImageBox(dat!.contentAsBytes(), true);
+      if (object['previewUrl'] != null) {
+        leader = getNetworkImageBox(object['previewUrl']!);
       }
       else {
         leader = getIconBox(Icon(Icons.pattern));

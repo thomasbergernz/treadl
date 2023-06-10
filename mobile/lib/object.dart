@@ -71,12 +71,18 @@ class _ObjectScreenState extends State<ObjectScreen> {
       return Image.network(_object['url']);
     }
     else if (_object['type'] == 'pattern') {
-      var dat = Uri.parse(_object['preview']).data;
-      if (dat != null) {
-        return Image.memory(dat!.contentAsBytes());
+      if (_object['previewUrl'] != null) {
+        return Image.network(_object['previewUrl']!);;
       }
       else {
-        return Icon(Icons.pattern);
+        return Column(
+          children: [
+            SizedBox(height: 50),
+            Icon(Icons.pattern, size: 40),
+            SizedBox(height: 20),
+            Text('A preview of this pattern is not yet available'),
+          ],
+        );
       }
     }
     else {
