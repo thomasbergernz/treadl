@@ -93,6 +93,7 @@ def explore(page = 1):
     object['projectObject'] = project_map.get(object['project'])
     if 'preview' in object and '.png' in object['preview']:
       object['previewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(object['project'], object['preview']))
+      del object['preview']
   authors = list(db.users.find({'_id': {'$in': list(map(lambda o: o.get('projectObject', {}).get('user'), objects))}}, {'username': 1, 'avatar': 1, 'isSilverSupporter': 1, 'isGoldSupporter': 1}))
   for a in authors:
     if 'avatar' in a:
