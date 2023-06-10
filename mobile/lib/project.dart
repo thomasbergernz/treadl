@@ -282,6 +282,43 @@ class _ProjectSettingsDialog extends StatelessWidget {
   final Function _onUpdateProject;
   final Api api = Api();
   _ProjectSettingsDialog(this._project, this._onDelete, this._onUpdateProject) {}
+  
+  void _renameProject(BuildContext context) async {
+    TextEditingController renameController = TextEditingController();
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Rename your project'),
+            content: TextField(
+              autofocus: true,
+              controller: renameController,
+              decoration: InputDecoration(hintText: "Enter a new name for the project"),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('CANCEL'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: Text('OK'),
+                onPressed: () async {
+                  print(renameController.text);
+                  var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'name': renameController.text});
+                  if (data['success']) {
+                    Navigator.pop(context); 
+                    _onUpdateProject(data['payload']);
+                  }
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+  }
 
   void _toggleVisibility(BuildContext context, bool checked) async {
     var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'visibility': checked ? 'private': 'public'});
@@ -344,6 +381,10 @@ class _ProjectSettingsDialog extends StatelessWidget {
               Text('Private project', style: Theme.of(context).textTheme.bodyText1),
             ]
           )
+        ),
+        CupertinoActionSheetAction(
+          onPressed: () { _renameProject(context); },
+          child: Text('Rename project'),
         ),
         CupertinoActionSheetAction(
           onPressed: () { _confirmDeleteProject(context); },
