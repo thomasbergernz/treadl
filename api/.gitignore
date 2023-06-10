@@ -7,4 +7,5 @@ __pycache__/
 config-prod.yml
 envfile
 firebase.json
-.DS_Store   
+.DS_Store
+migration_projects/
