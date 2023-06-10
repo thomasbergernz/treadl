@@ -6,11 +6,13 @@ import 'package:flutter_html/flutter_html.dart';
 import 'api.dart';
 
 class _ObjectScreenState extends State<ObjectScreen> {
-  final Map<String,dynamic> _object;
+  final Map<String,dynamic> _project;
+  Map<String,dynamic> _object;
+  final Function _onUpdate;
   final Function _onDelete;
   final Api api = Api();
   
-  _ObjectScreenState(this._object, this._onDelete) { }
+  _ObjectScreenState(this._object, this._project, this._onUpdate, this._onDelete) { }
 
   void _deleteObject(BuildContext context, BuildContext modalContext) async {
     var data = await api.request('DELETE', '/objects/' + _object['_id']);
@@ -26,7 +28,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     showDialog(
       context: modalContext,
       builder: (BuildContext context) => CupertinoAlertDialog(
-        title: new Text('Really delete this object?'),
+        title: new Text('Really delete this item?'),
         content: new Text('This action cannot be undone.'),
         actions: <Widget>[
           CupertinoDialogAction(
@@ -43,6 +45,47 @@ class _ObjectScreenState extends State<ObjectScreen> {
       )
     );    
   }
+  
+  void _renameObject(BuildContext context) {
+    TextEditingController renameController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Rename this item'),
+          content: TextField(
+            autofocus: true,
+            controller: renameController,
+            decoration: InputDecoration(hintText: "Enter a new name for the item"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () async {
+                print(renameController.text);
+                var data = await api.request('PUT', '/objects/' + _object['_id'], {'name': renameController.text});
+                if (data['success']) {
+                  Navigator.pop(context);
+                  _object['name'] = data['payload']['name'];
+                  _onUpdate(_object['_id'], data['payload']);
+                  setState(() {
+                    _object = _object;
+                  });
+                }
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showSettingsModal(context) {
     showCupertinoModalPopup(
@@ -56,8 +99,12 @@ class _ObjectScreenState extends State<ObjectScreen> {
           ),
           actions: [
             CupertinoActionSheetAction(
+              onPressed: () => _renameObject(context),
+              child: Text('Rename item'),
+            ),
+            CupertinoActionSheetAction(
               onPressed: () => _confirmDeleteObject(modalContext),
-              child: Text('Delete object'),
+              child: Text('Delete item'),
               isDestructiveAction: true,
             ),
           ]
@@ -124,8 +171,10 @@ class _ObjectScreenState extends State<ObjectScreen> {
 
 class ObjectScreen extends StatefulWidget {
   final Map<String,dynamic> _object;
+  final Map<String,dynamic> _project;
+  final Function _onUpdate;
   final Function _onDelete;
-  ObjectScreen(this._object, this._onDelete) { }
+  ObjectScreen(this._object, this._project, this._onUpdate, this._onDelete) { }
   @override
-  _ObjectScreenState createState() => _ObjectScreenState(_object, _onDelete); 
+  _ObjectScreenState createState() => _ObjectScreenState(_object, _project, _onUpdate, _onDelete); 
 }

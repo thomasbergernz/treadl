@@ -47,6 +47,17 @@ class _ProjectScreenState extends State<ProjectScreen> {
     _onUpdate(project['_id'], project);
   }
 
+  void _onUpdateObject(String id, Map<String,dynamic> update) {
+    List<dynamic> _newObjects = _objects.map((o) {
+      if (o['_id'] == id) {
+        o.addAll(update);
+      }
+      return o;
+    }).toList();
+    setState(() {
+      _objects = _newObjects;
+    });
+  }
   void _onDeleteObject(String id) {
     List<dynamic> _newObjects = _objects.where((p) => p['_id'] != id).toList();
     setState(() {
@@ -200,7 +211,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ObjectScreen(object, _onDeleteObject),
+              builder: (context) => ObjectScreen(object, _project, _onUpdateObject, _onDeleteObject),
             ),
           );
         },
@@ -285,39 +296,39 @@ class _ProjectSettingsDialog extends StatelessWidget {
   
   void _renameProject(BuildContext context) async {
     TextEditingController renameController = TextEditingController();
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Rename your project'),
-            content: TextField(
-              autofocus: true,
-              controller: renameController,
-              decoration: InputDecoration(hintText: "Enter a new name for the project"),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Rename your project'),
+          content: TextField(
+            autofocus: true,
+            controller: renameController,
+            decoration: InputDecoration(hintText: "Enter a new name for the project"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('CANCEL'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              TextButton(
-                child: Text('OK'),
-                onPressed: () async {
-                  print(renameController.text);
-                  var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'name': renameController.text});
-                  if (data['success']) {
-                    Navigator.pop(context); 
-                    _onUpdateProject(data['payload']);
-                  }
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      );
+            TextButton(
+              child: Text('OK'),
+              onPressed: () async {
+                print(renameController.text);
+                var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'name': renameController.text});
+                if (data['success']) {
+                  Navigator.pop(context); 
+                  _onUpdateProject(data['payload']);
+                }
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _toggleVisibility(BuildContext context, bool checked) async {
