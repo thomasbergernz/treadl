@@ -67,9 +67,7 @@ function DraftPreview({ object }) {
     }, 500);
   }, [dispatch, objectId, pattern]);
 
-  useEffect(() => {
-    unifyCanvas();
-  }, [unifyCanvas])
+  useEffect(() => unifyCanvas(), [unifyCanvas]);
 
   if (loading) return <Loader active />;
   if (!pattern) return null;
