@@ -6,86 +6,8 @@ import 'dart:io';
 import 'api.dart';
 import 'object.dart';
 
-class _ProjectSettingsDialog extends StatelessWidget {
-  final Map<String,dynamic> _project;
-  final Function _onDelete;
-  final Function _onUpdateProject;
-  final Api api = Api();
-  _ProjectSettingsDialog(this._project, this._onDelete, this._onUpdateProject) {}
-
-  void _toggleVisibility(BuildContext context, bool checked) async {
-    var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'visibility': checked ? 'private': 'public'});
-    if (data['success']) {
-      Navigator.pop(context); 
-      _onUpdateProject(data['payload']);
-    }
-  }
-
-  void _deleteProject(BuildContext context, BuildContext modalContext) async {
-    var data = await api.request('DELETE', '/projects/' + _project['owner']['username'] + '/' + _project['path']);
-    if (data['success']) {
-      Navigator.pop(context);
-      Navigator.pop(modalContext);
-      _onDelete();
-    }
-  }
-
-  void _confirmDeleteProject(BuildContext modalContext) {
-    showDialog(
-      context: modalContext,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: new Text('Really delete this project?'),
-        content: new Text('This will remove any files and objects inside the project. This action cannot be undone.'),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: Text('No'),
-            onPressed: () => Navigator.pop(context),
-          ),
-          CupertinoDialogAction(
-            isDestructiveAction: true,
-            child: Text('Yes'),
-            onPressed: () => _deleteProject(context, modalContext),
-          ),
-        ],
-      )
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoActionSheet(
-      title: Text('Manage this project'),
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Text('Cancel')
-      ),
-      actions: [
-        Container(
-          padding: EdgeInsets.all(5.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-             CupertinoSwitch(
-                value: _project['visibility'] == 'private',
-                onChanged: (c) => _toggleVisibility(context, c),
-              ),
-              SizedBox(width: 10),
-              Text('Private project', style: Theme.of(context).textTheme.bodyText1),
-            ]
-          )
-        ),
-        CupertinoActionSheetAction(
-          onPressed: () { _confirmDeleteProject(context); },
-          child: Text('Delete project'),
-          isDestructiveAction: true,
-        ),
-      ]
-    );
-  }
-}
-
 class _ProjectScreenState extends State<ProjectScreen> {
+  final Function _onUpdate;
   final Function _onDelete;
   final picker = ImagePicker();
   final Api api = Api();
@@ -94,7 +16,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   bool _loading = false;
   bool _creating = false;
   
-  _ProjectScreenState(this._project, this._onDelete) { }
+  _ProjectScreenState(this._project, this._onUpdate, this._onDelete) { }
 
   @override
   initState() {
@@ -122,6 +44,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     setState(() {
       _project = project;
     });
+    _onUpdate(project['_id'], project);
   }
 
   void _onDeleteObject(String id) {
@@ -346,8 +269,88 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
 class ProjectScreen extends StatefulWidget {
   final Map<String,dynamic> _project;
+  final Function _onUpdate;
   final Function _onDelete;
-  ProjectScreen(this._project, this._onDelete) { }
+  ProjectScreen(this._project, this._onUpdate, this._onDelete) { }
   @override
-  _ProjectScreenState createState() => _ProjectScreenState(_project, _onDelete); 
+  _ProjectScreenState createState() => _ProjectScreenState(_project, _onUpdate, _onDelete); 
+}
+
+class _ProjectSettingsDialog extends StatelessWidget {
+  final Map<String,dynamic> _project;
+  final Function _onDelete;
+  final Function _onUpdateProject;
+  final Api api = Api();
+  _ProjectSettingsDialog(this._project, this._onDelete, this._onUpdateProject) {}
+
+  void _toggleVisibility(BuildContext context, bool checked) async {
+    var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'visibility': checked ? 'private': 'public'});
+    if (data['success']) {
+      Navigator.pop(context); 
+      _onUpdateProject(data['payload']);
+    }
+  }
+
+  void _deleteProject(BuildContext context, BuildContext modalContext) async {
+    var data = await api.request('DELETE', '/projects/' + _project['owner']['username'] + '/' + _project['path']);
+    if (data['success']) {
+      Navigator.pop(context);
+      Navigator.pop(modalContext);
+      _onDelete();
+    }
+  }
+
+  void _confirmDeleteProject(BuildContext modalContext) {
+    showDialog(
+      context: modalContext,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: new Text('Really delete this project?'),
+        content: new Text('This will remove any files and objects inside the project. This action cannot be undone.'),
+        actions: <Widget>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: Text('No'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            child: Text('Yes'),
+            onPressed: () => _deleteProject(context, modalContext),
+          ),
+        ],
+      )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoActionSheet(
+      title: Text('Manage this project'),
+      cancelButton: CupertinoActionSheetAction(
+        onPressed: () => Navigator.of(context).pop(),
+        child: Text('Cancel')
+      ),
+      actions: [
+        Container(
+          padding: EdgeInsets.all(5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+             CupertinoSwitch(
+                value: _project['visibility'] == 'private',
+                onChanged: (c) => _toggleVisibility(context, c),
+              ),
+              SizedBox(width: 10),
+              Text('Private project', style: Theme.of(context).textTheme.bodyText1),
+            ]
+          )
+        ),
+        CupertinoActionSheetAction(
+          onPressed: () { _confirmDeleteProject(context); },
+          child: Text('Delete project'),
+          isDestructiveAction: true,
+        ),
+      ]
+    );
+  }
 }

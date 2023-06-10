@@ -121,6 +121,18 @@ class _ProjectsTabState extends State<ProjectsTab> {
       _creatingProject = false;
     });
   }
+  
+  void _onUpdateProject(String id, Map<String,dynamic> update) {
+    List<dynamic> _newProjects = _projects.map((p) {
+      if (p['_id'] == id) {
+        p.addAll(update);
+      }
+      return p;
+    }).toList();
+    setState(() {
+      _projects = _newProjects;
+    });
+  }
 
   void _onDeleteProject(String id) {
     List<dynamic> _newProjects = _projects.where((p) => p['_id'] != id).toList();
@@ -145,7 +157,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ProjectScreen(project, _onDeleteProject),
+                builder: (context) => ProjectScreen(project, _onUpdateProject, _onDeleteProject),
               ),
             );
           },
