@@ -6,7 +6,7 @@ The source code for Treadl's iOS and Android application.
 
 The application is written in Dart using the Flutter framework.
 
-The mobile app currently supports only a subset of the features of the web app, and is largely useful only for the groups functionality.
+The mobile app currently supports only a subset of the features of the web app, and is largely useful only for the groups functionality and for adding images to projects when out and about.
 
 ## Start
 
