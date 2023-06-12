@@ -67,7 +67,7 @@ function Project() {
           <Grid stackable style={{marginTop: 30}}>
             { !wideBody() && (
             <Grid.Column computer={4} tablet={6}>
-              <Card fluid>
+              <Card fluid raised>
                 <Card.Content>
                   <Card.Header style={{ marginBottom: 10 }}>
                     {project.visibility === 'private' && <span data-tooltip="This project is private" data-position="right center"><Icon name="lock" /></span>}
@@ -114,6 +114,24 @@ function Project() {
                   </Card.Content>
                 }
               </Card>
+              
+              {(import.meta.env.VITE_IOS_APP_URL || import.meta.env.VITE_ANDROID_APP_URL) && user?._id === project.user &&
+                <Card fluid style={{opacity: 0.75}}>
+                  <Card.Content>
+                    <Card.Header>Take photos on your phone?</Card.Header>
+                    <p style={{marginTop: 5}}>You can use the {import.meta.env.VITE_APP_NAME} app to upload images directly to your projects.</p>
+                    <h4 style={{marginTop: 15}}><Icon name='download' /> Download for</h4>
+                    <Button.Group fluid basic size='tiny'>
+                      {import.meta.env.VITE_IOS_APP_URL &&
+                        <Button as='a' href={import.meta.env.VITE_IOS_APP_URL} target='_blank' rel='noopener noreferrer'><Icon name='apple' /> iOS</Button>
+                      }
+                      {import.meta.env.VITE_ANDROID_APP_URL &&
+                        <Button as='a' href={import.meta.env.VITE_ANDROID_APP_URL} target='_blank' rel='noopener noreferrer'><Icon name='android' /> Android</Button>
+                      }
+                    </Button.Group>
+                  </Card.Content>
+                </Card>
+              }
 
               <HelpLink link={`/docs/projects`} />
             </Grid.Column>
