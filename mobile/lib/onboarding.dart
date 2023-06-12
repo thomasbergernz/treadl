@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'api.dart';
@@ -18,26 +19,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _requestPushPermissions() async {
-    setState(() => _loading = true);
-    FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-    await _firebaseMessaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-    _pushToken = await _firebaseMessaging.getToken();
-    /*final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-    await _firebaseMessaging.requestNotificationPermissions(
-      const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false),
-    );
-    _pushToken = await _firebaseMessaging.getToken();*/
-    if (_pushToken != null) {
-      api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken!});
+    try {
+      setState(() => _loading = true);
+      FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+      await _firebaseMessaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+      _pushToken = await _firebaseMessaging.getToken();
+      if (_pushToken != null) {
+        api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken!});
+      }
     }
+    on Exception { }
     setState(() => _loading = false);
     _controller.animateToPage(2, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
@@ -57,14 +56,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: <Widget>[
                 Text('Thanks for joining us! 🎉', style: TextStyle(color: Colors.white, fontSize: 20), textAlign: TextAlign.center),
                 SizedBox(height: 10),
-                Text('Treadl is a free and safe place for you to build your weaving projects.', style: TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.center),
+                Text('Treadl is a safe space for you to build your weaving projects.', style: TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.center),
                 SizedBox(height: 10),
                 Image(image: AssetImage('assets/folder.png'), width: 300),
                 SizedBox(height: 10),
-                Text('You can create as many projects as you like. Upload weaving draft patterns, images, and other files to your projects to store and showcase your work.', style: TextStyle(color: Colors.white, fontSize: 13), textAlign: TextAlign.center),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  child: Text('OK, I know what projects are!'),
+                Text('You can create as many projects as you like. Upload weaving draft patterns, images, and other files to your projects to store or showcase your work.', style: TextStyle(color: Colors.white, fontSize: 13), textAlign: TextAlign.center),
+                SizedBox(height: 20),
+                CupertinoButton(
+                  color: Colors.white,
+                  child: Text('OK, I know what projects are!', style: TextStyle(color: Colors.pink)),
                   onPressed: () => _controller.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut),
                 )
               ]
@@ -83,12 +83,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Text('Use groups for your classes, shared interest groups, or whatever you like!', style: TextStyle(color: Colors.white, fontSize: 13), textAlign: TextAlign.center),
                 SizedBox(height: 10),
                 Text('We recommend enabling push notifications so you can keep up-to-date with your groups and projects.', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                SizedBox(height: 10),
-                ElevatedButton(
+                SizedBox(height: 20),
+                CupertinoButton(
+                  color: Colors.white,
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     _loading ? CircularProgressIndicator() : SizedBox(width: 0),
-                    _loading ? SizedBox(width: 5) : SizedBox(width: 0),
-                    Text('What\'s next?'),
+                    _loading ? SizedBox(width: 10) : SizedBox(width: 0),
+                    Text('Continue', style: TextStyle(color: Colors.pink)),
                   ]),
                   onPressed: _requestPushPermissions,
                 )
@@ -101,14 +102,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('That\'s it for now!', style: TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.center),
+                Text('That\'s it for now!', style: TextStyle(color: Colors.white, fontSize: 25), textAlign: TextAlign.center),
                 SizedBox(height: 10),
                 Image(image: AssetImage('assets/completed.png'), width: 300),
                 SizedBox(height: 10),
-                Text('You\'re ready to get started. If you have any questions or want to get in touch then just send us a quick tweet.', style: TextStyle(color: Colors.white, fontSize: 13), textAlign: TextAlign.center),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  child: Text('Let\'s go'),
+                Text('You\'re ready to get started. We hope you enjoy using Treadl.', style: TextStyle(color: Colors.white, fontSize: 13), textAlign: TextAlign.center),
+                SizedBox(height: 20),
+                CupertinoButton(
+                  color: Colors.white,
+                  child: Text('Get started', style: TextStyle(color: Colors.pink)),
                   onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false),
                 ),
               ]
