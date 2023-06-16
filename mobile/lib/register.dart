@@ -54,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: <Widget>[
               Image(image: AssetImage('assets/logo.png'), width: 100),
               SizedBox(height: 20),
-              Text('Register a free account.'),
+              Text('Register a free account.', style: TextStyle(fontSize: 18)),
               SizedBox(height: 20),
               TextField(
                 autofocus: true,

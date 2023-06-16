@@ -47,49 +47,46 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Container(
         margin: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(image: AssetImage('assets/logo.png'), width: 100),
-              SizedBox(height: 20),
-              Text('Login using your Treadl account.'),
-              SizedBox(height: 20),
-              TextField(
-                autofocus: true,
-                controller: _emailController,
-                decoration: InputDecoration(
-                  hintText: 'sam@example.com', labelText: 'Email address or username'
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image(image: AssetImage('assets/logo.png'), width: 100),
+            SizedBox(height: 20),
+            Text('Login using your Treadl account.', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            TextField(
+              autofocus: true,
+              controller: _emailController,
+              decoration: InputDecoration(
+                hintText: 'sam@example.com', labelText: 'Email address or username'
               ),
-              SizedBox(height: 10),
-              TextField(
-                onEditingComplete: () => _submit(context),
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: 'Type your password', labelText: 'Your password'
-                ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              onEditingComplete: () => _submit(context),
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Type your password', labelText: 'Your password'
               ),
-              SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [GestureDetector(
-                  onTap: () => launch('https://treadl.com/password/forgotten'),
-                  child: Text('Forgotten your password?'),
-                )]
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => _submit(context),
-                //color: Colors.pink,
-                child: _loggingIn ? SizedBox(height: 20, width: 20, child:CircularProgressIndicator(backgroundColor: Colors.white)) : Text("Login",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 15)
-                )
-              ),
-            ]
-          )
+            ),
+            SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [GestureDetector(
+                onTap: () => launch('https://treadl.com/password/forgotten'),
+                child: Text('Forgotten your password?'),
+              )]
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _submit(context),
+              child: _loggingIn ? SizedBox(height: 20, width: 20, child:CircularProgressIndicator(backgroundColor: Colors.white)) : Text("Login",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 15)
+              )
+            ),
+          ]
         )
       ),
     ); 
