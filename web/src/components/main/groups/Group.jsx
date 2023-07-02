@@ -34,7 +34,7 @@ function Group() {
   const join = () => {
     if (!user) return toast.warning('Please login or sign-up first');
     api.groups.createMember(id, user._id, () => {
-      dispatch(actions.users.joingGroup(user._id, id));
+      dispatch(actions.users.joinGroup(user._id, id));
     }, err => toast.error(err.message));
   }
   const leave = () => {
