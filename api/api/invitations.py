@@ -111,7 +111,7 @@ def create_group_request(user, group_id):
   group_id = ObjectId(group_id)
   group = db.groups.find_one({'_id': group_id}, {'admins': 1, 'name': 1})
   if not group: raise util.errors.NotFound('Group not found')
-  if group_id in user.get('groups'): raise util.errors.BadRequest('You are already a member of this group')
+  if group_id in user.get('groups', []): raise util.errors.BadRequest('You are already a member of this group')
   admin = db.users.find_one({'_id': {'$in': group.get('admins', [])}}, {'groups': 1, 'username': 1, 'email': 1, 'subscriptions': 1})
   if not admin: raise util.errors.NotFound('No users can approve you to join this group')
   if db.invitations.find_one({'recipient': user['_id'], 'typeId': group_id, 'type': 'group'}):
