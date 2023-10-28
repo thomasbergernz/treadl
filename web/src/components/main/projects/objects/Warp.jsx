@@ -201,6 +201,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   };
 
   const fillUpTo = (w, limit) => {
+    if (!editor.autoExtend) return;
     let i = warp.threading.length;
     while (i <= limit) {
       w.threading.push({ shaft: 0 });

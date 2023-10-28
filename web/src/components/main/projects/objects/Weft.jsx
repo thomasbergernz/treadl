@@ -203,6 +203,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
   };
 
   const fillUpTo = (weft, limit) => {
+    if (!editor.autoExtend) return;
     let i = weft.treadling.length;
     while (i <= limit) {
       weft.treadling.push({ treadle: 0 });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Confirm, Header, Select, Segment, Accordion, Grid, Icon, Input, Button, Popup
+  Confirm, Header, Select, Segment, Accordion, Grid, Icon, Input, Button, Popup, Checkbox
 } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -84,6 +84,10 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
 
   const setTreadles = (event) => {
     updatePattern({ weft: { ...weft, treadles: parseInt(event.target.value, 10) || 1 } });
+  };
+  
+  const setAutomaticallyExtend = (event, data) => {
+    dispatch(actions.objects.updateEditor({ autoExtend: data.checked }))
   };
 
   const deleteSelectedThreads = () => {
@@ -232,19 +236,23 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
               </Grid.Row>
               <Grid.Row style={{paddingTop: 0}}>
                 <Grid.Column>
-                  <small>Width</small>
+                  <small>Width (warp threads)</small>
                   <Input fluid readOnly value={warp.threading?.length || 0} size="mini"
                     action={{icon: 'edit', onClick: changeWidth}}
                   />
                 </Grid.Column>
                 <Grid.Column>
-                  <small>Height</small>
+                  <small>Height (weft threads)</small>
                   <Input fluid readOnly value={weft.treadling?.length  || 0} size="mini"
                     action={{icon: 'edit', onClick: changeHeight}}
                   />
                 </Grid.Column>
               </Grid.Row>
             </Grid>
+            <Popup
+              content='Add new threads to the warp and weft as you edit near the end'
+              trigger={<Checkbox checked={editor.autoExtend ?? true} onChange={setAutomaticallyExtend} label='Auto-extend warp and weft' style={{marginTop: 10}} />}
+            />
           </Accordion.Content>
 
           <Accordion.Title active={drawerIsActive('drawing')} onClick={e => activateDrawer('drawing')}>
