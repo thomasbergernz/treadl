@@ -25,6 +25,9 @@ function Docs() {
           <Card as={Link} to='/docs/groups' header='Groups'
             description={`Learn more about ${utils.appName()} groups, and how they can be managed.`}
           />
+          <Card as={Link} to='/docs/account' header='Account'
+            description={`Learn more about ${utils.appName()} account management.`}
+          />
           <Message style={{marginTop: 20}} size='small' info header='Want to contribute documentation?'
             content={<p>That's great! Please reach out to us by emailing <a href={`mailTo:${import.meta.env.VITE_CONTACT_EMAIL}`}>{import.meta.env.VITE_CONTACT_EMAIL}</a>.</p>}
           />
