@@ -73,11 +73,8 @@ function Project() {
                     {project.visibility === 'private' && <span data-tooltip="This project is private" data-position="right center"><Icon name="lock" /></span>}
                     {project.name}
                   </Card.Header>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
                     {project.owner && <UserChip user={project.owner} />}
-                    {utils.canEditProject(user, project) &&
-                      <Button basic size='mini' icon='cogs' content='Settings' as={Link} to={`/${fullName}/settings`} />
-                    }
                   </div>
                 </Card.Content>
                 <Card.Content extra>
@@ -99,10 +96,13 @@ function Project() {
                           </div>
                         }
                         {utils.canEditProject(user, project) && (
-                          <Button size='mini' fluid className="right floated" onClick={e => dispatch(actions.projects.editDescription(true))}>
+                          <Button style={{ marginBottom: '5px' }} size='mini' fluid onClick={e => dispatch(actions.projects.editDescription(true))}>
                             <Icon name="pencil" /> {project.description ? 'Edit' : 'Add a project'} description
                           </Button>
                           )
+                        }
+                        {utils.canEditProject(user, project) &&
+                          <Button basic fluid size='mini' icon='cogs' content='Project settings' as={Link} to={`/${fullName}/settings`} />
                         }
                       </div>
                     )

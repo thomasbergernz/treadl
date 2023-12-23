@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { Container, Card, Grid, Button } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
 import actions from '../../../actions';
@@ -27,6 +28,7 @@ export default function Explore() {
   
   return (
     <Container style={{ marginTop: '40px' }}>
+      <Helmet title='Explore' />
       <Grid stackable>
         <Grid.Column computer={5} tablet={8}>
           <DiscoverCard asCard count={7} />

@@ -44,8 +44,8 @@ function DraftPreview({ object }) {
       const baseSize = 6;
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      canvas.width = warp.threads * baseSize + weft.treadles * baseSize + 20;
-      canvas.height = warp.shafts * baseSize + weft.threads * baseSize + 20;
+      canvas.width = warp.threading?.length * baseSize + weft.treadles * baseSize + 20;
+      canvas.height = warp.shafts * baseSize + weft.treadling?.length * baseSize + 20;
       ctx.fillStyle = 'white';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = 'black';
@@ -62,7 +62,11 @@ function DraftPreview({ object }) {
         ctx.drawImage(weftColourwayCanvas, canvas.width - 10, warp.shafts * baseSize + 20);
         ctx.drawImage(tieupsCanvas, canvas.width - weft.treadles * baseSize - 10, 10);
         ctx.drawImage(drawdownCanvas, canvas.width - drawdownCanvas.width - weft.treadles * baseSize - 20, warp.shafts * baseSize + 20);
-        dispatch(actions.objects.update(objectId, 'patternImage', canvas.toDataURL()));
+        setTimeout(() => {
+          const im = canvas.toDataURL('image/png')
+          if (im?.length > 20)
+            dispatch(actions.objects.update(objectId, 'patternImage', im));
+        }, 500);
       }
     }, 500);
   }, [dispatch, objectId, pattern]);
