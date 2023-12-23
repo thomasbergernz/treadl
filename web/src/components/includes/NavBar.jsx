@@ -132,7 +132,7 @@ export default function NavBar() {
                       {user &&<Link to={`/${user.username}`} className="item">Profile</Link>}
                       <Link to="/settings" className="item">Settings</Link>
                       <Dropdown.Divider />
-                      {user?.roles?.indexOf('root') > -1 &&
+                      {utils.isRoot(user) &&
                         <Dropdown.Item as={Link} to='/root'>Root</Dropdown.Item>
                       }
                       <Dropdown.Item as={Link} to='/docs'>Help</Dropdown.Item>

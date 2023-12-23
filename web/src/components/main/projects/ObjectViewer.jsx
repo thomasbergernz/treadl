@@ -111,6 +111,12 @@ function ObjectViewer() {
       toast.error(err.message);
     });
   }
+  
+  const regeneratePreview = (object) => {
+    utils.generatePatternPreview(object, previewUrl => {
+      dispatch(actions.objects.update(object._id, 'previewUrl', previewUrl));
+    });
+  }
 
   if (!object) return null;
   return (
@@ -118,13 +124,13 @@ function ObjectViewer() {
       <Helmet title={`${object.name || 'Project Item'} | ${project?.name || 'Project'}`} />
 
       <div style={{ display: 'flex', justifyContent: 'end' }}>
-        {object.type === 'pattern' && (project.user === (user && user._id) || project.openSource || object.previewUrl) && <>
+        {object.type === 'pattern' && (utils.canEditProject(user, project) || project.openSource || object.previewUrl) && <>
           <Dropdown direction='left' icon={null} trigger={<Button size='small' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
             <Dropdown.Menu>
               {object.previewUrl &&
                 <Dropdown.Item onClick={e => downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />
               }
-              {(project.user === (user && user._id) || project.openSource) &&
+              {(utils.canEditProject(user, project) || project.openSource) &&
                 <React.Fragment>
                   {object.patternImage &&
                     <Dropdown.Item icon='file outline' content='Download complete pattern as an image' onClick={e => downloadPatternImage(object)}/>
@@ -154,9 +160,11 @@ function ObjectViewer() {
             }
             <Dropdown
               icon={null}
+              direction='left'
               trigger={<Button size="small" icon="cogs" content="Options" />}
             >
               <Dropdown.Menu>
+                <Dropdown.Item onClick={e => regeneratePreview(object)} content="Regenerate preview" icon="refresh" />
                 <Dropdown.Item onClick={e => deleteObject(object)} content="Delete" icon="trash" />
               </Dropdown.Menu>
             </Dropdown>

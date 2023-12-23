@@ -85,7 +85,7 @@ def get(user, username, path):
 def update(user, username, project_path, update):
   db = database.get_db()
   project = get_by_username(username, project_path)
-  if project['user'] != user['_id']: raise util.errors.Forbidden('Forbidden')
+  if not util.can_edit_project(user, project): raise util.errors.Forbidden('Forbidden')
 
   current_path = project_path
   if 'name' in update:
@@ -105,7 +105,7 @@ def update(user, username, project_path, update):
 def delete(user, username, project_path):
   db = database.get_db()
   project = get_by_username(username, project_path)
-  if project['user'] != user['_id']:
+  if not util.can_edit_project(user, project):
     raise util.errors.Forbidden('Forbidden')
   db.projects.remove({'_id': project['_id']})
   db.objects.remove({'project': project['_id']})
@@ -132,7 +132,7 @@ def create_object(user, username, path, data):
   if not data.get('type'): raise util.errors.BadRequest('Object type is required.')
   db = database.get_db()
   project = get_by_username(username, path)
-  if project['user'] != user['_id']: raise util.errors.Forbidden('Forbidden')
+  if not util.can_edit_project(user, project): raise util.errors.Forbidden('Forbidden')
   file_count = db.objects.find({'project': project['_id']}).count()
 
   if data['type'] == 'file':

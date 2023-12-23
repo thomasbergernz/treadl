@@ -22,8 +22,11 @@ const utils = {
   hasSubscription(user, key) {
     return user?.subscriptions?.email?.indexOf(key) > -1;
   },
+  isRoot(user) {
+    return user?.roles?.indexOf('root') > -1;
+  },
   canEditProject(user, project) {
-    return user && project && user._id === project.user;
+    return user && project && (user._id === project.user || utils.isRoot(user));
   },
   isInGroup(user, groupId) {
     return user && user.groups && user.groups.indexOf(groupId) > -1;

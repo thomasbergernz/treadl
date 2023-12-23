@@ -6,7 +6,7 @@ from api import uploads, groups
 
 def get_users(user):
   db = database.get_db()
-  if 'root' not in user.get('roles', []): raise util.errors.Forbidden('Not allowed')
+  if not util.is_root(user): raise util.errors.Forbidden('Not allowed')
   users = list(db.users.find({}, {'username': 1, 'avatar': 1, 'email': 1, 'createdAt': 1, 'lastSeenAt': 1, 'roles': 1, 'groups': 1}).sort('lastSeenAt', -1).limit(200))
   group_ids = []
   for u in users: group_ids += u.get('groups', [])
@@ -28,7 +28,7 @@ def get_users(user):
 
 def get_groups(user):
   db = database.get_db()
-  if 'root' not in user.get('roles', []): raise util.errors.Forbidden('Not allowed')
+  if not util.is_root(user): raise util.errors.Forbidden('Not allowed')
   groups = list(db.groups.find({}))
   for group in groups:
     group['memberCount'] = db.users.find({'groups': group['_id']}).count()

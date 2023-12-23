@@ -15,7 +15,7 @@ def delete(user, id):
   project = db.projects.find_one(obj.get('project'), {'user': 1})
   if not project:
     raise util.errors.NotFound('Project not found')
-  if project['user'] != user['_id']:
+  if not util.can_edit_project(user, project):
     raise util.errors.Forbidden('Forbidden', 403)
   db.objects.remove(ObjectId(id))
   return {'deletedObject': id}
@@ -41,12 +41,12 @@ def copy_to_project(user, id, project_id):
   original_project = db.projects.find_one(obj['project'])
   if not original_project:
     raise util.errors.NotFound('Project not found')
-  if not original_project.get('openSource') and not (user['_id'] == original_project['user']):
+  if not original_project.get('openSource') and not util.can_edit_project(user, original_project):
     raise util.errors.Forbidden('This project is not open-source')
-  if original_project.get('visibility') != 'public' and user['_id'] != original_project['user']:
+  if original_project.get('visibility') != 'public' and not util.can_edit_project(user, original_project):
     raise util.errors.Forbidden('This project is not public')
   target_project = db.projects.find_one(ObjectId(project_id))
-  if not target_project or target_project['user'] != user['_id']:
+  if not target_project or not util.can_edit_project(user, target_project):
     raise util.errors.Forbidden('You don\'t own the target project')
 
   obj['_id'] = ObjectId()
@@ -61,9 +61,9 @@ def get_wif(user, id):
   obj = db.objects.find_one(ObjectId(id))
   if not obj: raise util.errors.NotFound('Object not found')
   project = db.projects.find_one(obj['project'])
-  if not project.get('openSource') and user['_id'] != project['user']:
+  if not project.get('openSource') and not util.can_edit_project(user, project):
     raise util.errors.Forbidden('This project is not open-source')
-  if project.get('visibility') != 'public' and user['_id'] != project['user']:
+  if project.get('visibility') != 'public' and not util.can_edit_project(user, project):
     raise util.errors.Forbidden('This project is not public')
   try:
     output = wif.dumps(obj).replace('\n', '\\n')
@@ -76,9 +76,9 @@ def get_pdf(user, id):
   obj = db.objects.find_one(ObjectId(id))
   if not obj: raise util.errors.NotFound('Object not found')
   project = db.projects.find_one(obj['project'])
-  if not project.get('openSource') and user['_id'] != project['user']:
+  if not project.get('openSource') and not util.can_edit_project(user, project):
     raise util.errors.Forbidden('This project is not open-source')
-  if project.get('visibility') != 'public' and user['_id'] != project['user']:
+  if project.get('visibility') != 'public' and not util.can_edit_project(user, project):
     raise util.errors.Forbidden('This project is not public')
   try:
     response = requests.get('https://h2io6k3ovg.execute-api.eu-west-1.amazonaws.com/prod/pdf?object=' + id + '&landscape=true&paperWidth=23.39&paperHeight=33.11')
@@ -97,7 +97,8 @@ def update(user, id, data):
   if not obj: raise util.errors.NotFound('Object not found')
   project = db.projects.find_one(obj.get('project'), {'user': 1})
   if not project: raise util.errors.NotFound('Project not found')
-  if project['user'] != user['_id']: raise util.errors.Forbidden('Forbidden')
+  if not util.can_edit_project(user, project):
+    raise util.errors.Forbidden('Forbidden')
   allowed_keys = ['name', 'description', 'pattern', 'preview']
   updater = util.build_updater(data, allowed_keys)
   if updater:
@@ -170,7 +171,7 @@ def delete_comment(user, id, comment_id):
   obj = db.objects.find_one({'_id': ObjectId(id)})
   if not comment or not obj or obj['_id'] != comment['object']: raise util.errors.NotFound('Comment not found')
   project = db.projects.find_one({'_id': obj['project']})
-  if comment['user'] != user['_id'] and comment['user'] != project['user']: raise util.errors.Forbidden('You can\'t delete this comment')
+  if comment['user'] != user['_id'] and not util.can_edit_project(user, project): raise util.errors.Forbidden('You can\'t delete this comment')
   db.comments.remove({'_id': comment['_id']})
   db.objects.update_one({'_id': ObjectId(id)}, {'$inc': {'commentCount': -1}})
   return {'deletedComment': comment['_id']}

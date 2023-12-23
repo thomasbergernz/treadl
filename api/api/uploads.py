@@ -47,7 +47,7 @@ def generate_file_upload_request(user, file_name, file_size, file_type, for_type
   path = ''
   if for_type == 'project':
     project = db.projects.find_one(ObjectId(for_id))
-    allowed = project and project.get('user') == user['_id']
+    allowed = project and util.can_edit_project(user, project)
     path = 'projects/' + for_id + '/'
   if for_type == 'user':
     allowed = for_id == str(user['_id'])

@@ -32,17 +32,24 @@ def limit_by_user():
   user = util.get_user(required = False)
   return user['_id'] if user else get_remote_address()
 
+def is_root(user):
+  return user and 'root' in user.get('roles', [])
+
 def can_view_project(user, project):
   if not project: return False
   if project.get('visibility') == 'public':
     return True
   if not user: return False
-  if project.get('visibility') == 'private' and user['_id'] == project['user']:
+  if project.get('visibility') == 'private' and can_edit_project(user, project):
     return True
   if set(user.get('groups', [])).intersection(project.get('groupVisibility', [])):
     return True
   if 'root' in user.get('roles', []): return True
   return False
+
+def can_edit_project(user, project):
+  if not user or not project: return False
+  return project.get('user') == user['_id'] or is_root(user)
 
 def filter_keys(obj, allowed_keys):
   filtered = {}
