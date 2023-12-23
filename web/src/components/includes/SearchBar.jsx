@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Popup, Loader, Grid, List, Input } from 'semantic-ui-react';
+import { Popup, Loader, Grid, List, Input, Icon } from 'semantic-ui-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useDebouncedCallback } from 'use-debounce';
 
 import actions from '../../actions';
 import api from '../../api';
@@ -35,9 +36,16 @@ export default function SearchBar() {
   }, [dispatch]);
   
   const search = () => {
+    if (searchTerm?.length < 2) return;
     dispatch(actions.app.updateSearching(true));
     api.search.all(searchTerm, r => dispatch(actions.app.updateSearchResults(r)));
   };
+  
+  const debouncedFetch = useDebouncedCallback(search, 500);
+  
+  useEffect(() => {
+    debouncedFetch();
+  }, [searchTerm]);
   
   return (
     <Popup basic on='focus' open={searchPopupOpen}
@@ -45,21 +53,54 @@ export default function SearchBar() {
       trigger={
         <StyledSearchBar><Input transparent size='small' placeholder='Search...' icon='search' iconPosition='left' value={searchTerm} onChange={e => dispatch(actions.app.updateSearchTerm(e.target.value))} onKeyDown={e => e.keyCode === 13 && search()} /></StyledSearchBar>
       }
-      content={<div style={{width: 300}} className='joyride-search'>
-        {!searchResults?.users && !searchResults?.groups ?
-          <small>
+      content={<div style={{width: 500}} className='joyride-search'>
+        {!searchResults?.projects && !searchResults.objects && !searchResults?.users && !searchResults?.groups ?
+          <p><strong>
             {searching
               ? <span><Loader size='tiny' inline active style={{marginRight: 10}}/> Searching...</span>
-              : <span>Type something and press enter to search</span>
+              : <span>Type something to search...</span>
             }
-          </small>
+          </strong></p>
           : <>
-          {(!searchResults.users?.length && !searchResults?.groups?.length && !searchResults?.projects?.length) ?
+          {(!searchResults.users?.length && !searchResults?.groups?.length && !searchResults?.projects?.length && !searchResults?.objects?.length) ?
             <span><small>No results found</small></span>
           :
           <Grid stackable>
+            {searchResults?.objects?.length > 0 &&
+              <Grid.Column width={16}>
+                <h4>My items</h4>
+                <List>
+                  {searchResults?.objects?.map(o => {
+                    let icon;
+                    let text;
+                    if (o.type === 'pattern') {
+                      icon = 'pencil';
+                      text = 'Pattern';
+                    }
+                    else if (o.type === 'file' && o.isImage) {
+                      icon = 'image';
+                      text = 'Image';
+                    }
+                    else {
+                      icon = 'file outline';
+                      text = 'File';
+                    }
+                    return (
+                    <List.Item key={o._id}>
+                      <List.Icon name={icon} size='large' verticalAlign='middle' />
+                      <List.Content>
+                        <List.Header as={Link} to={'/' + o.path}>{o.name}</List.Header>
+                        <List.Description>{text}</List.Description>
+                      </List.Content>
+                    </List.Item>
+                    );
+                  })}
+                </List>
+              </Grid.Column>
+            }
             {searchResults?.users?.length > 0 &&
               <Grid.Column width={6}>
+                <h4>Users</h4>
                 {searchResults?.users?.map(u =>
                   <div style={{marginBottom: 5}}><UserChip user={u} key={u._id} /></div>
                 )}
@@ -67,6 +108,7 @@ export default function SearchBar() {
             }
             {(searchResults?.projects.length > 0 || searchResults.groups.length > 0) &&
               <Grid.Column width={10}>
+                <h4>Projects & groups</h4>
                 <List>
                   {searchResults?.projects?.map(p =>
                     <List.Item key={p._id}>

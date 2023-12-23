@@ -3585,6 +3585,7 @@ __metadata:
     sanitize-html: ^1.19.1
     semantic-ui-react: ^0.88.2
     styled-components: ^5.1.0
+    use-debounce: ^10.0.0
     vite: ^3.2.4
   languageName: unknown
   linkType: soft
@@ -3666,6 +3667,15 @@ __metadata:
   bin:
     browserslist-lint: cli.js
   checksum: 12db73b4f63029ac407b153732e7cd69a1ea8206c9100b482b7d12859cd3cd0bc59c602d7ae31e652706189f1acb90d42c53ab24a5ba563ed13aebdddc5561a0
+  languageName: node
+  linkType: hard
+
+"use-debounce@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "use-debounce@npm:10.0.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: b296fedba916ca721eeb7117f29a13c252966d03411abccc5e5894ed4de0f32b9cb6f6b150555b8b4cb9b0acf53b84022ad4cd43b89253389e9cd13779eebca7
   languageName: node
   linkType: hard
 

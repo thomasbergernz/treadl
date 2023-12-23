@@ -12,12 +12,19 @@ def all(user, params):
   for u in users:
     if 'avatar' in u:
       u['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(u['_id'], u['avatar']))
+      
+  my_projects = list(db.projects.find({'user': user['_id']}, {'name': 1, 'path': 1}))
+  objects = list(db.objects.find({'project': {'$in': list(map(lambda p: p['_id'], my_projects))}, 'name': expression}, {'name': 1, 'type': 1, 'isImage': 1, 'project': 1}))
+  for o in objects:
+    proj = next(p for p in my_projects if p['_id'] == o['project'])
+    if proj:
+      o['path'] = user['username'] + '/' + proj['path'] + '/' + str(o['_id'])
   
   projects = list(db.projects.find({'name': expression, '$or': [
     {'user': user['_id']},
     {'groupVisibility': {'$in': user.get('groups', [])}},
     {'visibility': 'public'}
-    ]}, {'name': 1, 'path': 1, 'user': 1}).limit(5))
+    ]}, {'name': 1, 'path': 1, 'user': 1}).limit(10))
   proj_users = list(db.users.find({'_id': {'$in': list(map(lambda p:p['user'], projects))}}, {'username': 1, 'avatar': 1}))
   for proj in projects:
     for proj_user in proj_users:
@@ -29,7 +36,7 @@ def all(user, params):
 
   groups = list(db.groups.find({'name': expression, 'unlisted': {'$ne': True}}, {'name': 1, 'closed': 1}).limit(5))
 
-  return {'users': users, 'projects': projects, 'groups': groups}
+  return {'users': users, 'projects': projects, 'groups': groups, 'objects': objects}
 
 def users(user, params):
   if not user: raise util.errors.Forbidden('You need to be logged in')
