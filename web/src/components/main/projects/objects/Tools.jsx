@@ -179,7 +179,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   };
 
   return (
-    <div className="joyride-tools">
+    <div className="joyride-tools" style={{position: 'sticky', top: 10, zIndex: 20}}>
       <Segment>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <div style={{display: 'flex', alignItems: 'end'}}>

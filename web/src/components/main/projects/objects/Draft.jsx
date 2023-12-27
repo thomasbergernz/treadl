@@ -76,33 +76,30 @@ function Draft() {
   const { warp, weft, tieups, baseSize } = pattern;
   const cellStyle = { width: `${baseSize || 10}px`, height: `${baseSize || 10}px` };
   return (
-    <div>
+    <div style={{position: 'relative'}}>
       <Helmet title={`${name || 'Weaving Draft'}`} />
       <Tour id='pattern' run={true} />
       <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
       
-      <div style={{display: 'flex'}}>
-        <div style={{flex: 1, overflow: 'hidden'}}>
-          <ElementPan
-            disabled={!(editor?.tool === 'pan')}
-            startX={5000}
-            startY={0}
+      <div style={{overflow: 'hidden', zIndex: 10}}>
+        <ElementPan
+          disabled={!(editor?.tool === 'pan')}
+          startX={5000}
+          startY={0}
+        >
+          <StyledPattern
+            style={{
+              width:  `${warp.threading?.length * baseSize + weft.treadles * baseSize + 20}px`,
+              height: `${warp.shafts * baseSize + weft.treadling?.length * baseSize + 20}px`
+            }}
           >
-            <StyledPattern
-              style={{
-                width:  `${warp.threading?.length * baseSize + weft.treadles * baseSize + 20}px`,
-                height: `${warp.shafts * baseSize + weft.treadling?.length * baseSize + 20}px`
-              }}
-            >
+            <Warp baseSize={baseSize} cellStyle={cellStyle} warp={warp} weft={weft} updatePattern={updatePattern} />
+            <Weft cellStyle={cellStyle} warp={warp} weft={weft} baseSize={baseSize} updatePattern={updatePattern} />
+            <Tieups cellStyle={cellStyle} warp={warp} weft={weft} tieups={tieups} updatePattern={updatePattern} baseSize={baseSize}/>
+            <Drawdown warp={warp} weft={weft} tieups={tieups} baseSize={baseSize} />
 
-              <Warp baseSize={baseSize} cellStyle={cellStyle} warp={warp} weft={weft} updatePattern={updatePattern} />
-              <Weft cellStyle={cellStyle} warp={warp} weft={weft} baseSize={baseSize} updatePattern={updatePattern} />
-              <Tieups cellStyle={cellStyle} warp={warp} weft={weft} tieups={tieups} updatePattern={updatePattern} baseSize={baseSize}/>
-              <Drawdown warp={warp} weft={weft} tieups={tieups} baseSize={baseSize} />
-
-            </StyledPattern>
-          </ElementPan>
-        </div>
+          </StyledPattern>
+        </ElementPan>
       </div>
     </div>
   );
