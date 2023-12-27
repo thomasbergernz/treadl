@@ -4,9 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import Tour from '../../../includes/Tour';
 import ElementPan from '../../../includes/ElementPan';
-import HelpLink from '../../../includes/HelpLink';
-import Tour, { ReRunTour } from '../../../includes/Tour';
 import util from '../../../../utils/utils.js';
 
 import Warp from './Warp';
@@ -80,8 +79,9 @@ function Draft() {
     <div>
       <Helmet title={`${name || 'Weaving Draft'}`} />
       <Tour id='pattern' run={true} />
+      <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
+      
       <div style={{display: 'flex'}}>
-
         <div style={{flex: 1, overflow: 'hidden'}}>
           <ElementPan
             disabled={!(editor?.tool === 'pan')}
@@ -103,13 +103,6 @@ function Draft() {
             </StyledPattern>
           </ElementPan>
         </div>
-
-        <div style={{width: 300, marginLeft: 20}}>
-          <HelpLink className='joyride-help' link={`/docs/patterns#using-the-pattern-editor`} marginBottom/>
-          <ReRunTour id='pattern' />
-          <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
-        </div>
-
       </div>
     </div>
   );

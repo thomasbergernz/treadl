@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Message, Form, TextArea, Container, Button, Icon, Grid, Card } from 'semantic-ui-react';
+import { Message, Form, TextArea, Container, Button, Icon, Grid, Card, Breadcrumb } from 'semantic-ui-react';
 import { Outlet, Link, useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import utils from '../../../utils/utils.js';
@@ -14,13 +14,14 @@ import FormattedMessage from '../../includes/FormattedMessage';
 
 function Project() {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
-  const { username, projectPath } = useParams();
+  const { username, projectPath, objectId } = useParams();
   const dispatch = useDispatch();
   const location = useLocation();
-  const { user, project, fullName, errorMessage, editingDescription } = useSelector(state => {
+  const { user, project, fullName, errorMessage, editingDescription, object } = useSelector(state => {
     const project = state.projects.projects.filter(p => p.path === projectPath && p.owner && p.owner.username === username)[0];
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
-    return { user, project, fullName: `${username}/${projectPath}`, errorMessage: state.projects.errorMessage, editingDescription: state.projects.editingDescription };
+    const object = state.objects.objects.filter(o => o._id === objectId)[0];
+    return { user, project, object, fullName: `${username}/${projectPath}`, errorMessage: state.projects.errorMessage, editingDescription: state.projects.editingDescription };
   });
 
   useEffect(() => {
@@ -55,16 +56,19 @@ function Project() {
         && (
         <div>
           {wideBody() && project.owner &&
-            <>
-              <h3 style={{ marginBottom: 0 }}>
-                {project.name}
-                <Button as={Link} size='tiny' style={{marginLeft: 10}} to={`/${project.fullName}`} basic secondary icon='arrow left' content='Back to project' />
-              </h3>
+            <div style={{display: 'flex', alignItems: 'center'}}>
               <UserChip user={project.owner} />
-            </>
+              <Breadcrumb size='large' style={{marginLeft: 20}}>
+                <Breadcrumb.Section as={Link} to={`/${project.fullName}`}>{project.name}</Breadcrumb.Section>
+                {object && <>
+                  <Breadcrumb.Divider icon='right chevron' />
+                  <Breadcrumb.Section as={Link} to={`/${project.fullName}/${object._id}`}>{object.name}</Breadcrumb.Section>
+                </>}
+              </Breadcrumb>
+            </div>
           }
 
-          <Grid stackable style={{marginTop: 30}}>
+          <Grid stackable style={{marginTop: 10}}>
             { !wideBody() && (
             <Grid.Column computer={4} tablet={6}>
               <Card fluid raised>

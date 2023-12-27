@@ -125,7 +125,7 @@ function ObjectViewer() {
 
       <div style={{ display: 'flex', justifyContent: 'end' }}>
         {object.type === 'pattern' && (utils.canEditProject(user, project) || project.openSource || object.previewUrl) && <>
-          <Dropdown direction='left' icon={null} trigger={<Button size='small' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
+          <Dropdown direction='left' icon={null} trigger={<Button size='tiny' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
             <Dropdown.Menu>
               {object.previewUrl &&
                 <Dropdown.Item onClick={e => downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />
@@ -143,7 +143,7 @@ function ObjectViewer() {
           </Dropdown>
 
           {user &&
-            <Dropdown direction='left' icon={null} trigger={<Button size="small" icon="copy" secondary content="Copy to.." />}>
+            <Dropdown direction='left' icon={null} trigger={<Button size="tiny" icon="copy" secondary content="Copy to.." />}>
               <Dropdown.Menu>
                 <Dropdown.Header>Select a project to copy this pattern to</Dropdown.Header>
                 {myProjects?.map(myProject => <Dropdown.Item content={myProject.name} onClick={e => copyPattern(myProject)} />)}
@@ -156,12 +156,12 @@ function ObjectViewer() {
         {utils.canEditProject(user, project) &&
           <>
             {object.type === 'pattern'
-              && <Button size="small" icon="pencil" primary content="Edit pattern" as={Link} to={`/${fullProjectPath}/${object._id}/edit`} />
+              && <Button size="tiny" icon="pencil" primary content="Edit pattern" as={Link} to={`/${fullProjectPath}/${object._id}/edit`} />
             }
             <Dropdown
               icon={null}
               direction='left'
-              trigger={<Button size="small" icon="cogs" content="Options" />}
+              trigger={<Button size="tiny" icon="cogs" content="Options" />}
             >
               <Dropdown.Menu>
                 <Dropdown.Item onClick={e => regeneratePreview(object)} content="Regenerate preview" icon="refresh" />
