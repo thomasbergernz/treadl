@@ -91,7 +91,7 @@ function Draft() {
             <StyledPattern
               style={{
                 width:  `${warp.threading?.length * baseSize + weft.treadles * baseSize + 20}px`,
-                height: '1000px', // `${warp.shafts * baseSize + weft.threads * baseSize + 20}px`
+                height: `${warp.shafts * baseSize + weft.treadling?.length * baseSize + 20}px`
               }}
             >
 
