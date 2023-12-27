@@ -164,7 +164,9 @@ function ObjectViewer() {
               trigger={<Button size="tiny" icon="cogs" content="Options" />}
             >
               <Dropdown.Menu>
-                <Dropdown.Item onClick={e => regeneratePreview(object)} content="Regenerate preview" icon="refresh" />
+                {object.type === 'pattern'
+                  && <Dropdown.Item onClick={e => regeneratePreview(object)} content="Regenerate preview" icon="refresh" />
+                }
                 <Dropdown.Item onClick={e => deleteObject(object)} content="Delete" icon="trash" />
               </Dropdown.Menu>
             </Dropdown>

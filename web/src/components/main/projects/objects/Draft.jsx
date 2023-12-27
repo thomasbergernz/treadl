@@ -38,6 +38,7 @@ function Draft() {
   useEffect(() => {
     api.objects.get(objectId, (o) => {
       if (!o.pattern.baseSize) o.pattern.baseSize = 10;
+      dispatch(actions.objects.receive(o));
       setObject(o);
       setPattern(o.pattern);
     });

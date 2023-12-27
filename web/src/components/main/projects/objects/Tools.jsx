@@ -192,7 +192,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
               <div><small>View</small></div>
               <Select size="tiny" value={editor.view}
                 onChange={(e, s) => setEditorView(s.value)}
-                style={{ fontSize: '11px' }}
+                style={{ fontSize: '11px', width: 70 }}
                 options={[
                   { key: 1, value: 'interlacement', text: 'Interlacement' },
                   { key: 2, value: 'colour', text: 'Colour only' },
