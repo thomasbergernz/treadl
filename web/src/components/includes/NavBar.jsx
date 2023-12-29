@@ -60,10 +60,10 @@ export default function NavBar() {
   return (
     <StyledNavBar>
       <Container style={{display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Link to="/"><img alt={`${utils.appName()} logo`} src={logo} className="logo" /></Link>
+          <Link to={user ? '/projects' : '/'}><img alt={`${utils.appName()} logo`} src={logo} className="logo" /></Link>
           <div style={{flex: 1}}>
             <Menu secondary>
-              <Menu.Item className='above-mobile' as={Link} to='/' name='home' active={location.pathname === '/'} />
+              <Menu.Item className='above-mobile' as={Link} to='/projects' name='projects' active={location.pathname === '/projects'} />
               <Menu.Item className='above-mobile' as={Link} to='/explore' name='explore' active={location.pathname === '/explore'} />
               <Menu.Item className='above-mobile' active={location.pathname.startsWith('/groups')} name='Groups'>
                 <Dropdown pointing='top left' icon={null}
@@ -128,7 +128,8 @@ export default function NavBar() {
                       {user?.isGoldSupporter && <Dropdown.Header><SupporterBadge type='gold' /></Dropdown.Header>}
                       {user?.isSilverSupporter && !user?.isGoldSupporter && <Dropdown.Header><SupporterBadge type='silver' /></Dropdown.Header>}
                       <Dropdown.Divider />
-                      <Link to="/" className="item">Projects</Link>
+                      <Link to="/explore" className="item">Explore</Link>
+                      <Link to="/projects" className="item">Projects</Link>
                       {user &&<Link to={`/${user.username}`} className="item">Profile</Link>}
                       <Link to="/settings" className="item">Settings</Link>
                       <Dropdown.Divider />

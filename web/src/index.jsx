@@ -14,6 +14,7 @@ import reducers from './reducers';
 import App from './components/App';
 import Home from './components/main/Home';
 
+import MarketingHome from './components/marketing/Home';
 import PrivacyPolicy from './components/marketing/PrivacyPolicy';
 import TermsOfUse from './components//marketing/TermsOfUse';
 
@@ -67,7 +68,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { path: "", element: <Home /> },
+      { path: "", element: <MarketingHome /> },
       { path: "root", element: <Root /> },
       { path: "explore", element: <Explore /> },
       { path: "privacy", element: <PrivacyPolicy /> },
@@ -81,6 +82,7 @@ const router = createBrowserRouter([
         { path: "", element: <SettingsIdentity /> },
       ] },
       { path: "projects/new", element: <NewProject /> },
+      { path: "projects", element: <Home /> },
       { path: "groups/new", element: <NewGroup /> },
       { path: "groups/:id", element: <Group />, children: [
         { path: "feed", element: <GroupFeed /> },

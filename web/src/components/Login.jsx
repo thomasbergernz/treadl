@@ -3,7 +3,7 @@ import {
   Message, Modal, Grid, Form, Input, Button,
 } from 'semantic-ui-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import actions from '../actions';
 import { api } from '../api';
 import utils from '../utils/utils.js';
@@ -16,6 +16,8 @@ function Login({ open, authType, onClose }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { error } = useSelector(state => {
     const { loading, error } = state.auth;
@@ -31,6 +33,7 @@ function Login({ open, authType, onClose }) {
       setUsername('');
       dispatch(actions.auth.receiveLogin(data));
       onClose();
+      if (location.pathname === '/') navigate('/projects');
     }, (err) => {
       dispatch(actions.auth.loginError(err));
       setLoading(false);
@@ -46,6 +49,7 @@ function Login({ open, authType, onClose }) {
       setUsername('');
       dispatch(actions.auth.receiveLogin(data));
       onClose();
+      if (location.pathname === '/') navigate('/projects');
     }, (err) => {
       dispatch(actions.auth.loginError(err));
       setLoading(false);

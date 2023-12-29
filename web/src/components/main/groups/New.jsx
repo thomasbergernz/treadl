@@ -9,6 +9,7 @@ import api from '../../../api';
 import utils from '../../../utils/utils.js';
 
 import HelpLink from '../../includes/HelpLink';
+import LoginNeeded from '../../includes/LoginNeeded';
 
 function NewGroup() {
   const navigate = useNavigate();
@@ -33,12 +34,7 @@ function NewGroup() {
   }
   
   if (!user) {
-    return (
-      <Container style={{marginTop: 40}}>
-        <h1>Login required</h1>
-        <p>You need to have a {utils.appName()} account in order to create a group. Please register or login first.</p>
-      </Container>
-    );
+    return (<LoginNeeded />);
   }
 
   return (

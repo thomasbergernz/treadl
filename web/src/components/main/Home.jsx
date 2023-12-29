@@ -9,6 +9,7 @@ import actions from '../../actions';
 import api from '../../api';
 import utils from '../../utils/utils.js';
 
+import LoginNeeded from '../includes/LoginNeeded';
 import UserChip from '../includes/UserChip';
 import HelpLink from '../includes/HelpLink';
 import ProjectCard from '../includes/ProjectCard';
@@ -131,15 +132,21 @@ function Home() {
         <Grid.Column computer={11} className='joyride-projects'>
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <h2><Icon name='book' /> Your projects</h2>
-            <div><Button className='joyride-createProject' as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' /></div>
+            {user &&
+              <div><Button className='joyride-createProject' as={Link} to="/projects/new" color='teal' content='Create a project' icon='plus' /></div>
+            }
           </div>
           <p>Projects contain the patterns and files that make up your creations.
             <HelpLink className='joyride-help' link={`/docs/projects`} text='Learn more about projects' marginLeft/>
           </p>
           
           <Divider hidden />
+          
+          {!user &&
+            <LoginNeeded />
+          }
         
-          {loadingProjects && !projects?.length &&
+          {user && loadingProjects && !projects?.length &&
             <Card.Group itemsPerRow={2} stackable>
               <PatternLoader isCompact count={3} />
             </Card.Group>
