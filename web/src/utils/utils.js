@@ -75,6 +75,7 @@ const utils = {
     return confirm({ title, confirmation: content });
   },
   rgb(s) {
+    if (!s) return s;
     if (s.match(/^[0-9]+,[0-9]+,[0-9]+$/)) return `rgb(${s})`;
     if (s.match(/^rgb\([0-9]+,[0-9]+[0-9]+\)$/)) return s;
     if (s.match(/^#[a-zA-Z0-9]+$/)) {

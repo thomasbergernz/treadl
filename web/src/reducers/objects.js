@@ -7,7 +7,7 @@ const initialState = {
   explorePage: 1,
   comments: [],
   selected: null,
-  editor: { tool: 'straight', colour: 'orange', view: 'interlacement', autoExtend: true },
+  editor: { tool: 'straight', colour: null, view: 'interlacement', autoExtend: true },
 };
 
 function objects(state = initialState, action) {

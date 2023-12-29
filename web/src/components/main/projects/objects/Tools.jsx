@@ -46,6 +46,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { objectId, username, projectPath } = useParams();
+  const { colours } = pattern;
 
   const { project, editor } = useSelector(state => {
     let project = {};
@@ -63,6 +64,10 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     selected += weft?.treadling?.filter(t => t.isSelected)?.length;
     setSelectedThreadCount(selected);
   }, [pattern]);
+  
+  useEffect(() => {
+    if (colours?.length && !editor.colour) setColour(colours[colours.length - 1]);
+  }, [colours]);
 
   const enableTool = (tool) => {
     dispatch(actions.objects.updateEditor({ tool, colour: editor.colour }));
@@ -182,150 +187,154 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     <div className="joyride-tools" style={{position: 'sticky', top: 10, zIndex: 20}}>
       <Segment>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <div style={{display: 'flex', alignItems: 'end'}}>
-            {unsaved && <Button.Group size="tiny" style={{marginRight: 5}}>
-              <Button size="tiny" color="teal" icon="save" content="Save" onClick={() => saveObject()} loading={saving} />
-              <Button size="tiny" icon='refresh' content='Revert' onClick={revertChanges} />
-            </Button.Group>}
-            
+          {selectedThreadCount > 0 ?
             <div>
-              <div><small>View</small></div>
-              <Select size="tiny" value={editor.view}
-                onChange={(e, s) => setEditorView(s.value)}
-                style={{ fontSize: '11px', width: 70 }}
-                options={[
-                  { key: 1, value: 'interlacement', text: 'Interlacement' },
-                  { key: 2, value: 'colour', text: 'Colour only' },
-                  { key: 3, value: 'warp', text: 'Warp view' },
-                  { key: 4, value: 'weft', text: 'Weft view' },
-                ]}
-              />
-              
-              <Popup hoverable
-                trigger={<Button style={{marginLeft: 5}} size="tiny" icon="zoom" />}
-                content={<div style={{width: 150}}>
-                  <Slider defaultValue={baseSize} min={5} max={13} step={1} onAfterChange={onZoomChange} /> 
-                </div>}
-              />
+              <Header>{selectedThreadCount} threads selected</Header>
+              <Button size='small' basic onClick={deselectThreads}>De-select all</Button>
+              <Button size='small' color='orange' onClick={deleteSelectedThreads}>Delete threads</Button>
             </div>
-            
-            <div style={{marginLeft: 5}}>
-              <div><small>Tools & drawing</small></div>
-              <Button.Group size="tiny">
-                <Button className='joyride-pan' data-tooltip="Pan (drag to move) pattern" color={editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => enableTool('pan')}><Icon name="move" /></Button>
-                <Button data-tooltip="Select threads" color={editor.tool === 'select' && 'blue'} size="tiny" icon onClick={() => enableTool('select')}><Icon name="i cursor" /></Button>
-                <Button data-tooltip="Insert threads" color={editor.tool === 'insert' && 'blue'} size="tiny" icon onClick={() => enableTool('insert')}><Icon name="plus" /></Button>
-                <Button className='joyride-colour' data-tooltip="Apply thread colour" color={editor.tool === 'colour' && 'blue'} size="tiny" icon onClick={() => enableTool('colour')}><Icon name="paint brush" /></Button>
-                <Button className='joyride-straight' data-tooltip="Straight draw" color={editor.tool === 'straight' && 'blue'} size="tiny" icon onClick={() => enableTool('straight')}>/ /</Button>
-                <Button className='joyride-point' data-tooltip="Point draw" color={editor.tool === 'point' && 'blue'} size="tiny" icon onClick={() => enableTool('point')}><Icon name="chevron up" /></Button>
-              </Button.Group>
-            </div>
-            
-            <div style={{marginLeft: 5}}>
-              <div><small>Colour</small></div>
-              <Button.Group size="tiny">
-                <Popup hoverable on="click"
-                  trigger={<Button style={{marginLeft: 5}} size="tiny" icon="paint brush" style={{color: utils.rgb(editor.colour)}} />}
+          :
+            <div style={{display: 'flex', alignItems: 'end'}}>
+              <div>
+                <div><small>View</small></div>
+                <Select size="tiny" value={editor.view}
+                  onChange={(e, s) => setEditorView(s.value)}
+                  style={{ fontSize: '11px', width: 70 }}
+                  options={[
+                    { key: 1, value: 'interlacement', text: 'Interlacement' },
+                    { key: 2, value: 'colour', text: 'Colour only' },
+                    { key: 3, value: 'warp', text: 'Warp view' },
+                    { key: 4, value: 'weft', text: 'Weft view' },
+                  ]}
+                />
+                
+                <Popup hoverable
+                  trigger={<Button style={{marginLeft: 5}} size="tiny" icon="zoom" />}
                   content={<div style={{width: 150}}>
-                    {pattern.colours && pattern.colours.map(colour =>
-                      <ColourSquare key={colour} colour={utils.rgb(colour)} onClick={() => setColour(colour)} />
-                    )}
+                    <Slider defaultValue={baseSize} min={5} max={13} step={1} onAfterChange={onZoomChange} /> 
                   </div>}
                 />
-                <Popup hoverable on='click'
-                  trigger={<Button size='mini' icon='add' />}
-                  content={
-                    <div style={{padding: 3}}>
-                      <SketchPicker color={newColour} onChangeComplete={c => setNewColour(c.rgb)} />
-                      <Button size='sm' style={{marginTop: 10}} onClick={e => {
-                        const { r, g, b } = newColour;
-                        const newColours = Object.assign([], pattern.colours);
-                        newColours.push(`${r},${g},${b}`);
-                        updatePattern({ colours: newColours })
-                      }}>Add colour to palette</Button>
-                    </div>
-                  }
-                />
-              </Button.Group>
+              </div>
+              
+              <div style={{marginLeft: 5}}>
+                <div><small>Tools & drawing</small></div>
+                <Button.Group size="tiny">
+                  <Button className='joyride-pan' data-tooltip="Pan (drag to move) pattern" color={editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => enableTool('pan')}><Icon name="move" /></Button>
+                  <Button data-tooltip="Select threads" color={editor.tool === 'select' && 'blue'} size="tiny" icon onClick={() => enableTool('select')}><Icon name="i cursor" /></Button>
+                  <Button data-tooltip="Insert threads" color={editor.tool === 'insert' && 'blue'} size="tiny" icon onClick={() => enableTool('insert')}><Icon name="plus" /></Button>
+                  <Button className='joyride-colour' data-tooltip="Apply thread colour" color={editor.tool === 'colour' && 'blue'} size="tiny" icon onClick={() => enableTool('colour')}><Icon name="paint brush" /></Button>
+                  <Button className='joyride-straight' data-tooltip="Straight draw" color={editor.tool === 'straight' && 'blue'} size="tiny" icon onClick={() => enableTool('straight')}>/ /</Button>
+                  <Button className='joyride-point' data-tooltip="Point draw" color={editor.tool === 'point' && 'blue'} size="tiny" icon onClick={() => enableTool('point')}><Icon name="chevron up" /></Button>
+                </Button.Group>
+              </div>
+              
+              <div style={{marginLeft: 5}}>
+                <div>
+                  <small>Colour</small>
+                  <ColourSquare colour={utils.rgb(editor.colour)} style={{top: 4, marginLeft: 10}} />
+                </div>
+                <Button.Group size="tiny">
+                  <Popup hoverable on="click"
+                    trigger={<Button style={{marginLeft: 5}} size="tiny" icon="tint" style={{color: utils.rgb(editor.colour)}} />}
+                    content={<div style={{width: 150}}>
+                      {pattern.colours && pattern.colours.map(colour =>
+                        <ColourSquare key={colour} colour={utils.rgb(colour)} onClick={() => setColour(colour)} />
+                      )}
+                    </div>}
+                  />
+                  <Popup hoverable on='click'
+                    trigger={<Button size='mini' icon='add' />}
+                    content={
+                      <div style={{padding: 3}}>
+                        <SketchPicker color={newColour} onChangeComplete={c => setNewColour(c.rgb)} />
+                        <Button size='sm' style={{marginTop: 10}} onClick={e => {
+                          const { r, g, b } = newColour;
+                          const newColours = Object.assign([], pattern.colours);
+                          newColours.push(`${r},${g},${b}`);
+                          updatePattern({ colours: newColours })
+                        }}>Add colour to palette</Button>
+                      </div>
+                    }
+                  />
+                </Button.Group>
+              </div>
             </div>
-            
-            
-          </div>
+          }
           
           <div>
-            <Popup hoverable on='click'
-              trigger={<Button style={{marginLeft: 5}} size='tiny' content='Properties' />}
-              content={
-                <div style={{padding: 3, width: 300}}>
-                  <small>Name</small>
-                  <Input type="text" size="small" fluid style={{ marginBottom: '5px' }} value={object.name} onChange={setName} />
-                  <Grid columns={2}>
-                    <Grid.Row className='joyride-threads'>
-                      <Grid.Column>
-                        <small>Shafts</small>
-                        <Input fluid type="number" value={warp.shafts} onKeyDown={e => false} onChange={setShafts} size="mini" />
-                      </Grid.Column>
-                      <Grid.Column>
-                        <small>Treadles</small>
-                        <Input fluid type="number" value={weft.treadles} onKeyDown={e => false} onChange={setTreadles} size="mini" />
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row style={{paddingTop: 0}}>
-                      <Grid.Column>
-                        <small>Width (warp threads)</small>
-                        <Input fluid readOnly value={warp.threading?.length || 0} size="mini"
-                          action={{icon: 'edit', onClick: changeWidth}}
-                        />
-                      </Grid.Column>
-                      <Grid.Column>
-                        <small>Height (weft threads)</small>
-                        <Input fluid readOnly value={weft.treadling?.length  || 0} size="mini"
-                          action={{icon: 'edit', onClick: changeHeight}}
-                        />
-                      </Grid.Column>
-                    </Grid.Row>
-                  </Grid>
-                  <Popup
-                    content='Add new threads to the warp and weft as you edit near the end'
-                    trigger={<Checkbox checked={editor.autoExtend ?? true} onChange={setAutomaticallyExtend} label='Auto-extend warp and weft' style={{marginTop: 10}} />}
-                  />
-                </div>
-              }
-            />
-            
-            <Dropdown icon={null} direction='left'
-              trigger={<Button size='tiny' icon='cog' style={{marginLeft: 5}} />}
-            >
-              <Dropdown.Menu>
-                <Dropdown.Item text="Delete pattern" onClick={e => setDeleteModalOpen(true)} />
-              </Dropdown.Menu>
-            </Dropdown>
-            <Confirm
-              open={deleteModalOpen}
-              content="Really delete this pattern?"
-              onCancel={e => setDeleteModalOpen(false)}
-              onConfirm={deleteObject}
-            />
-            
-            <Dropdown style={{marginLeft: 5}} icon={null} direction='left'
-              trigger={<Button size='tiny' icon='help' />}
-            >
-              <Dropdown.Menu>
-                <Dropdown.Item as={Link} to={`/docs/patterns#using-the-pattern-editor`}target="_blank">Documentation</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <div>
+              <Popup hoverable on='click' position='top right'
+                trigger={<Button style={{marginLeft: 5}} size='tiny' content='Properties' />}
+                content={
+                  <div style={{padding: 3, width: 300}}>
+                    <small>Name</small>
+                    <Input type="text" size="small" fluid style={{ marginBottom: '5px' }} value={object.name} onChange={setName} />
+                    <Grid columns={2}>
+                      <Grid.Row className='joyride-threads'>
+                        <Grid.Column>
+                          <small>Shafts</small>
+                          <Input fluid type="number" value={warp.shafts} onKeyDown={e => false} onChange={setShafts} size="mini" />
+                        </Grid.Column>
+                        <Grid.Column>
+                          <small>Treadles</small>
+                          <Input fluid type="number" value={weft.treadles} onKeyDown={e => false} onChange={setTreadles} size="mini" />
+                        </Grid.Column>
+                      </Grid.Row>
+                      <Grid.Row style={{paddingTop: 0}}>
+                        <Grid.Column>
+                          <small>Width (warp threads)</small>
+                          <Input fluid readOnly value={warp.threading?.length || 0} size="mini"
+                            action={{icon: 'edit', onClick: changeWidth}}
+                          />
+                        </Grid.Column>
+                        <Grid.Column>
+                          <small>Height (weft threads)</small>
+                          <Input fluid readOnly value={weft.treadling?.length  || 0} size="mini"
+                            action={{icon: 'edit', onClick: changeHeight}}
+                          />
+                        </Grid.Column>
+                      </Grid.Row>
+                    </Grid>
+                    <Popup
+                      content='Add new threads to the warp and weft as you edit near the end'
+                      trigger={<Checkbox checked={editor.autoExtend ?? true} onChange={setAutomaticallyExtend} label='Auto-extend warp and weft' style={{marginTop: 10}} />}
+                    />
+                  </div>
+                }
+              />
+              
+              <Dropdown icon={null} direction='left'
+                trigger={<Button size='tiny' icon='cog' style={{marginLeft: 5}} />}
+              >
+                <Dropdown.Menu>
+                  <Dropdown.Item text="Delete pattern" onClick={e => setDeleteModalOpen(true)} />
+                </Dropdown.Menu>
+              </Dropdown>
+              <Confirm
+                open={deleteModalOpen}
+                content="Really delete this pattern?"
+                onCancel={e => setDeleteModalOpen(false)}
+                onConfirm={deleteObject}
+              />
+              
+              <Dropdown style={{marginLeft: 5}} icon={null} direction='left'
+                trigger={<Button size='tiny' icon='help' />}
+              >
+                <Dropdown.Menu>
+                  <Dropdown.Item as={Link} to={`/docs/patterns#using-the-pattern-editor`}target="_blank">Documentation</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+
+            <div style={{marginTop: 5, textAlign: 'right'}}>
+              <Button.Group size="tiny">
+                <Button size="tiny" color="teal" icon="save" content="Save" onClick={() => saveObject()} loading={saving} disabled={!unsaved} />
+                <Button size="tiny" icon='refresh' content='Revert' onClick={revertChanges} disabled={!unsaved} />
+              </Button.Group>
+            </div>
           </div>
         </div>
       </Segment>
-      
-      
-      {selectedThreadCount > 0 &&
-        <Segment attached="top">
-          <Header>{selectedThreadCount} threads selected</Header>
-          <Button basic onClick={deselectThreads}>De-select all</Button>
-          <Button color='orange' onClick={deleteSelectedThreads}>Delete threads</Button>
-        </Segment>
-      }
     </div>
   );
 }
