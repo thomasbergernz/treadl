@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { useBlocker } from 'react-router';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import Tour from '../../../includes/Tour';
@@ -43,6 +44,11 @@ function Draft() {
       setPattern(o.pattern);
     });
   }, [objectId]);
+  
+  const blocker = useBlocker( ({ currentLocation, nextLocation }) =>
+      unsaved &&
+      currentLocation.pathname !== nextLocation.pathname
+  );
 
   const updateObject = (update) => {
     setObject(Object.assign({}, object, update));
@@ -80,6 +86,19 @@ function Draft() {
     <div style={{position: 'relative'}}>
       <Helmet title={`${name || 'Weaving Draft'}`} />
       <Tour id='pattern' run={true} />
+      
+      {blocker.state === "blocked" ? (
+        <div>
+          <p>Are you sure you want to leave?</p>
+          <button onClick={() => blocker.proceed()}>
+            Proceed
+          </button>
+          <button onClick={() => blocker.reset()}>
+            Cancel
+          </button>
+        </div>
+      ) : null}
+      
       <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
       
       <div style={{overflow: 'hidden', zIndex: 10}}>

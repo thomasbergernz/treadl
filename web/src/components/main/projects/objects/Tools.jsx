@@ -183,10 +183,10 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
       <Segment>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <div style={{display: 'flex', alignItems: 'end'}}>
-            {unsaved && <div style={{marginRight: 5}}>
+            {unsaved && <Button.Group size="tiny" style={{marginRight: 5}}>
               <Button size="tiny" color="teal" icon="save" content="Save" onClick={() => saveObject()} loading={saving} />
-              <Button style={{marginLeft: 5}} size="tiny" icon='refresh' content='Revert' onClick={revertChanges} />
-            </div>}
+              <Button size="tiny" icon='refresh' content='Revert' onClick={revertChanges} />
+            </Button.Group>}
             
             <div>
               <div><small>View</small></div>
