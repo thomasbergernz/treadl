@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Modal, Button } from 'semantic-ui-react';
 import { Helmet } from 'react-helmet';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -87,18 +88,6 @@ function Draft() {
       <Helmet title={`${name || 'Weaving Draft'}`} />
       <Tour id='pattern' run={true} />
       
-      {blocker.state === "blocked" ? (
-        <div>
-          <p>Are you sure you want to leave?</p>
-          <button onClick={() => blocker.proceed()}>
-            Proceed
-          </button>
-          <button onClick={() => blocker.reset()}>
-            Cancel
-          </button>
-        </div>
-      ) : null}
-      
       <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
       
       <div style={{overflow: 'hidden', zIndex: 10}}>
@@ -121,6 +110,21 @@ function Draft() {
           </StyledPattern>
         </ElementPan>
       </div>
+      
+      <Modal open={blocker.state === "blocked"} basic size="small">
+        <Modal.Header content='Your pattern has not been saved' />
+        <Modal.Content>
+          Would you like to save your draft before leaving?
+        </Modal.Content>
+        <Modal.Actions>
+          <Button basic color="red" inverted onClick={() => blocker.proceed()}>
+            Leave without saving
+          </Button>
+          <Button color="green" inverted onClick={() => blocker.reset()}>
+            Return to editor
+          </Button>
+        </Modal.Actions>
+      </Modal>
     </div>
   );
 }
