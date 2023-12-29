@@ -223,6 +223,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                   <Button data-tooltip="Select threads" color={editor.tool === 'select' && 'blue'} size="tiny" icon onClick={() => enableTool('select')}><Icon name="i cursor" /></Button>
                   <Button data-tooltip="Insert threads" color={editor.tool === 'insert' && 'blue'} size="tiny" icon onClick={() => enableTool('insert')}><Icon name="plus" /></Button>
                   <Button className='joyride-colour' data-tooltip="Apply thread colour" color={editor.tool === 'colour' && 'blue'} size="tiny" icon onClick={() => enableTool('colour')}><Icon name="paint brush" /></Button>
+                  <Button data-tooltip="Erase threads" color={editor.tool === 'eraser' && 'blue'} size="tiny" icon onClick={() => enableTool('eraser')}><Icon name="eraser" /></Button>
                   <Button className='joyride-straight' data-tooltip="Straight draw" color={editor.tool === 'straight' && 'blue'} size="tiny" icon onClick={() => enableTool('straight')}>/ /</Button>
                   <Button className='joyride-point' data-tooltip="Point draw" color={editor.tool === 'point' && 'blue'} size="tiny" icon onClick={() => enableTool('point')}><Icon name="chevron up" /></Button>
                 </Button.Group>
@@ -329,7 +330,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
             <div style={{marginTop: 5, textAlign: 'right'}}>
               <Button.Group size="tiny">
                 <Button size="tiny" color="teal" icon="save" content="Save" onClick={() => saveObject()} loading={saving} disabled={!unsaved} />
-                <Button size="tiny" icon='refresh' content='Revert' onClick={revertChanges} disabled={!unsaved} />
+                <Button size="tiny" color="orange" icon='refresh' content='Revert' onClick={revertChanges} disabled={!unsaved} />
               </Button.Group>
             </div>
           </div>

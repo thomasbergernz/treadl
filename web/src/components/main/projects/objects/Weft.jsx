@@ -148,6 +148,10 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
         if ((thread - 1) >= weft.treadling.length) fillUpTo(newWeft, (thread - 1));
         newWeft.treadling[thread - 1].colour = editor.colour;
       }
+      if (editor.tool === 'eraser') {
+        if ((thread - 1) >= weft.treadling.length) fillUpTo(newWeft, (thread - 1));
+        newWeft.treadling[thread - 1].treadle = 0;
+      }
       if (editor.tool === 'straight') {
         while (y <= hY && y >= lY) {
           if ((y - 1) >= weft.treadling.length || weft.treadling.length - y - 1 < 5) fillUpTo(newWeft, (y + 5));
@@ -183,6 +187,14 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
       if (thread >= newWeft.treadling.length || newWeft.treadling.length - thread < 5) fillUpTo(newWeft, thread + 5);
       const weftThread = newWeft.treadling[thread - 1];
       weftThread.treadle = weftThread.treadle === treadle ? 0 : treadle;
+      updatePattern({ weft: newWeft });
+    }
+    if (editor.tool === 'eraser') {
+      treadle += 1;
+      const newWeft = Object.assign({}, weft);
+      if (thread >= newWeft.treadling.length || newWeft.treadling.length - thread < 5) fillUpTo(newWeft, thread + 5);
+      const weftThread = newWeft.treadling[thread - 1];
+      weftThread.treadle = 0;
       updatePattern({ weft: newWeft });
     }
     if (editor.tool === 'select') {

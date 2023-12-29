@@ -147,6 +147,10 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
         if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
         newWarp.threading[thread].colour = editor.colour;
       }
+      if (editor.tool === 'eraser') {
+        if (thread >= warp.threading.length) fillUpTo(newWarp, thread);
+        newWarp.threading[thread].shaft = 0;
+      }
       if (editor.tool === 'straight') {
         while (x <= hX && x >= lX) {
           if (x >= warp.threading.length || warp.threading.length - x < 5) fillUpTo(newWarp, x + 5);
@@ -181,6 +185,13 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
       if (thread > warp.threading.length || warp.threading.length - thread < 5) fillUpTo(newWarp, thread + 5);
       const warpThread = newWarp.threading[thread];
       warpThread.shaft = warpThread.shaft === shaft ? 0 : shaft;
+      updatePattern({ warp: newWarp });
+    }
+    if (editor.tool === 'eraser') {
+      const newWarp = Object.assign({}, warp);
+      if (thread > warp.threading.length || warp.threading.length - thread < 5) fillUpTo(newWarp, thread + 5);
+      const warpThread = newWarp.threading[thread];
+      warpThread.shaft = 0;
       updatePattern({ warp: newWarp });
     }
     if (editor.tool === 'select') {
