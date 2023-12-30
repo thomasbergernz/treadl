@@ -94,7 +94,6 @@ function Draft() {
   return (
     <div style={{position: 'relative'}}>
       <Helmet title={`${name || 'Weaving Draft'}`} />
-      <Tour id='pattern' run={true} />
       
       <Tools warp={warp} weft={weft} object={object} pattern={pattern} updateObject={updateObject} updatePattern={updatePattern} saveObject={saveObject} baseSize={baseSize} unsaved={unsaved} saving={saving}/>
       
