@@ -115,7 +115,7 @@ export default function NavBar() {
               
               <Menu.Menu position='right'>
                 {isAuthenticated && <>
-                  <Menu.Item className='above-mobile'><SearchBar /></Menu.Item>
+                  <Menu.Item className='abovee-mobile'><SearchBar /></Menu.Item>
                   <Dropdown direction="left" pointing="top right" icon={null} style={{ marginTop: 10}}
                     trigger={<UserChip user={user} withoutLink avatarOnly />}
                     >
@@ -128,8 +128,8 @@ export default function NavBar() {
                       {user?.isGoldSupporter && <Dropdown.Header><SupporterBadge type='gold' /></Dropdown.Header>}
                       {user?.isSilverSupporter && !user?.isGoldSupporter && <Dropdown.Header><SupporterBadge type='silver' /></Dropdown.Header>}
                       <Dropdown.Divider />
+                      <Link to="/projects" className="item">My projects</Link>
                       <Link to="/explore" className="item">Explore</Link>
-                      <Link to="/projects" className="item">Projects</Link>
                       {user &&<Link to={`/${user.username}`} className="item">Profile</Link>}
                       <Link to="/settings" className="item">Settings</Link>
                       <Dropdown.Divider />
