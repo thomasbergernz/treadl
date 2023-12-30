@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import utils from '../../../../utils/utils';
 
-const StyledDrawdown = styled.canvas`
-  position:absolute;
-  border:1px dashed rgb(70,70,70);
+const DrawdownCanvas = styled.canvas`
+  position: absolute;
+  border: 1px dashed rgb(70,70,70);
   top: ${props => (props.warp.shafts * props.baseSize) + 20}px;
   right: ${props => (props.weft.treadles * props.baseSize) + 20}px;
 `;
@@ -17,6 +17,7 @@ function Drawdown({ baseSize, warp, weft, tieups }) {
   const drawdownRef = useRef();
   useEffect(() => paintDrawdown());
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
+  const { viewingBack } = editor;
 
   const getSquare = (thread, size, colour) => {
     const { view } = editor;
@@ -87,7 +88,7 @@ function Drawdown({ baseSize, warp, weft, tieups }) {
   const warpThreads = warp.threading?.length || 0;
   const weftThreads = weft.treadling?.length || 0;
   return (
-    <StyledDrawdown ref={drawdownRef} className="drawdown joyride-drawdown"
+    <DrawdownCanvas ref={drawdownRef} className="drawdown joyride-drawdown"
       width={warpThreads * baseSize}
       height={weftThreads * baseSize}
       weft={weft} warp={warp} baseSize={baseSize}

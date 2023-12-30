@@ -6,7 +6,7 @@ import utils from '../../../../utils/utils.js';
 const WarpContainer = styled.div`
   top:0px;
   position: absolute;
-  ${props => props.viewingBack ? 'left' : 'right'}: ${props => (props.treadles * props.baseSize) + 20}px;
+  right: ${props => (props.treadles * props.baseSize) + 20}px;
   height: ${props => (props.shafts * props.baseSize) + 40}px;
   width: 100%;
   cursor: ${props => props.tool === 'insert' ? 'w-resize': 'initial'};
@@ -19,7 +19,7 @@ const WarpContainer = styled.div`
 const WarpCanvas = styled.canvas`
   position: absolute;
   top: 10px;
-  ${props => props.viewingBack ? 'left' : 'right'}: 0px;
+  right: 0px;
   height: ${props => props.warp.shafts * props.baseSize}px;
   width: ${props => props.warp.threading.length * props.baseSize}px;
   border-radius: 4;
@@ -29,7 +29,7 @@ const WarpCanvas = styled.canvas`
 const Colourway = styled.canvas`
   position: absolute;
   top: 0px;
-  ${props => props.viewingBack ? 'left' : 'right'}: 0px;
+  right: 0px;
   height: 10px;
   width: ${props => props.warp.threading.length * props.baseSize}px;
 `;
@@ -47,7 +47,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   const [draggingColourway, setDraggingColourway] = useState(false);
   const [hoveredThread, setHoveredThread] = useState(null);
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
-  const { tool, colour, viewingBack } = editor;
+  const { tool, colour } = editor;
   const warpRef = useRef(null);
   const colourwayRef = useRef(null);
 
@@ -334,15 +334,15 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   };
 
   return (
-    <WarpContainer treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize} tool={tool} viewingBack={viewingBack}>
-      <Colourway className='warp-colourway joyride-warpColourway' ref={colourwayRef} width={warp.threading.length * baseSize} height={10} warp={warp} viewingBack={viewingBack} baseSize={baseSize}
+    <WarpContainer treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize} tool={tool}>
+      <Colourway className='warp-colourway joyride-warpColourway' ref={colourwayRef} width={warp.threading.length * baseSize} height={10} warp={warp} baseSize={baseSize}
         onClick={mouseClickColourway}
         onMouseDown={mouseDownColourway}
         onMouseMove={mouseMoveColourway}
         onMouseUp={mouseUpColourway}
         onMouseLeave={mouseUpColourway}
       />
-      <WarpCanvas className='warp-threads joyride-warp' ref={warpRef} width={warp.threading.length * baseSize} height={warp.shafts * baseSize} warp={warp} viewingBack={viewingBack} baseSize={baseSize}
+      <WarpCanvas className='warp-threads joyride-warp' ref={warpRef} width={warp.threading.length * baseSize} height={warp.shafts * baseSize} warp={warp} baseSize={baseSize}
         onClick={click}
         onMouseDown={mouseDown}
         onMouseMove={mouseMove}
