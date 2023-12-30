@@ -60,9 +60,17 @@ function Project() {
               <UserChip user={project.owner} />
               <Breadcrumb size='large' style={{marginLeft: 20}}>
                 <Breadcrumb.Section as={Link} to={`/${project.fullName}`}>{project.name}</Breadcrumb.Section>
+                {location.pathname === `/${project.fullName}/settings` && <>
+                  <Breadcrumb.Divider icon='right chevron' />
+                  <Breadcrumb.Section>Settings</Breadcrumb.Section>
+                </>}
                 {object && <>
                   <Breadcrumb.Divider icon='right chevron' />
                   <Breadcrumb.Section as={Link} to={`/${project.fullName}/${object._id}`}>{object.name}</Breadcrumb.Section>
+                  {location.pathname === `/${project.fullName}/${object._id}/edit` && <>
+                    <Breadcrumb.Divider icon='right chevron' />
+                    <Breadcrumb.Section>Edit</Breadcrumb.Section>
+                  </>}
                 </>}
               </Breadcrumb>
             </div>
