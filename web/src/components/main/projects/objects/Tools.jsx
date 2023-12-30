@@ -30,9 +30,9 @@ const ColourSquare = styled.div`
   position:relative;
   box-shadow:0px 0px 3px rgba(0,0,0,0.1);
   border-radius:2px;
-  width:15px;
-  height:15px;
-  margin:2px;
+  width: ${props => props.small ? '8' : '15'}px;
+  height: ${props => props.small ? '8' : '15'}px;
+  margin: ${props => props.small ? '8' : '2'}px;
   cursor:pointer;
   top:0px;
   transition:top 0.1s;
@@ -242,9 +242,9 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
               </div>
               
               <div style={{marginLeft: 10}}>
-                <div>
-                  <small>Colour</small>
-                  <ColourSquare colour={utils.rgb(editor.colour)} style={{top: 4, marginLeft: 10}} />
+                <div style={{display: 'flex', 'alignItems': 'center'}}>
+                  <div><small>Colour</small></div>
+                  <div><ColourSquare small colour={utils.rgb(editor.colour)} style={{top: 4, marginLeft: 10}} /></div>
                 </div>
                 <Button.Group size="tiny">
                   <Popup hoverable on="click"
