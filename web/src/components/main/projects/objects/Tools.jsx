@@ -281,7 +281,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
           }
           
           <div>
-            <div>
+            <div style={{textAlign: 'right'}}>
               <Popup hoverable on='click' position='top right'
                 trigger={<Button color='blue' style={{marginLeft: 5}} size='tiny' content='Properties' />}
                 content={
@@ -332,6 +332,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                 onConfirm={deleteObject}
               />
               
+              {/*}
               <Dropdown icon={null} direction='left' disabled={unsaved}
                 trigger={<Button color='blue' size='tiny' icon='download' style={{marginLeft: 5}} />}
               >
@@ -349,7 +350,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                     </>
                   }
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown>*/}
               
               <Dropdown style={{marginLeft: 5}} icon={null} direction='left'
                 trigger={<Button basic size='tiny' icon='help' />}
