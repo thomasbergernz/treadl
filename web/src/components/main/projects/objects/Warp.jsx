@@ -3,11 +3,10 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import utils from '../../../../utils/utils.js';
 
-const StyledWarp = styled.div`
+const WarpContainer = styled.div`
   top:0px;
-  right:0px;
   position: absolute;
-  right: ${props => (props.treadles * props.baseSize) + 20}px;
+  ${props => props.viewingBack ? 'left' : 'right'}: ${props => (props.treadles * props.baseSize) + 20}px;
   height: ${props => (props.shafts * props.baseSize) + 40}px;
   width: 100%;
   cursor: ${props => props.tool === 'insert' ? 'w-resize': 'initial'};
@@ -15,6 +14,24 @@ const StyledWarp = styled.div`
     border:none;
     border-top:1px solid rgb(150,150,150);
   }
+`;
+
+const WarpCanvas = styled.canvas`
+  position: absolute;
+  top: 10px;
+  ${props => props.viewingBack ? 'left' : 'right'}: 0px;
+  height: ${props => props.warp.shafts * props.baseSize}px;
+  width: ${props => props.warp.threading.length * props.baseSize}px;
+  border-radius: 4;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.15);
+`;
+
+const Colourway = styled.canvas`
+  position: absolute;
+  top: 0px;
+  ${props => props.viewingBack ? 'left' : 'right'}: 0px;
+  height: 10px;
+  width: ${props => props.warp.threading.length * props.baseSize}px;
 `;
 
 const squares = {};
@@ -30,7 +47,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   const [draggingColourway, setDraggingColourway] = useState(false);
   const [hoveredThread, setHoveredThread] = useState(null);
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
-  const { tool, colour } = editor;
+  const { tool, colour, viewingBack } = editor;
   const warpRef = useRef(null);
   const colourwayRef = useRef(null);
 
@@ -317,31 +334,22 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   };
 
   return (
-    <StyledWarp treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize} tool={tool}>
-      <canvas className='warp-colourway joyride-warpColourway' ref={colourwayRef} width={warp.threading.length * baseSize} height={10}
-        style={{
-          position: 'absolute', top: 0, right: 0, height: 10, width: warp.threading.length * baseSize,
-        }}
+    <WarpContainer treadles={weft.treadles} shafts={warp.shafts} baseSize={baseSize} tool={tool} viewingBack={viewingBack}>
+      <Colourway className='warp-colourway joyride-warpColourway' ref={colourwayRef} width={warp.threading.length * baseSize} height={10} warp={warp} viewingBack={viewingBack} baseSize={baseSize}
         onClick={mouseClickColourway}
         onMouseDown={mouseDownColourway}
         onMouseMove={mouseMoveColourway}
         onMouseUp={mouseUpColourway}
         onMouseLeave={mouseUpColourway}
       />
-      <canvas className='warp-threads joyride-warp' ref={warpRef} width={warp.threading.length * baseSize} height={warp.shafts * baseSize}
-        style={{
-          position: 'absolute', top: 10, right: 0,
-          height: warp.shafts * baseSize,
-          width: warp.threading.length * baseSize, borderRadius: 4,
-          boxShadow: '0px 0px 10px rgba(0,0,0,0.15)',
-        }}
+      <WarpCanvas className='warp-threads joyride-warp' ref={warpRef} width={warp.threading.length * baseSize} height={warp.shafts * baseSize} warp={warp} viewingBack={viewingBack} baseSize={baseSize}
         onClick={click}
         onMouseDown={mouseDown}
         onMouseMove={mouseMove}
         onMouseUp={mouseUp}
         onMouseLeave={mouseUp}
       />
-    </StyledWarp>
+    </WarpContainer>
   );
 }
 

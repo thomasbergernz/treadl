@@ -3,12 +3,10 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import utils from '../../../../utils/utils.js';
 
-const StyledWeft = styled.div`
-  top:0px;
-  right:0px;
+const WeftContainer = styled.div`
   position: absolute;
   top: ${props => (props.shafts * props.baseSize) + 20}px;
-  right: 0;
+  ${props => props.viewingBack ? 'left' : 'right'}: 0;
   min-height: 1000px;
   width: ${props => (props.treadles * props.baseSize)}px;
   height: ${props => props.threads * props.baseSize}px;
@@ -17,6 +15,24 @@ const StyledWeft = styled.div`
     border:none;
     border-right:1px solid rgb(150,150,150);
   }
+`;
+
+const WeftCanvas = styled.canvas`
+  position: absolute;
+  top: 0px;
+  ${props => props.viewingBack ? 'left' : 'right'}: 10px;
+  height: ${props => props.weft.treadling?.length * props.baseSize}px;
+  width: ${props => props.weft.treadles * props.baseSize}px;
+  border-radius: 4;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.15);
+`;
+
+const Colourway = styled.canvas`
+  position: absolute;
+  top: 0px;
+  ${props => props.viewingBack ? 'left' : 'right'}: 0px;
+  width: 10px;
+  height: ${props => props.weft.treadling?.length * props.baseSize}px;
 `;
 
 const squares = {};
@@ -31,7 +47,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
   const [draggingColourway, setDraggingColourway] = useState(false);
   const [hoveredThread, setHoveredThread] = useState(null);
   const { editor } = useSelector(state => ({ editor: state.objects.editor }));
-  const { tool, colour } = editor;
+  const { tool, colour, viewingBack } = editor;
   const weftRef = useRef(null);
   const colourwayRef = useRef(null);
 
@@ -321,28 +337,22 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
 
   const threadCount = weft.treadling?.length || 0;
   return (
-    <StyledWeft baseSize={baseSize} treadles={weft.treadles} shafts={warp.shafts} threads={threadCount} tool={tool}>
-      <canvas className='weft-colourway' ref={colourwayRef} width={10} height={threadCount * baseSize}
-        style={{ position: 'absolute', top: 0, right: 0, width: 10, height: threadCount * baseSize}}
+    <WeftContainer baseSize={baseSize} treadles={weft.treadles} shafts={warp.shafts} threads={threadCount} tool={tool} viewingBack={viewingBack}>
+      <Colourway className='weft-colourway' ref={colourwayRef} width={10} height={threadCount * baseSize} weft={weft} viewingBack={viewingBack} baseSize={baseSize}
         onClick={mouseClickColourway}
         onMouseDown={mouseDownColourway}
         onMouseMove={mouseMoveColourway}
         onMouseUp={mouseUpColourway}
         onMouseLeave={mouseUpColourway}
       />
-      <canvas className='weft-threads joyride-weft' ref={weftRef} width={weft.treadles * baseSize} height={threadCount * baseSize}
-        style={{
-          position: 'absolute',
-          top: 0, right: 10, height: threadCount * baseSize, width: weft.treadles * baseSize,
-          borderRadius: 4, boxShadow: '0px 0px 10px rgba(0,0,0,0.15)',
-        }}
+      <WeftCanvas className='weft-threads joyride-weft' ref={weftRef} width={weft.treadles * baseSize} height={threadCount * baseSize} weft={weft} viewingBack={viewingBack} baseSize={baseSize}
         onClick={click}
         onMouseDown={mouseDown}
         onMouseMove={mouseMove}
         onMouseUp={mouseUp}
         onMouseLeave={mouseUp}
       />
-    </StyledWeft>
+    </WeftContainer>
   );
 }
 

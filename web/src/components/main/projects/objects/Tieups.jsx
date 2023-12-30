@@ -1,15 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 const StyledTieups = styled.canvas`
-  position:absolute;
-  top:10px;
-  right:10px;
+  position: absolute;
+  top: 10px;
+  ${props => props.viewingBack ? 'left' : 'right'}: 10px;
 `;
 
 function Tieups({ cellStyle, warp, weft, tieups, updatePattern, baseSize }) {
   useEffect(() => paintTieups());
   const tieupRef = useRef(null);
+  const { editor } = useSelector(state => ({ editor: state.objects.editor }));
+  const { viewingBack } = editor;
 
   const fillUpTo = (t, limit) => {
     let i = t.length;
@@ -63,7 +66,7 @@ function Tieups({ cellStyle, warp, weft, tieups, updatePattern, baseSize }) {
   }
 
   return (
-    <StyledTieups ref={tieupRef} className='tieups joyride-tieups' width={weft.treadles * baseSize} height= {warp.shafts * baseSize} style={{width: weft.treadles * baseSize, height: warp.shafts * baseSize}} onClick={click}/>
+    <StyledTieups ref={tieupRef} className='tieups joyride-tieups' viewingBack={viewingBack} width={weft.treadles * baseSize} height= {warp.shafts * baseSize} style={{width: weft.treadles * baseSize, height: warp.shafts * baseSize}} onClick={click}/>
   );
 }
 
