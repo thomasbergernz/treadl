@@ -3,8 +3,6 @@ import { store } from '../index';
 
 export default {
 
-  INIT_DRIFT: 'INIT_DRIFT',
-  SYNC_DRIFT: 'SYNC_DRIFT',
   REQUEST_USERS: 'REQUEST_USERS',
   REQUEST_FAILED: 'REQUEST_FAILED',
   RECEIVE_USER: 'RECEIVE_USERS',
@@ -14,14 +12,6 @@ export default {
   JOIN_GROUP: 'JOIN_GROUP',
   LEAVE_GROUP: 'LEAVE_GROUP',
   UPDATE_SUBSCRIPTIONS: 'UPDATE_SUBSCRIPTIONS',
-
-  initDrift() {
-    return { type: this.INIT_DRIFT };
-  },
-
-  syncDrift(synced) {
-    return { type: this.SYNC_DRIFT, synced };
-  },
 
   request() {
     return { type: this.REQUEST_USERS };

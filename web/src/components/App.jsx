@@ -27,11 +27,10 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated, isAuthenticating, isAuthenticatingType, user, driftReady, syncedToDrift } = useSelector(state => {
+  const { isAuthenticated, isAuthenticating, isAuthenticatingType, user } = useSelector(state => {
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     const { isAuthenticated, isAuthenticating, isAuthenticatingType } = state.auth;
-    const { driftReady, syncedToDrift } = state.users;
-    return { isAuthenticated, isAuthenticating, isAuthenticatingType, user, driftReady, syncedToDrift };
+    return { isAuthenticated, isAuthenticating, isAuthenticatingType, user };
   });
   const loggedInUserId = user?._id;
 
@@ -53,23 +52,6 @@ function App() {
       dispatch(actions.invitations.receiveInvitations(invitations.concat(sentInvitations)));
     });
   }, [dispatch, loggedInUserId]);
-
-  useEffect(() => {
-    window.drift && window.drift.on('ready', () => {
-      dispatch(actions.users.initDrift());
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (user && driftReady && !syncedToDrift && window.drift) {
-      window.drift.identify(user._id, {
-        email: user.email,
-        username: user.username,
-        createdAt: user.createdAt,
-      });
-      dispatch(actions.users.syncDrift(null));
-    }
-  }, [dispatch, user, driftReady, syncedToDrift]);
 
   return (
     <StyledContent>

@@ -51,8 +51,6 @@ export default function NavBar() {
 
   const logout = () => api.auth.logout(() => {
     dispatch(actions.auth.logout());
-    dispatch(actions.users.syncDrift(false))
-    if (window.drift) window.drift.reset();
     navigate('/');
   });
   const isSupporter = user?.isSilverSupporter || user?.isGoldSupporter;

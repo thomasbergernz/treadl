@@ -1,8 +1,6 @@
 import actions from '../actions';
 
 const initialState = {
-  driftReady: false,
-  syncedToDrift: false,
   loading: false,
   errorMessage: '',
   users: [],
@@ -10,10 +8,6 @@ const initialState = {
 
 function users(state = initialState, action) {
   switch (action.type) {
-    case actions.users.INIT_DRIFT:
-      return Object.assign({}, state, { driftReady: true });
-    case actions.users.SYNC_DRIFT:
-      return Object.assign({}, state, { syncedToDrift: action.synced ?? true });
     case actions.users.REQUEST_USERS:
       return Object.assign({}, state, { loading: true, errorMessage: '' });
 
