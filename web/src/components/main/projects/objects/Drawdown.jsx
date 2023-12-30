@@ -76,7 +76,11 @@ function Drawdown({ baseSize, warp, weft, tieups }) {
         if (proceed) {
           const weftColour = utils.rgb(weft.treadling[tread].colour || weft.defaultColour);
           const warpColour = utils.rgb(warp.threading[thread].colour || warp.defaultColour);
-          const threadType = tieup && tieup.filter(t => t <= warp.shafts).indexOf(shaft) > -1 ? 'warp' : 'weft';
+          let threadType = tieup?.filter(t => t <= warp.shafts).indexOf(shaft) > -1 ? 'warp' : 'weft';
+          if (viewingBack) {
+            if (threadType === 'warp') threadType = 'weft';
+            else threadType = 'warp';
+          }
           const square = getSquare(threadType, baseSize, threadType === 'warp' ? warpColour : weftColour);
 
           ctx.drawImage(square, canvas.width - (baseSize * (thread + 1)), tread * baseSize);
