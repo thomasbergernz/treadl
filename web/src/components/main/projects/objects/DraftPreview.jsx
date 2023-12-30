@@ -26,6 +26,7 @@ function DraftPreview({ object }) {
       if (o.pattern && o.pattern.warp) {
         setPattern(o.pattern);
         
+        // Generate images
         setTimeout(() => {
           // Generate the preview if not yet set (e.g. if from uploaded WIF)
           if (!o.previewUrl) {

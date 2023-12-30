@@ -43,6 +43,7 @@ function Draft() {
       dispatch(actions.objects.receive(o));
       setObject(o);
       setPattern(o.pattern);
+      setTimeout(() => generatePreviews(o), 1000);
     });
   }, [objectId]);
   
@@ -62,26 +63,20 @@ function Draft() {
     setUnsaved(true);
   };
   
-  const generatePreviews = () => {
-    const newObject = Object.assign({}, object);
-    util.generatePatternPreview(object, previewUrl => {
-      util.unifyCanvas(pattern, ``, patternImage => {
-        setObject(Object.assign({}, object, { previewUrl, patternImage }));
+  const generatePreviews = (o) => {
+    util.generatePatternPreview(o, previewUrl => {
+      util.generateCompletePattern(o?.pattern, ``, patternImage => {
+        setObject(Object.assign({}, o, { previewUrl, patternImage }));
       });
     });
   }
 
   const saveObject = () => {
     setSaving(true);
+    generatePreviews();
     const newObject = Object.assign({}, object);
     newObject.pattern = pattern;
-    util.generatePatternPreview(object, previewUrl => {
-      newObject.previewUrl = previewUrl;
-    });
-    util.unifyCanvas(pattern, ``, image => {
-      console.log(image)
-      newObject.patternImage = image;
-    });
+    generatePreviews(newObject);
     api.objects.update(objectId, newObject, (o) => {
       toast.success('Pattern saved');
       dispatch(actions.objects.receive(o));

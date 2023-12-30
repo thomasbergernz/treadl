@@ -327,7 +327,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                 onConfirm={deleteObject}
               />
               
-              <Dropdown icon={null} direction='left'
+              <Dropdown icon={null} direction='left' disabled={unsaved}
                 trigger={<Button color='blue' size='tiny' icon='download' style={{marginLeft: 5}} />}
               >
                 <Dropdown.Menu>
