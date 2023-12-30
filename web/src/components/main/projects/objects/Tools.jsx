@@ -55,12 +55,13 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const { objectId, username, projectPath } = useParams();
   const { colours } = pattern;
 
-  const { project, editor } = useSelector(state => {
+  const { user, project, editor } = useSelector(state => {
+    const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     let project = {};
     state.projects.projects.forEach((p) => {
       if (p.path === projectPath && p.owner && p.owner.username === username) project = p;
     });
-    return { project, editor: state.objects.editor };
+    return { user, project, editor: state.objects.editor };
   });
 
   useEffect(() => {
@@ -209,14 +210,14 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
               <div>
                 <div><small>View</small></div>
                 <Popup hoverable on='click'
-                  trigger={<Button color='teal' size="tiny" icon="zoom" />}
+                  trigger={<Button color='blue' size="tiny" icon="zoom" />}
                   content={<div style={{width: 150}}>
                     <h4>Zoom</h4>
                     <Slider defaultValue={baseSize} min={5} max={13} step={1} onAfterChange={onZoomChange} /> 
                   </div>}
                 />
                 
-                <small><Dropdown text={`${VIEWS.find(v => v.value === editor.view)?.text}${editor.viewingBack ? ' (Back)' : ''}`} size='tiny'>
+                <small><Dropdown text={`${VIEWS.find(v => v.value === editor.view)?.text} (${editor.viewingBack ? 'Back' : 'Front'})`} size='tiny'>
                   <Dropdown.Menu>
                     {VIEWS.map(view =>
                       <Dropdown.Item key={view.value} text={view.text} onClick={e => setEditorView(view.value)} />
@@ -256,7 +257,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                     </div>}
                   />
                   <Popup hoverable on='click'
-                    trigger={<Button color='teal' size='mini' icon='add' />}
+                    trigger={<Button color='blue' size='mini' icon='add' />}
                     content={
                       <div style={{padding: 3}}>
                         <SketchPicker color={newColour} onChangeComplete={c => setNewColour(c.rgb)} />
@@ -277,7 +278,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
           <div>
             <div>
               <Popup hoverable on='click' position='top right'
-                trigger={<Button style={{marginLeft: 5}} size='tiny' content='Properties' />}
+                trigger={<Button color='blue' style={{marginLeft: 5}} size='tiny' content='Properties' />}
                 content={
                   <div style={{padding: 3, width: 300}}>
                     <small>Name</small>
@@ -312,17 +313,13 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                       content='Add new threads to the warp and weft as you edit near the end'
                       trigger={<Checkbox checked={editor.autoExtend ?? true} onChange={setAutomaticallyExtend} label='Auto-extend warp and weft' style={{marginTop: 10}} />}
                     />
+                    
+                    <div style={{marginTop: 20}}>
+                      <Button basic color='red' fluid onClick={e => setDeleteModalOpen(true)}>Delete pattern</Button>
+                    </div>
                   </div>
                 }
               />
-              
-              <Dropdown icon={null} direction='left'
-                trigger={<Button size='tiny' icon='cog' style={{marginLeft: 5}} />}
-              >
-                <Dropdown.Menu>
-                  <Dropdown.Item text="Delete pattern" onClick={e => setDeleteModalOpen(true)} />
-                </Dropdown.Menu>
-              </Dropdown>
               <Confirm
                 open={deleteModalOpen}
                 content="Really delete this pattern?"
@@ -330,8 +327,27 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                 onConfirm={deleteObject}
               />
               
+              <Dropdown icon={null} direction='left'
+                trigger={<Button color='blue' size='tiny' icon='download' style={{marginLeft: 5}} />}
+              >
+                <Dropdown.Menu>
+                  {object.previewUrl &&
+                    <Dropdown.Item onClick={e => utils.downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />
+                  }
+                  {(utils.canEditProject(user, project) || project.openSource) &&
+                    <>
+                      {object.patternImage &&
+                        <Dropdown.Item icon='file outline' content='Download complete pattern as an image' onClick={e => utils.downloadPatternImage(object)}/>
+                      }
+                      <Dropdown.Divider />
+                      <Dropdown.Item onClick={e => utils.downloadWif(object)} content="Download pattern in WIF format" icon="text file" />
+                    </>
+                  }
+                </Dropdown.Menu>
+              </Dropdown>
+              
               <Dropdown style={{marginLeft: 5}} icon={null} direction='left'
-                trigger={<Button size='tiny' icon='help' />}
+                trigger={<Button basic size='tiny' icon='help' />}
               >
                 <Dropdown.Menu>
                   <Dropdown.Item as={Link} to={`/docs/patterns#using-the-pattern-editor`}target="_blank">Documentation</Dropdown.Item>

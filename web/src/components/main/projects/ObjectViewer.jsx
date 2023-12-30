@@ -83,27 +83,6 @@ function ObjectViewer() {
     });
   }
 
-  const downloadDrawdownImage = (object) => {
-    const element = document.createElement('a');
-    element.setAttribute('href', object.previewUrl);
-    element.setAttribute('download', `${object.name.replace(/ /g, '_')}-drawdown.png`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    toast.info('The file has been downloaded');
-  }
-  const downloadPatternImage = (object) => {
-    const element = document.createElement('a');
-    element.setAttribute('href', object.patternImage);
-    element.setAttribute('download', `${object.name.replace(/ /g, '_')}-pattern.png`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    toast.info('The file has been downloaded');
-  }
-
   const copyPattern = (project) => {
     api.objects.copyTo(object._id, project._id, newObject => {
       window.location = `/${project.fullName}/${newObject._id}`;
@@ -128,12 +107,12 @@ function ObjectViewer() {
           <Dropdown direction='left' icon={null} trigger={<Button size='tiny' secondary icon='download' content='Download pattern' loading={downloading} disabled={downloading}/>}>
             <Dropdown.Menu>
               {object.previewUrl &&
-                <Dropdown.Item onClick={e => downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />
+                <Dropdown.Item onClick={e => utils.downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />
               }
               {(utils.canEditProject(user, project) || project.openSource) &&
                 <React.Fragment>
                   {object.patternImage &&
-                    <Dropdown.Item icon='file outline' content='Download complete pattern as an image' onClick={e => downloadPatternImage(object)}/>
+                    <Dropdown.Item icon='file outline' content='Download complete pattern as an image' onClick={e => utils.downloadPatternImage(object)}/>
                   }
                   <Dropdown.Divider />
                   <Dropdown.Item onClick={e => downloadWif(object)} content="Download pattern in WIF format" icon="text file" />

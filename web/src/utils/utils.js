@@ -1,4 +1,5 @@
 import { createConfirmation } from 'react-confirm';
+import { toast } from 'react-toastify';
 import ConfirmModal from '../components/includes/ConfirmModal';
 import api from '../api';
 
@@ -119,7 +120,61 @@ const utils = {
         });
       }
     });
-  }
+  },
+  downloadDrawdownImage(object) {
+    const element = document.createElement('a');
+    element.setAttribute('target', '_blank');
+    element.setAttribute('href', object.previewUrl);
+    element.setAttribute('download', `${object.name.replace(/ /g, '_')}-drawdown.png`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    toast.info('The file has been downloaded');
+  },
+  downloadPatternImage(object) {
+    const element = document.createElement('a');
+    element.setAttribute('target', '_blank');
+    element.setAttribute('href', object.patternImage);
+    element.setAttribute('download', `${object.name.replace(/ /g, '_')}-pattern.png`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    toast.info('The file has been downloaded');
+  },
+  generateCompletePattern(pattern, parentSelector, cb) {
+    if (!pattern) return;
+    const { warp, weft } = pattern;
+    setTimeout(() => {
+      const baseSize = 6;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = warp.threading?.length * baseSize + weft.treadles * baseSize + 20;
+      canvas.height = warp.shafts * baseSize + weft.treadling?.length * baseSize + 20;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'black';
+      const warpCanvas = document.querySelector(`${parentSelector} .warp-threads`);
+      const warpColourwayCanvas = document.querySelector(`${parentSelector} .warp-colourway`);
+      const weftCanvas = document.querySelector(`${parentSelector} .weft-threads`);
+      const weftColourwayCanvas = document.querySelector(`${parentSelector} .weft-colourway`);
+      const drawdownCanvas = document.querySelector(`${parentSelector} .drawdown`);
+      const tieupsCanvas = document.querySelector(`${parentSelector} .tieups`);
+      if (warpCanvas) {
+        ctx.drawImage(warpColourwayCanvas, canvas.width - warpCanvas.width - weft.treadles * baseSize - 20, 0);
+        ctx.drawImage(warpCanvas, canvas.width - warpCanvas.width - weft.treadles * baseSize - 20, 10);
+        ctx.drawImage(weftCanvas, canvas.width - 10 - weft.treadles * baseSize, warp.shafts * baseSize + 20);
+        ctx.drawImage(weftColourwayCanvas, canvas.width - 10, warp.shafts * baseSize + 20);
+        ctx.drawImage(tieupsCanvas, canvas.width - weft.treadles * baseSize - 10, 10);
+        ctx.drawImage(drawdownCanvas, canvas.width - drawdownCanvas.width - weft.treadles * baseSize - 20, warp.shafts * baseSize + 20);
+        setTimeout(() => {
+          const im = canvas.toDataURL('image/png')
+          if (im?.length > 20) cb(im);
+        }, 500);
+      }
+    }, 500);
+  },
 };
 
 export default utils;
