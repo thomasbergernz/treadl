@@ -26,7 +26,7 @@ const VIEWS = [
 
 const ColourSquare = styled.div`
   background-color: ${props => props.colour};
-  display:inline-block;
+  display: ${props => props.small ? 'block' : 'inline-block'};
   position:relative;
   box-shadow:0px 0px 3px rgba(0,0,0,0.1);
   border-radius:2px;
@@ -43,6 +43,11 @@ const ColourSquare = styled.div`
     margin-left:10px;
     top:4px;
   }
+`;
+
+const ToolLabel = styled.div`
+  font-size: small;
+  font-weight: bold;
 `;
 
 function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updatePattern, updateObject, saveObject }) {
@@ -208,7 +213,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
           :
             <div style={{display: 'flex', alignItems: 'end'}}>
               <div>
-                <div><small>View</small></div>
+                <ToolLabel>View</ToolLabel>
                 <Popup hoverable on='click'
                   trigger={<Button color='blue' size="tiny" icon="zoom" />}
                   content={<div style={{width: 150}}>
@@ -230,7 +235,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
               </div>
               
               <div style={{marginLeft: 10}}>
-                <div><small>Tools & drawing</small></div>
+                <ToolLabel>Tools & drawing</ToolLabel>
                 <Button.Group size="tiny">
                   <Button className='joyride-pan' data-tooltip="Pan (drag to move) pattern" color={editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => enableTool('pan')}><Icon name="move" /></Button>
                   <Button data-tooltip="Select threads" color={editor.tool === 'select' && 'blue'} size="tiny" icon onClick={() => enableTool('select')}><Icon name="i cursor" /></Button>
@@ -243,8 +248,8 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
               </div>
               
               <div style={{marginLeft: 10}}>
-                <div style={{display: 'flex', 'alignItems': 'center'}}>
-                  <div><small>Colour</small></div>
+                <div style={{display: 'flex', 'alignItems': 'end'}}>
+                  <ToolLabel>Colour</ToolLabel>
                   <div><ColourSquare small colour={utils.rgb(editor.colour)} style={{top: 4, marginLeft: 10}} /></div>
                 </div>
                 <Button.Group size="tiny">
