@@ -53,6 +53,7 @@ def copy_to_project(user, id, project_id):
   obj['project'] = target_project['_id']
   obj['createdAt'] = datetime.datetime.now()
   obj['commentCount'] = 0
+  if 'preview' in obj: del obj['preview']
   db.objects.insert_one(obj)
   return obj
 

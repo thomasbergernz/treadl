@@ -114,7 +114,7 @@ function ObjectList({ compact }) {
                 <div style={{flex: 1, marginLeft: 5}}>
                   <h3 style={{fontSize: 13, marginBottom: 0, wordBreak: 'break-all'}}>{object.name}</h3>
                   <Label size='mini' rounded>
-                    {object.type === 'pattern' && <><Icon name='pencil' /> WIF pattern</>}
+                    {object.type === 'pattern' && <><Icon name='pencil' /> Weaving pattern</>}
                     {object.type === 'file' &&
                       (object.isImage ? <><Icon name='image' /> Image</> : <><Icon name='file outline' /> File</>)
                     }
