@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Confirm, Header, Select, Segment, Accordion, Grid, Icon, Input, Button, Popup, Checkbox, Dropdown
+  Confirm, Header, Segment, Accordion, Grid, Icon, Input, Button, Popup, Checkbox, Dropdown
 } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams, Link } from 'react-router-dom';
@@ -16,6 +16,13 @@ import 'rc-slider/assets/index.css';
 import utils from '../../../../utils/utils.js';
 import actions from '../../../../actions';
 import api from '../../../../api';
+
+const VIEWS = [
+  { key: 1, value: 'interlacement', text: 'Interlacement' },
+  { key: 2, value: 'colour', text: 'Colour only' },
+  { key: 3, value: 'warp', text: 'Warp view' },
+  { key: 4, value: 'weft', text: 'Weft view' },
+];
 
 const ColourSquare = styled.div`
   background-color: ${props => props.colour};
@@ -79,6 +86,10 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
 
   const setEditorView = (view) => {
     dispatch(actions.objects.updateEditor({ view }));
+  };
+  
+  const setEditorViewingBack = (viewingBack) => {
+    dispatch(actions.objects.updateEditor({ viewingBack }));
   };
 
   const setName = (event) => {
@@ -197,26 +208,27 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
             <div style={{display: 'flex', alignItems: 'end'}}>
               <div>
                 <div><small>View</small></div>
-                <Select size="tiny" value={editor.view}
-                  onChange={(e, s) => setEditorView(s.value)}
-                  style={{ fontSize: '11px', width: 70 }}
-                  options={[
-                    { key: 1, value: 'interlacement', text: 'Interlacement' },
-                    { key: 2, value: 'colour', text: 'Colour only' },
-                    { key: 3, value: 'warp', text: 'Warp view' },
-                    { key: 4, value: 'weft', text: 'Weft view' },
-                  ]}
-                />
-                
-                <Popup hoverable
-                  trigger={<Button style={{marginLeft: 5}} size="tiny" icon="zoom" />}
+                <Popup hoverable on='click'
+                  trigger={<Button color='teal' size="tiny" icon="zoom" />}
                   content={<div style={{width: 150}}>
+                    <h4>Zoom</h4>
                     <Slider defaultValue={baseSize} min={5} max={13} step={1} onAfterChange={onZoomChange} /> 
                   </div>}
                 />
+                
+                <small><Dropdown text={`${VIEWS.find(v => v.value === editor.view)?.text}${editor.viewingBack ? ' (Back)' : ''}`} size='tiny'>
+                  <Dropdown.Menu>
+                    {VIEWS.map(view =>
+                      <Dropdown.Item key={view.value} text={view.text} onClick={e => setEditorView(view.value)} />
+                    )}
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={() => setEditorViewingBack(false)}>Front{!editor.viewingBack && <Icon style={{marginLeft: 5}} name='check' />}</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setEditorViewingBack(true)}>Back {editor.viewingBack && <Icon style={{marginLeft: 5}} name='check' />}</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown></small>
               </div>
               
-              <div style={{marginLeft: 5}}>
+              <div style={{marginLeft: 10}}>
                 <div><small>Tools & drawing</small></div>
                 <Button.Group size="tiny">
                   <Button className='joyride-pan' data-tooltip="Pan (drag to move) pattern" color={editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => enableTool('pan')}><Icon name="move" /></Button>
@@ -229,7 +241,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                 </Button.Group>
               </div>
               
-              <div style={{marginLeft: 5}}>
+              <div style={{marginLeft: 10}}>
                 <div>
                   <small>Colour</small>
                   <ColourSquare colour={utils.rgb(editor.colour)} style={{top: 4, marginLeft: 10}} />
@@ -244,7 +256,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                     </div>}
                   />
                   <Popup hoverable on='click'
-                    trigger={<Button size='mini' icon='add' />}
+                    trigger={<Button color='teal' size='mini' icon='add' />}
                     content={
                       <div style={{padding: 3}}>
                         <SketchPicker color={newColour} onChangeComplete={c => setNewColour(c.rgb)} />
