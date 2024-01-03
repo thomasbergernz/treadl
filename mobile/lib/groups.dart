@@ -28,7 +28,7 @@ class _GroupsTabState extends State<GroupsTab> {
   }
 
   Widget buildGroupCard(Map<String,dynamic> group) {
-    String description = group['description'];
+    String? description = group['description'];
     if (description != null && description.length > 80) {
       description = description.substring(0, 77) + '...';
     } else {

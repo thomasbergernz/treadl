@@ -8,11 +8,29 @@ import 'api.dart';
 class _ObjectScreenState extends State<ObjectScreen> {
   final Map<String,dynamic> _project;
   Map<String,dynamic> _object;
+  Map<String,dynamic>? _pattern;
   final Function _onUpdate;
   final Function _onDelete;
   final Api api = Api();
   
   _ObjectScreenState(this._object, this._project, this._onUpdate, this._onDelete) { }
+
+  @override
+  initState() {
+    super.initState();
+    if (_object['type'] == 'pattern') {
+      _fetchPattern();
+    }
+  }
+
+  void _fetchPattern() async {
+    var data = await api.request('GET', '/objects/' + _object['_id']);
+    if (data['success'] == true) {
+      setState(() {
+        _pattern = data['payload']['pattern']; 
+      });
+    }
+  }
 
   void _deleteObject(BuildContext context, BuildContext modalContext) async {
     var data = await api.request('DELETE', '/objects/' + _object['_id']);
@@ -68,7 +86,6 @@ class _ObjectScreenState extends State<ObjectScreen> {
             TextButton(
               child: Text('OK'),
               onPressed: () async {
-                print(renameController.text);
                 var data = await api.request('PUT', '/objects/' + _object['_id'], {'name': renameController.text});
                 if (data['success']) {
                   Navigator.pop(context);
@@ -161,7 +178,10 @@ class _ObjectScreenState extends State<ObjectScreen> {
         child: ListView(
           children: <Widget>[
             getObjectWidget(),
-            Html(data: description)
+            Html(data: description),
+            _pattern != null ? 
+              Pattern(_pattern!)
+            : SizedBox(height: 0),
           ] 
         )
       ),
@@ -177,4 +197,61 @@ class ObjectScreen extends StatefulWidget {
   ObjectScreen(this._object, this._project, this._onUpdate, this._onDelete) { }
   @override
   _ObjectScreenState createState() => _ObjectScreenState(_object, _project, _onUpdate, _onDelete); 
+}
+
+class Pattern extends StatelessWidget {
+  final Map<String,dynamic> pattern;
+  final int BASE_SIZE = 10;
+
+  @override
+  Pattern(this.pattern) {}
+
+  @override
+  Widget build(BuildContext context) {
+    double width = (
+      pattern['warp']['threading']?.length * BASE_SIZE +
+      pattern['weft']['treadles'] * BASE_SIZE + 20
+    ).toDouble();
+    double height = (
+      pattern['warp']['shafts'] * BASE_SIZE +
+      pattern['weft']['treadling']?.length * BASE_SIZE + 20
+    ).toDouble();
+    return  Container(
+      width: width,
+      height: height,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 40, top: 40,
+            child:
+              CustomPaint(
+                size: Size(300, 400),
+                painter: WarpPainter(this.pattern['warp']),
+              ),
+
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class WarpPainter extends CustomPainter {
+  final Map<String,dynamic> warp;
+
+  @override
+  WarpPainter(this.warp) {}
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 1;
+    canvas.drawRect(Rect.fromLTRB(0, 0, 20, 20), paint);
+    canvas.drawRect(Rect.fromLTRB(20, 20, 40, 40), paint);
+  }
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
 }
