@@ -34,8 +34,8 @@ class Pattern extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            right: 0,
-            top: 0,
+            right: BASE_SIZE.toDouble(),
+            top: BASE_SIZE.toDouble(),
             child: CustomPaint(
               size: Size(
                 getSize(weft['treadles'] * BASE_SIZE),
@@ -60,7 +60,7 @@ class Pattern extends StatelessWidget {
             top: getSize(warp['shafts'] * BASE_SIZE + 20),
             child: CustomPaint(
               size: Size(
-                getSize(weft['treadles'] * BASE_SIZE),
+                getSize(weft['treadles'] * BASE_SIZE + BASE_SIZE),
                 getSize(weft['treadling'].length * BASE_SIZE)
               ),
               painter: WeftPainter(BASE_SIZE, this.pattern),
