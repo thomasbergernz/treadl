@@ -12,8 +12,7 @@ class TieupPainter extends CustomPainter {
     var tieup = pattern['tieups'];
 
     var paint = Paint()
-      ..color = Colors.red
-      ..strokeWidth = 1;
+      ..color = Colors.black..strokeWidth = 1;
 
     // Draw grid
     for (var i = 0; i <= size.width; i += BASE_SIZE) {

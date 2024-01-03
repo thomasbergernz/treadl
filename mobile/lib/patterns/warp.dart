@@ -23,15 +23,41 @@ class WarpPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y.toDouble()), Offset(size.width, y.toDouble()), paint);
     }
 
+    // Draw threads
     for (var i = 0; i < warp['threading'].length; i++) {
-      int? shaft = warp['threading'][i]?['shaft'];
-      if (shaft != null && shaft! > 0) {
+      var thread = warp['threading'][i];
+      int? shaft = thread?['shaft'];
+      String? colour = warp['defaultColour'];
+      double x = size.width - (i+1)*BASE_SIZE;
+      if (shaft != null) {
+        if (shaft! > 0) {
+          canvas.drawRect(
+            Offset(x, size.height - shaft!*BASE_SIZE) &
+            Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
+            paint
+          );
+        }
+        
+      }
+      if (thread?['colour'] != null) {
+        colour = thread!['colour'];
+      }
+      if (colour != null) {
+        List<String> parts = colour!.split(',');
         canvas.drawRect(
-          Offset(size.width - (i+1)*BASE_SIZE, size.height - shaft!*BASE_SIZE) & Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
-          paint
+          Offset(x, 0) &
+          Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
+          Paint()
+            ..color = Color.fromRGBO(
+              int.parse(parts[0]),
+              int.parse(parts[1]),
+              int.parse(parts[2]),
+              1
+            )
         );
       }
     }
+
   }
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {

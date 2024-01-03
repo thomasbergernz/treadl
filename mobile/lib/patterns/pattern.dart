@@ -50,7 +50,7 @@ class Pattern extends StatelessWidget {
             child: CustomPaint(
               size: Size(
                 getSize(warp['threading']?.length * BASE_SIZE),
-                getSize(warp['shafts'] * BASE_SIZE)
+                getSize(warp['shafts'] * BASE_SIZE + BASE_SIZE)
               ),
               painter: WarpPainter(BASE_SIZE, this.pattern),
             ),
