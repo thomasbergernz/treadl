@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'api.dart';
+import 'patterns/pattern.dart';
 
 class _ObjectScreenState extends State<ObjectScreen> {
   final Map<String,dynamic> _project;
@@ -199,59 +200,3 @@ class ObjectScreen extends StatefulWidget {
   _ObjectScreenState createState() => _ObjectScreenState(_object, _project, _onUpdate, _onDelete); 
 }
 
-class Pattern extends StatelessWidget {
-  final Map<String,dynamic> pattern;
-  final int BASE_SIZE = 10;
-
-  @override
-  Pattern(this.pattern) {}
-
-  @override
-  Widget build(BuildContext context) {
-    double width = (
-      pattern['warp']['threading']?.length * BASE_SIZE +
-      pattern['weft']['treadles'] * BASE_SIZE + 20
-    ).toDouble();
-    double height = (
-      pattern['warp']['shafts'] * BASE_SIZE +
-      pattern['weft']['treadling']?.length * BASE_SIZE + 20
-    ).toDouble();
-    return  Container(
-      width: width,
-      height: height,
-      child: Stack(
-        children: [
-          Positioned(
-            left: 40, top: 40,
-            child:
-              CustomPaint(
-                size: Size(300, 400),
-                painter: WarpPainter(this.pattern['warp']),
-              ),
-
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class WarpPainter extends CustomPainter {
-  final Map<String,dynamic> warp;
-
-  @override
-  WarpPainter(this.warp) {}
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 1;
-    canvas.drawRect(Rect.fromLTRB(0, 0, 20, 20), paint);
-    canvas.drawRect(Rect.fromLTRB(20, 20, 40, 40), paint);
-  }
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
