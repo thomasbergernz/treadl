@@ -9,7 +9,7 @@ class TieupPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var warp = pattern['warp'];
+    var tieup = pattern['tieups'];
 
     var paint = Paint()
       ..color = Colors.red
@@ -21,6 +21,18 @@ class TieupPainter extends CustomPainter {
     }
   for (var y = 0; y <= size.height; y += BASE_SIZE) {
       canvas.drawLine(Offset(0, y.toDouble()), Offset(size.width, y.toDouble()), paint);
+    }
+
+    for (var i = 0; i < tieup.length; i++) {
+      List<dynamic>? tie = tieup[i];
+      if (tie != null) {
+        for (var j = 0; j < tie!.length; j++) {
+          canvas.drawRect(
+            Offset(i.toDouble()*BASE_SIZE, size.height - (tie[j]*BASE_SIZE)) &
+            Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
+            paint);
+        }
+      }
     }
   }
   @override

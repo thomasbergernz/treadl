@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'warp.dart';
+import 'weft.dart';
 import 'tieup.dart';
 
 class Pattern extends StatelessWidget {
@@ -37,8 +38,8 @@ class Pattern extends StatelessWidget {
             top: 0,
             child: CustomPaint(
               size: Size(
+                getSize(weft['treadles'] * BASE_SIZE),
                 getSize(warp['shafts'] * BASE_SIZE),
-                getSize(warp['shafts'] * BASE_SIZE)
               ),
               painter: TieupPainter(BASE_SIZE, this.pattern),
             ),
@@ -52,6 +53,17 @@ class Pattern extends StatelessWidget {
                 getSize(warp['shafts'] * BASE_SIZE)
               ),
               painter: WarpPainter(BASE_SIZE, this.pattern),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: getSize(warp['shafts'] * BASE_SIZE + 20),
+            child: CustomPaint(
+              size: Size(
+                getSize(weft['treadles'] * BASE_SIZE),
+                getSize(weft['treadling'].length * BASE_SIZE)
+              ),
+              painter: WeftPainter(BASE_SIZE, this.pattern),
             ),
           )
         ],
