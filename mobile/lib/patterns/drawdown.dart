@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class WarpPainter extends CustomPainter {
+class DrawdownPainter extends CustomPainter {
   final Map<String,dynamic> pattern;
   final double BASE_SIZE;
 
   @override
-  WarpPainter(this.BASE_SIZE, this.pattern) {}
+  DrawdownPainter(this.BASE_SIZE, this.pattern) {}
 
   @override
   void paint(Canvas canvas, Size size) {
-    var warp = pattern['warp'];
+    var weft = pattern['weft'];
 
     var paint = Paint()
       ..color = Colors.black
@@ -23,29 +23,27 @@ class WarpPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y.toDouble()), Offset(size.width, y.toDouble()), paint);
     }
 
-    // Draw threads
-    for (var i = 0; i < warp['threading'].length; i++) {
-      var thread = warp['threading'][i];
-      int? shaft = thread?['shaft'];
-      String? colour = warp['defaultColour'];
-      double x = size.width - (i+1)*BASE_SIZE;
-      if (shaft != null) {
-        if (shaft! > 0) {
-          canvas.drawRect(
-            Offset(x, size.height - shaft!*BASE_SIZE) &
-            Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
-            paint
-          );
-        }
-        
+    /*
+    for (var i = 0; i < weft['treadling'].length; i++) {
+      var thread = weft['treadling'][i];
+      int? treadle = thread?['treadle'];
+      String? colour = weft['defaultColour'];
+      double y = i.toDouble()*BASE_SIZE;
+      if (treadle != null && treadle! > 0) {
+        canvas.drawRect(
+          Offset((treadle!.toDouble()-1)*BASE_SIZE, y) &
+          Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
+          paint
+        );
       }
       if (thread?['colour'] != null) {
         colour = thread!['colour'];
       }
       if (colour != null) {
         List<String> parts = colour!.split(',');
+        print(parts);
         canvas.drawRect(
-          Offset(x, 0) &
+          Offset(size.width - BASE_SIZE, y) &
           Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
           Paint()
             ..color = Color.fromRGBO(
@@ -56,8 +54,7 @@ class WarpPainter extends CustomPainter {
             )
         );
       }
-    }
-
+    }*/
   }
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
