@@ -28,4 +28,14 @@ class Util {
       )
     );
   }
+
+  Color rgb(String input) {
+    List<String> parts = input.split(',');
+    return Color.fromRGBO(
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+      int.parse(parts[2]),
+      1
+    );
+  }
 }

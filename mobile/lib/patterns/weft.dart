@@ -40,7 +40,6 @@ class WeftPainter extends CustomPainter {
       }
       if (colour != null) {
         List<String> parts = colour!.split(',');
-        print(parts);
         canvas.drawRect(
           Offset(size.width - BASE_SIZE, y) &
           Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../util.dart';
 
 class DrawdownPainter extends CustomPainter {
   final Map<String,dynamic> pattern;
   final double BASE_SIZE;
+  final Util util = Util();
 
   @override
   DrawdownPainter(this.BASE_SIZE, this.pattern) {}
@@ -10,6 +12,8 @@ class DrawdownPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var weft = pattern['weft'];
+    var warp = pattern['warp'];
+    var tieups = pattern['tieups'];
 
     var paint = Paint()
       ..color = Colors.black
@@ -23,38 +27,30 @@ class DrawdownPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y.toDouble()), Offset(size.width, y.toDouble()), paint);
     }
 
-    /*
-    for (var i = 0; i < weft['treadling'].length; i++) {
-      var thread = weft['treadling'][i];
-      int? treadle = thread?['treadle'];
-      String? colour = weft['defaultColour'];
-      double y = i.toDouble()*BASE_SIZE;
-      if (treadle != null && treadle! > 0) {
+    for (int tread = 0; tread < weft['treadling']?.length; tread++) {
+      for (int thread = 0; thread < warp['threading']?.length; thread++) {
+        // Ensure we only get a treadle in the allowed bounds
+        int treadle = weft['treadling'][tread]['treadle'] > weft['treadles'] ? 0 : weft['treadling'][tread]['treadle'];
+        int shaft = warp['threading'][thread]['shaft'];
+        Color weftColour = util.rgb(weft['treadling'][tread]['colour'] ?? weft['defaultColour']);
+        Color warpColour = util.rgb(warp['threading'][thread]['colour'] ?? warp['defaultColour']);
+
+        // Only capture valid tie-ups (e.g. in case there is data for more shafts, which are then reduced)
+        // Dart throws error if index < 0 so check fiest
+        List<dynamic> tieup = treadle > 0 ? tieups[treadle - 1] : [];
+        List<dynamic> filteredTieup = tieup.where((t) => t< warp['shafts']).toList();
+        String threadType = filteredTieup.contains(shaft) ? 'warp' : 'weft';
+        
         canvas.drawRect(
-          Offset((treadle!.toDouble()-1)*BASE_SIZE, y) &
-          Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
-          paint
-        );
-      }
-      if (thread?['colour'] != null) {
-        colour = thread!['colour'];
-      }
-      if (colour != null) {
-        List<String> parts = colour!.split(',');
-        print(parts);
-        canvas.drawRect(
-          Offset(size.width - BASE_SIZE, y) &
-          Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
+          Offset(
+            size.width - BASE_SIZE * (thread + 1),
+            tread * BASE_SIZE
+          ) & Size(BASE_SIZE, BASE_SIZE),
           Paint()
-            ..color = Color.fromRGBO(
-              int.parse(parts[0]),
-              int.parse(parts[1]),
-              int.parse(parts[2]),
-              1
-            )
+            ..color = threadType == 'warp' ? warpColour : weftColour
         );
       }
-    }*/
+    }
   }
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
