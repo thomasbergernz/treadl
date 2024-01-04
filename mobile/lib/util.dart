@@ -31,11 +31,8 @@ class Util {
 
   Color rgb(String input) {
     List<String> parts = input.split(',');
-    return Color.fromRGBO(
-      int.parse(parts[0]),
-      int.parse(parts[1]),
-      int.parse(parts[2]),
-      1
-    );
+    List<int> iParts = parts.map((p) => int.parse(p)).toList();
+    iParts = iParts.map((p) => p > 255 ? 255 : p).toList();
+    return Color.fromRGBO(iParts[0], iParts[1], iParts[2], 1);
   }
 }

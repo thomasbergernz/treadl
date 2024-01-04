@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../util.dart';
 
 class WeftPainter extends CustomPainter {
   final Map<String,dynamic> pattern;
   final double BASE_SIZE;
+  final Util util = Util();
 
   @override
   WeftPainter(this.BASE_SIZE, this.pattern) {}
@@ -39,17 +41,11 @@ class WeftPainter extends CustomPainter {
         colour = thread!['colour'];
       }
       if (colour != null) {
-        List<String> parts = colour!.split(',');
         canvas.drawRect(
           Offset(size.width - BASE_SIZE, y) &
           Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
           Paint()
-            ..color = Color.fromRGBO(
-              int.parse(parts[0]),
-              int.parse(parts[1]),
-              int.parse(parts[2]),
-              1
-            )
+            ..color = util.rgb(colour!)
         );
       }
     }

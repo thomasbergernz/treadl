@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../util.dart';
 
 class WarpPainter extends CustomPainter {
   final Map<String,dynamic> pattern;
   final double BASE_SIZE;
+  final Util util = Util();
 
   @override
   WarpPainter(this.BASE_SIZE, this.pattern) {}
@@ -43,17 +45,11 @@ class WarpPainter extends CustomPainter {
         colour = thread!['colour'];
       }
       if (colour != null) {
-        List<String> parts = colour!.split(',');
         canvas.drawRect(
           Offset(x, 0) &
           Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
           Paint()
-            ..color = Color.fromRGBO(
-              int.parse(parts[0]),
-              int.parse(parts[1]),
-              int.parse(parts[2]),
-              1
-            )
+            ..color = util.rgb(colour!)
         );
       }
     }
