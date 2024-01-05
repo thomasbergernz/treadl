@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 import '../util.dart';
 
 class DrawdownPainter extends CustomPainter {
@@ -40,14 +41,30 @@ class DrawdownPainter extends CustomPainter {
         List<dynamic> tieup = treadle > 0 ? tieups[treadle - 1] : [];
         List<dynamic> filteredTieup = tieup.where((t) => t< warp['shafts']).toList();
         String threadType = filteredTieup.contains(shaft) ? 'warp' : 'weft';
-        
-        canvas.drawRect(
-          Offset(
+       
+        Rect rect = Offset(
             size.width - BASE_SIZE * (thread + 1),
             tread * BASE_SIZE
-          ) & Size(BASE_SIZE, BASE_SIZE),
+          ) & Size(BASE_SIZE, BASE_SIZE);
+        canvas.drawRect(
+          rect,
           Paint()
             ..color = threadType == 'warp' ? warpColour : weftColour
+        );
+
+        canvas.drawRect(
+          rect,
+          Paint()
+            ..shader = ui.Gradient.linear(
+              threadType == 'warp' ? rect.centerLeft : rect.topCenter,
+              threadType == 'warp' ? rect.centerRight : rect.bottomCenter,
+              [
+                Color.fromRGBO(0,0,0,0.4),
+Color.fromRGBO(0,0,0,0.0),
+Color.fromRGBO(0,0,0,0.4),
+              ],
+              [0.0,0.5,1.0],
+            )
         );
       }
     }
