@@ -6,14 +6,11 @@ import 'drawdown.dart';
 
 class Pattern extends StatelessWidget {
   final Map<String,dynamic> pattern;
+  final controller = TransformationController();
   final double BASE_SIZE = 10;
 
   @override
   Pattern(this.pattern) {}
-
-  double getSize(num input) {
-    return input.toDouble();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +40,20 @@ class Pattern extends StatelessWidget {
     double drawdownWidth = warpWidth;
     double drawdownHeight = weftHeight;
 
+    final zoomFactor = 1.0;
+    final xTranslate = draftWidth - MediaQuery.of(context).size.width - 0; 
+    final yTranslate = 0.0;
+    controller.value.setEntry(0, 0, zoomFactor);
+    controller.value.setEntry(1, 1, zoomFactor);
+    controller.value.setEntry(2, 2, zoomFactor);
+    controller.value.setEntry(0, 3, -xTranslate);
+    controller.value.setEntry(1, 3, -yTranslate);
+
     return  InteractiveViewer(
-      minScale: 1,
-      maxScale: 15,
+      minScale: 0.5,
+      maxScale: 5,
       constrained: false,
+      transformationController: controller,
       child: Container(
         width: draftWidth,
         height: draftHeight,

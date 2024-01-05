@@ -15,11 +15,16 @@ class WarpPainter extends CustomPainter {
 
     var paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 1;
+      ..strokeWidth = 0.5;
+    var thickPaint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 1.5;
 
     // Draw grid
-    for (double i = 0; i <= size.width; i += BASE_SIZE) {
+    int columnsPainted = 0;
+    for (double i = size.width; i >= 0; i -= BASE_SIZE) {
       canvas.drawLine(Offset(i.toDouble(), size.height), Offset(i.toDouble(), 0), paint);
+      columnsPainted += 1;
     }
   for (double y = 0; y <= size.height; y += BASE_SIZE) {
       canvas.drawLine(Offset(0, y.toDouble()), Offset(size.width, y.toDouble()), paint);

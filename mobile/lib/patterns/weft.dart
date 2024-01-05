@@ -15,14 +15,19 @@ class WeftPainter extends CustomPainter {
 
     var paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 1;
+      ..strokeWidth = 0.5;
+    var thickPaint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 1.5;
 
     // Draw grid
+    int rowsPainted = 0;
     for (double i = 0; i <= size.width; i += BASE_SIZE) {
       canvas.drawLine(Offset(i.toDouble(), size.height), Offset(i.toDouble(), 0), paint);
     }
   for (double y = 0; y <= size.height; y += BASE_SIZE) {
       canvas.drawLine(Offset(0, y.toDouble()), Offset(size.width, y.toDouble()), paint);
+      rowsPainted += 1;
     }
 
     for (var i = 0; i < weft['treadling'].length; i++) {
