@@ -136,7 +136,10 @@ class _ObjectScreenState extends State<ObjectScreen> {
       return Image.network(_object['url']);
     }
     else if (_object['type'] == 'pattern') {
-      if (_object['previewUrl'] != null) {
+      if (_pattern != null) {
+        return Pattern(_pattern!);
+      }
+      else if (_object['previewUrl'] != null) {
         return Image.network(_object['previewUrl']!);;
       }
       else {
@@ -176,15 +179,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
       ),
       body: Container(
         margin: const EdgeInsets.all(10.0),
-        child: ListView(
-          children: <Widget>[
-            getObjectWidget(),
-            Html(data: description),
-            _pattern != null ? 
-              Pattern(_pattern!)
-            : SizedBox(height: 0),
-          ] 
-        )
+        child: getObjectWidget(),
       ),
     ); 
   }

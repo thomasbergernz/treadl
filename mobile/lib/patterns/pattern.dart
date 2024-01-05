@@ -43,47 +43,50 @@ class Pattern extends StatelessWidget {
     double drawdownWidth = warpWidth;
     double drawdownHeight = weftHeight;
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return  InteractiveViewer(
+      minScale: 1,
+      maxScale: 15,
+      constrained: false,
       child: Container(
-      width: draftWidth,
-      height: draftHeight,
-      child: Stack(
-        children: [
-          Positioned(
-            right: tieupRight,
-            top: tieupTop,
-            child: CustomPaint(
-              size: Size(tieupWidth, tieupHeight),
-              painter: TieupPainter(BASE_SIZE, this.pattern),
+        width: draftWidth,
+        height: draftHeight,
+        child: RepaintBoundary(child: Stack(
+          children: [
+            Positioned(
+              right: tieupRight,
+              top: tieupTop,
+              child: CustomPaint(
+                size: Size(tieupWidth, tieupHeight),
+                painter: TieupPainter(BASE_SIZE, this.pattern),
+              ),
             ),
-          ),
-          Positioned(
-            right: warpRight,
-            top: warpTop,
-            child: CustomPaint(
-              size: Size(warpWidth, warpHeight),
-              painter: WarpPainter(BASE_SIZE, this.pattern),
+            Positioned(
+              right: warpRight,
+              top: warpTop,
+              child: CustomPaint(
+                size: Size(warpWidth, warpHeight),
+                painter: WarpPainter(BASE_SIZE, this.pattern),
+              ),
             ),
-          ),
-          Positioned(
-            right: weftRight,
-            top: weftTop,
-            child: CustomPaint(
-              size: Size(weftWidth, weftHeight),
-              painter: WeftPainter(BASE_SIZE, this.pattern),
+            Positioned(
+              right: weftRight,
+              top: weftTop,
+              child: CustomPaint(
+                size: Size(weftWidth, weftHeight),
+                painter: WeftPainter(BASE_SIZE, this.pattern),
+              ),
             ),
-          ),
-          Positioned(
-            right: drawdownRight,
-            top: drawdownTop,
-            child: CustomPaint(
-              size: Size(drawdownWidth, drawdownHeight),
-              painter: DrawdownPainter(BASE_SIZE, this.pattern),
-            ),
-          )
-        ],
-      ),
-    ));
+            Positioned(
+              right: drawdownRight,
+              top: drawdownTop,
+              child: CustomPaint(
+                size: Size(drawdownWidth, drawdownHeight),
+                painter: DrawdownPainter(BASE_SIZE, this.pattern),
+              ),
+            )
+          ]
+        ),),
+      )
+    );
   }
 }
