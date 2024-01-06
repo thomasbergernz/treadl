@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
+import 'dart:convert';
 import 'api.dart';
 
 String APP_URL = 'https://www.treadl.com';
@@ -54,7 +55,8 @@ class Util {
   Future<File?> storeFile(String fileName, String data) async {
     final String dirPath = await storagePath();
     final file = File('$dirPath/$fileName');
-    return await file.writeAsString(data);
+    String contents = data.replaceAll(RegExp(r'\\n'), '\r\n');
+    return await file.writeAsString(contents);
   }
 
   void shareFile(File file) async {

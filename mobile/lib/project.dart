@@ -73,22 +73,71 @@ class _ProjectScreenState extends State<ProjectScreen> {
     });
   }
 
+  void _createObject(objectData) async {
+    String fullPath = _project['fullName'];
+    var resp = await api.request('POST', '/projects/$fullPath/objects', objectData);
+    setState(() => _creating = false);
+    print(resp);
+    if (resp['success']) {
+      List<dynamic> newObjects = _objects;
+      newObjects.add(resp['payload']);
+      setState(() {
+        _objects = newObjects;
+      });
+    }
+  }
+
+  void _createObjectFromWif(String name, String wif) {
+    _createObject({
+      'name': name,
+      'type': 'pattern',
+      'wif': wif,
+    });
+  }
+
+  void _createObjectFromFile(String name, XFile file) async {
+    final int size = await file.length();
+    final String forId = _project['_id'];
+    final String type = file.mimeType ?? 'text/plain';
+    setState(() => _creating = true);
+    var data = await api.request('GET', '/uploads/file/request?name=$name&size=$size&type=$type&forType=project&forId=$forId');
+    if (!data['success']) {
+      setState(() => _creating = false);
+      return;
+    }
+    var uploadSuccess = await api.putFile(data['payload']['signedRequest'], File(file.path), type);
+    if (!uploadSuccess) {
+      setState(() => _creating = false);
+      return;
+    }
+    _createObject({
+      'name': name,
+      'storedName': data['payload']['fileName'],
+      'type': 'file',
+    });
+  }
+
   void _chooseFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       PlatformFile file = result.files.single;
-      print(file.extension);
-    } else {
-      // User canceled the picker
+      XFile xFile = XFile(file.path!);
+      String? ext = file.extension;
+      if (ext != null && ext!.toLowerCase() == 'wif' || xFile.name.toLowerCase().contains('.wif')) {
+        final String contents = await xFile.readAsString();
+        _createObjectFromWif(file.name, contents);
+      } else {
+        _createObjectFromFile(file.name, xFile);
+      }
     }
   }
 
   void _chooseImage() async {
     File file;
     try {
-      final imageFile = await picker.getImage(source: ImageSource.gallery);
+      final XFile? imageFile = await picker.pickImage(source: ImageSource.gallery);
       if (imageFile == null) return;
-      file = File(imageFile.path);
+      _createObjectFromFile(imageFile.name, imageFile);
     }
     on Exception {
       showDialog(
@@ -105,41 +154,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
           ],
         )
       );
-      return;
-    }
-    final int size = await file.length();
-    final String forId = _project['_id'];
-    final String fullPath = _project['owner']['username'] + '/' + _project['path'];
-    final String name = file.path.split('/').last;
-    final String ext = name.split('.').last;
-    final String type = 'image/jpeg';//$ext';
-    setState(() => _creating = true);
-
-    var data = await api.request('GET', '/uploads/file/request?name=$name&size=$size&type=$type&forType=project&forId=$forId');
-    print(data);
-    if (!data['success']) {
-      setState(() => _creating = false);
-      return;
-    }
-    var uploadSuccess = await api.putFile(data['payload']['signedRequest'], file, type);
-    print(uploadSuccess);
-    if (!uploadSuccess) {
-      setState(() => _creating = false);
-      return;
-    }
-    var newObjectData = {
-      'name': name,
-      'storedName': data['payload']['fileName'],
-      'type': 'file',
-    };
-    var objectData = await api.request('POST', '/projects/$fullPath/objects', newObjectData);
-    setState(() => _creating = false);
-    if (objectData['success']) {
-      List<dynamic> newObjects = _objects;
-      newObjects.add(objectData['payload']);
-      setState(() {
-        _objects = newObjects;
-      });
     }
   }
   
@@ -295,6 +309,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
       ),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: ExpandableFab(
+        distance: 50,
+        openButtonBuilder: RotateFloatingActionButtonBuilder(
+          child: const Icon(Icons.add),
+        ),
         children: [
           FloatingActionButton(
             heroTag: null,
