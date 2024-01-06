@@ -31,10 +31,13 @@ dependencies:
   flutter_html: ^3.0.0-alpha.3
   intl: ^0.17.0
   image_picker: ^0.8.5+3
+  file_picker: ^6.1.1
   flutter_launcher_icons: ^0.9.0
   firebase_messaging: ^14.4.0
   path_provider: ^2.1.1
   share_plus: ^7.2.1
+  flutter_expandable_fab: ^2.0.0
+
   #fluttertoast: ^8.0.9
 
 dev_dependencies:

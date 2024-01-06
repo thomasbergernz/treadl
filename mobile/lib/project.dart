@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'dart:io';
 import 'api.dart';
 import 'util.dart';
@@ -69,6 +71,16 @@ class _ProjectScreenState extends State<ProjectScreen> {
     setState(() {
       _objects = _newObjects;
     });
+  }
+
+  void _chooseFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      PlatformFile file = result.files.single;
+      print(file.extension);
+    } else {
+      // User canceled the picker
+    }
   }
 
   void _chooseImage() async {
@@ -281,10 +293,20 @@ class _ProjectScreenState extends State<ProjectScreen> {
               Text('Add something to this project using the button below.', textAlign: TextAlign.center),
           ])
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _chooseImage,
-        child: Icon(Icons.cloud_upload),
-        backgroundColor: Colors.pink[500],
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: ExpandableFab(
+        children: [
+          FloatingActionButton(
+            heroTag: null,
+            onPressed: _chooseImage,
+            child: Icon(Icons.image_outlined),
+          ),
+          FloatingActionButton(
+            heroTag: null,
+            child: const Icon(Icons.insert_drive_file_outlined),
+            onPressed: _chooseFile,
+          ),
+        ],
       ),
     ); 
   }
