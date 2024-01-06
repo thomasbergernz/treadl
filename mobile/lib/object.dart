@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'dart:io';
 import 'api.dart';
+import 'util.dart';
 import 'patterns/pattern.dart';
 import 'patterns/viewer.dart';
 
@@ -14,6 +16,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
   final Function _onUpdate;
   final Function _onDelete;
   final Api api = Api();
+  final Util util = Util();
   
   _ObjectScreenState(this._object, this._project, this._onUpdate, this._onDelete) { }
 
@@ -31,6 +34,23 @@ class _ObjectScreenState extends State<ObjectScreen> {
       setState(() {
         _pattern = data['payload']['pattern']; 
       });
+    }
+  }
+
+  void _shareObject() async {
+    File? file;
+    if (_object['type'] == 'pattern') {
+      var data = await api.request('GET', '/objects/' + _object['_id'] + '/wif');
+      if (data['success'] == true) {
+        file = await util.storeFile(_object['name'] + '.wif', data['payload']['wif']);
+      }
+    } else {
+      String fileName = Uri.file(_object['url']).pathSegments.last;
+      file = await api.downloadFile(_object['url'], fileName);
+    }
+
+    if (file != null) {
+      util.shareFile(file!);
     }
   }
 
@@ -177,6 +197,12 @@ class _ObjectScreenState extends State<ObjectScreen> {
       appBar: AppBar(
         title: Text(_object['name']),
         actions: <Widget>[
+           IconButton(
+            icon: Icon(Icons.ios_share),
+            onPressed: () {
+              _shareObject(); 
+            },
+          ),
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {

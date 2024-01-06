@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'dart:io';
+import 'api.dart';
 
 class Util {
 
@@ -34,5 +38,24 @@ class Util {
     List<int> iParts = parts.map((p) => int.parse(p)).toList();
     iParts = iParts.map((p) => p > 255 ? 255 : p).toList();
     return Color.fromRGBO(iParts[0], iParts[1], iParts[2], 1);
+  }
+
+  Future<String> storagePath() async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<File?> storeFile(String fileName, String data) async {
+    final String dirPath = await storagePath();
+    final file = File('$dirPath/$fileName');
+    return await file.writeAsString(data);
+  }
+
+  void shareFile(File file) async {
+    await Share.shareXFiles([XFile(file.path)]);
+  }
+
+  void shareUrl(String text, String url) async {
+    await Share.share('$text: $url');
   }
 }

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'util.dart';
 
 class Api {
 
@@ -102,4 +103,18 @@ class Api {
     int status = response.statusCode;
     return status == 200;
   }
+
+ Future<File?> downloadFile(String url, String fileName) async {
+    Uri uri = Uri.parse(url);
+    http.Client client = http.Client();
+    http.Response response = await client.get(uri);
+    if(response.statusCode == 200) {
+      Util util = Util();
+      final String dirPath = await util.storagePath();
+      final file = File('$dirPath/$fileName');
+      await file.writeAsBytes(response.bodyBytes);
+      return file;
+    }
+    return null;
+ }
 }
