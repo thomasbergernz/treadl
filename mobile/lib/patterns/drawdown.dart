@@ -52,7 +52,7 @@ class DrawdownPainter extends CustomPainter {
             ..color = threadType == 'warp' ? warpColour : weftColour
         );
 
-        canvas.drawRect(
+        /*canvas.drawRect(
           rect,
           Paint()
             ..shader = ui.Gradient.linear(
@@ -60,12 +60,12 @@ class DrawdownPainter extends CustomPainter {
               threadType == 'warp' ? rect.centerRight : rect.bottomCenter,
               [
                 Color.fromRGBO(0,0,0,0.4),
-Color.fromRGBO(0,0,0,0.0),
-Color.fromRGBO(0,0,0,0.4),
+                Color.fromRGBO(0,0,0,0.0),
+                Color.fromRGBO(0,0,0,0.4),
               ],
               [0.0,0.5,1.0],
             )
-        );
+        );*/
       }
     }
   }

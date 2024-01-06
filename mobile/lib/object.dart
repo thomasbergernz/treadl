@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'api.dart';
 import 'patterns/pattern.dart';
+import 'patterns/viewer.dart';
 
 class _ObjectScreenState extends State<ObjectScreen> {
   final Map<String,dynamic> _project;
@@ -137,7 +138,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     }
     else if (_object['type'] == 'pattern') {
       if (_pattern != null) {
-        return Pattern(_pattern!);
+        return PatternViewer(_pattern!, withEditor: true);
       }
       else if (_object['previewUrl'] != null) {
         return Image.network(_object['previewUrl']!);;
@@ -154,9 +155,16 @@ class _ObjectScreenState extends State<ObjectScreen> {
       }
     }
     else {
-      return ElevatedButton(child: Text('View file'), onPressed: () {
-        launch(_object['url']);
-      });
+      return Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Treadl cannot display this type of item.'),
+          SizedBox(height: 20),
+          ElevatedButton(child: Text('View file'), onPressed: () {
+            launch(_object['url']);
+          }),
+        ],
+      ));
     }
   }
 
