@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'api.dart';
+import 'util.dart';
 import 'object.dart';
 
 class _ProjectScreenState extends State<ProjectScreen> {
@@ -11,6 +12,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   final Function _onDelete;
   final picker = ImagePicker();
   final Api api = Api();
+  final Util util = Util();
   Map<String,dynamic> _project;
   List<dynamic> _objects = [];
   bool _loading = false;
@@ -34,6 +36,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
         _loading = false;
       });
     }
+  }
+
+  void _shareProject() {
+    util.shareUrl('Check out my project on Treadl', util.appUrl(_project['fullName']));
   }
 
   void _onDeleteProject() {
@@ -236,6 +242,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
       appBar: AppBar(
         title: Text(_project['name']),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.ios_share),
+            onPressed: () {
+              _shareProject(); 
+            },
+          ),
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {

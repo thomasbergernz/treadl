@@ -4,6 +4,8 @@ import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import 'api.dart';
 
+String APP_URL = 'https://www.treadl.com';
+
 class Util {
 
   ImageProvider avatarUrl(Map<String,dynamic> user) {
@@ -38,6 +40,10 @@ class Util {
     List<int> iParts = parts.map((p) => int.parse(p)).toList();
     iParts = iParts.map((p) => p > 255 ? 255 : p).toList();
     return Color.fromRGBO(iParts[0], iParts[1], iParts[2], 1);
+  }
+
+  String appUrl(String path) {
+    return APP_URL + '/' + path;
   }
 
   Future<String> storagePath() async {

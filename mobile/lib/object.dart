@@ -13,6 +13,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
   final Map<String,dynamic> _project;
   Map<String,dynamic> _object;
   Map<String,dynamic>? _pattern;
+  bool _isLoading = false;
   final Function _onUpdate;
   final Function _onDelete;
   final Api api = Api();
@@ -38,6 +39,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
   }
 
   void _shareObject() async {
+    setState(() => _isLoading = true);
     File? file;
     if (_object['type'] == 'pattern') {
       var data = await api.request('GET', '/objects/' + _object['_id'] + '/wif');
@@ -52,6 +54,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     if (file != null) {
       util.shareFile(file!);
     }
+    setState(() => _isLoading = false);
   }
 
   void _deleteObject(BuildContext context, BuildContext modalContext) async {
@@ -213,7 +216,12 @@ class _ObjectScreenState extends State<ObjectScreen> {
       ),
       body: Container(
         margin: const EdgeInsets.all(10.0),
-        child: getObjectWidget(),
+        child: Column(
+          children: [
+            _isLoading ? LinearProgressIndicator() : SizedBox(height: 0),
+            Expanded(child: getObjectWidget()),
+          ]
+        )
       ),
     ); 
   }
