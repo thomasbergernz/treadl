@@ -1,5 +1,7 @@
+import io, time
 import configparser
 from PIL import Image, ImageDraw
+from api import uploads
 
 def normalise_colour(max_color, triplet):
   color_factor = 256/max_color
@@ -204,6 +206,13 @@ def loads(wif_file):
 
   return draft
 
+def generate_images(obj):
+  try:
+    preview = draw_image(obj)
+    full_preview = draw_image(obj, with_plan=True)
+  except Exception as e:
+    print(e)
+
 def draw_image(obj, with_plan=False):
   if not obj or not obj['pattern']: raise Exception('Invalid pattern')
   BASE_SIZE = 10
@@ -356,5 +365,12 @@ def draw_image(obj, with_plan=False):
         (drawdown_right - x * BASE_SIZE, drawdown_top + (y + 1) * BASE_SIZE),
         ], fill=colour_tuple(warp_colour if thread_type == 'warp' else weft_colour))
 
-
-  img.save("image.png", "PNG")
+  in_mem_file = io.BytesIO()
+  img.save(in_mem_file, 'PNG')
+  in_mem_file.seek(0)
+  file_name = 'preview-{0}_{1}_{2}.png'.format(
+    'full' if with_plan else 'base', obj['_id'], int(time.time())
+  )
+  path = 'projects/{}/{}'.format(obj['project'], file_name)
+  uploads.upload_file(path, in_mem_file)
+  return file_name

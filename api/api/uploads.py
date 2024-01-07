@@ -32,6 +32,14 @@ def get_presigned_url(path):
     }
   )
 
+def upload_file(path, data):
+  s3 = get_s3()
+  s3.upload_fileobj(
+    data,
+    os.environ['AWS_S3_BUCKET'],
+    path,
+  )
+
 def get_file(key):
   s3 = get_s3()
   return s3.get_object(
