@@ -88,13 +88,24 @@ class _ProjectsTabState extends State<ProjectsTab> {
               ),
             );
           },
-          child: ListTile(
-            leading: Icon(Icons.folder_open),
+          child: Container(
+            padding: EdgeInsets.all(5),
+            child: ListTile(
+            leading: new AspectRatio(
+              aspectRatio: 1 / 1,
+              child: new Container(
+                decoration: new BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Icon(Icons.folder)
+              ),
+            ),
             trailing: Icon(Icons.keyboard_arrow_right),
             title: Text(project['name'] != null ? project['name'] : 'Untitled project'),
             subtitle: Text(description),
           ),
-        )
+        ))
       )
     ;
   }

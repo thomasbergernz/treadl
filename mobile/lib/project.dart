@@ -172,7 +172,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
         decoration: new BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           image: new DecorationImage(
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
             alignment: FractionalOffset.topCenter,
             image: new NetworkImage(url),
           )
@@ -183,7 +183,13 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Widget getIconBox(Icon icon) {
     return new AspectRatio(
       aspectRatio: 1 / 1,
-      child: icon
+      child: new Container(
+        decoration: new BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: icon
+      ),
     );
   }
 
@@ -228,7 +234,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
     }
 
     return new Card(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
       child: InkWell(
         onTap: () {
           Navigator.push(
