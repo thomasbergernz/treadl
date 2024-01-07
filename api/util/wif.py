@@ -1,4 +1,5 @@
 import configparser
+from PIL import Image, ImageDraw
 
 def normalise_colour(max_color, triplet):
   color_factor = 256/max_color
@@ -197,3 +198,84 @@ def loads(wif_file):
       draft['tieups'][int(x)-1] = []
 
   return draft
+
+def draw_image(obj):
+  if not obj or not obj['pattern']: raise Exception('Invalid pattern')
+  BASE_SIZE = 10
+  pattern = obj['pattern']
+  warp = pattern['warp']
+  weft = pattern['weft']
+  tieups = pattern['tieups']
+
+  full_width = len(warp['threading']) * BASE_SIZE + weft['treadles'] * BASE_SIZE + BASE_SIZE
+  full_height = warp['shafts'] * BASE_SIZE + len(weft['treadling']) * BASE_SIZE + BASE_SIZE * 2
+
+  warp_top = 0
+  warp_left = 0
+  warp_right = len(warp['threading']) * BASE_SIZE
+  warp_bottom = warp['shafts'] * BASE_SIZE + BASE_SIZE
+
+  weft_left = warp_right + BASE_SIZE
+  weft_top = warp['shafts'] * BASE_SIZE + BASE_SIZE * 2
+  weft_right = warp_right + weft['treadles'] * BASE_SIZE + BASE_SIZE
+  weft_bottom = weft_top + len(weft['treadling']) * BASE_SIZE
+
+  tieup_left = warp_right + BASE_SIZE
+  tieup_top = BASE_SIZE
+  tieup_right = tieup_left + weft['treadles'] * BASE_SIZE
+  tieup_bottom = warp_bottom
+
+  drawdown_top = warp_bottom + BASE_SIZE
+  drawdown_right = warp_right
+  drawdown_left = warp_left
+  drawdown_bottom = weft_bottom
+
+  WHITE=(255,255,255)
+  GREY = (150,150,150)
+  BLACK = (0,0,0)
+  img = Image.new("RGB", (full_width, full_height), WHITE)
+  draw = ImageDraw.Draw(img)
+
+  # Draw warp
+  draw.rectangle([
+    (warp_left, warp_top),
+    (warp_right, warp_bottom)
+  ], fill=None, outline=GREY, width=1)
+  for y in range(1, warp['shafts'] + 1):
+    ycoord = y * BASE_SIZE
+    draw.line([
+      (warp_left, ycoord),
+      (warp_right, ycoord),
+    ],
+    fill=GREY, width=1, joint=None)
+  for (i, x) in enumerate(range(len(warp['threading'])-1, 0, -1)):
+    thread = warp['threading'][i]
+    xcoord = x * BASE_SIZE
+    draw.line([
+      (xcoord, warp_top),
+      (xcoord, warp_bottom),
+    ],
+    fill=GREY, width=1, joint=None)
+    if thread.get('shaft', 0) > 0:
+      ycoord = warp_bottom - (thread['shaft'] * BASE_SIZE)
+      draw.rectangle([
+        (xcoord, ycoord),
+        (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
+      ], fill=BLACK, outline=None, width=1)
+  
+
+
+  draw.rectangle([
+    (weft_left, weft_top),
+    (weft_right, weft_bottom)
+  ], fill=None, outline=(0,0,0), width=1)
+  draw.rectangle([
+    (tieup_left, tieup_top),
+    (tieup_right, tieup_bottom)
+  ], fill=None, outline=(0,0,0), width=1)
+  draw.rectangle([
+    (drawdown_left, drawdown_top),
+    (drawdown_right, drawdown_bottom)
+  ], fill=None, outline=(0,0,0), width=1)
+
+  img.save("image.png", "PNG")

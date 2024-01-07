@@ -44,7 +44,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     if (_object['type'] == 'pattern') {
       var data = await api.request('GET', '/objects/' + _object['_id'] + '/wif');
       if (data['success'] == true) {
-        file = await util.storeFile(_object['name'] + '.wif', data['payload']['wif']);
+        file = await util.writeFile(_object['name'] + '.wif', data['payload']['wif']);
       }
     } else {
       String fileName = Uri.file(_object['url']).pathSegments.last;
@@ -52,7 +52,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     }
 
     if (file != null) {
-      util.shareFile(file!);
+      util.shareFile(file!, withDelete: true);
     }
     setState(() => _isLoading = false);
   }

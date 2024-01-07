@@ -52,15 +52,23 @@ class Util {
     return directory.path;
   }
 
-  Future<File?> storeFile(String fileName, String data) async {
+  Future<File> writeFile(String fileName, String data) async {
     final String dirPath = await storagePath();
     final file = File('$dirPath/$fileName');
     String contents = data.replaceAll(RegExp(r'\\n'), '\r\n');
     return await file.writeAsString(contents);
   }
 
-  void shareFile(File file) async {
+  Future<bool> deleteFile(File file) async {
+    await file.delete(); 
+    return true;
+  }
+
+  void shareFile(File file, {bool? withDelete}) async {
     await Share.shareXFiles([XFile(file.path)]);
+    if (withDelete == true) {
+      await deleteFile(file);
+    }
   }
 
   void shareUrl(String text, String url) async {
