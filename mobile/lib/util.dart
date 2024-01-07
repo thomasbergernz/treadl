@@ -9,30 +9,36 @@ String APP_URL = 'https://www.treadl.com';
 
 class Util {
 
-  ImageProvider avatarUrl(Map<String,dynamic> user) {
-    ImageProvider a = AssetImage('assets/avatars/9.png');
+  ImageProvider? avatarUrl(Map<String,dynamic> user) {
     if (user != null && user['avatar'] != null) {
       if (user['avatar'].length < 3) {
-        a = AssetImage('assets/avatars/${user['avatar']}.png');
+        return AssetImage('assets/avatars/${user['avatar']}.png');
       }
       else {
-        a =NetworkImage(user['avatarUrl']);
+        return NetworkImage(user['avatarUrl']);
       }
     }
-    return a;
+    return null;
   }
 
-  Widget avatarImage(ImageProvider image, {double size=30}) {
+  Widget avatarImage(ImageProvider? image, {double size=30}) {
+    if (image != null) {
+      return new Container(
+        width: size,
+        height: size,
+        decoration: new BoxDecoration(
+          shape: BoxShape.circle,
+          image: new DecorationImage(
+            fit: BoxFit.fill,
+            image: image
+          )
+        )
+      );
+    }
     return new Container(
       width: size,
       height: size,
-      decoration: new BoxDecoration(
-        shape: BoxShape.circle,
-        image: new DecorationImage(
-          fit: BoxFit.fill,
-          image: image
-        )
-      )
+      child: Icon(Icons.person)
     );
   }
 

@@ -44,16 +44,11 @@ class _GroupsTabState extends State<GroupsTab> {
               ),
             );
           },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              new ListTile(
-                leading: Icon(Icons.people),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                title: Text(group['name']),
-                subtitle: Text(description.replaceAll("\n", " ")),
-              ),
-            ]
+          child: ListTile(
+            leading: Icon(Icons.people),
+            trailing: Icon(Icons.keyboard_arrow_right),
+            title: Text(group['name']),
+            subtitle: Text(description.replaceAll("\n", " ")),
           )
         )
       )

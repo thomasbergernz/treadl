@@ -41,6 +41,14 @@ class _UserScreenState extends State<UserScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_user['username']),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              launch('https://www.treadl.com/' + _user['username']);
+            },
+          ),
+        ]
       ),
       body: _loading ?
         Container(
@@ -50,6 +58,7 @@ class _UserScreenState extends State<UserScreen> {
         )
       : Container(
         padding: EdgeInsets.all(10),
+        margin: EdgeInsets.only(top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -60,11 +69,12 @@ class _UserScreenState extends State<UserScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(_user['username'], style: Theme.of(context).textTheme.titleMedium),
+                    Text(_user['username'], style: Theme.of(context).textTheme.titleLarge),
                     SizedBox(height: 5),
                     _user['location'] != null ?
                       Row(children: [
                         Icon(CupertinoIcons.location),
+                        SizedBox(width: 10),
                         Text(_user['location'])
                       ]) : SizedBox(height: 1),
                     SizedBox(height: 10),

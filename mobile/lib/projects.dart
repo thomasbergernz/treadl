@@ -89,11 +89,11 @@ class _ProjectsTabState extends State<ProjectsTab> {
             );
           },
           child: ListTile(
-                leading: Icon(Icons.folder_open),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                title: Text(project['name'] != null ? project['name'] : 'Untitled project'),
-                subtitle: Text(description),
-              ),
+            leading: Icon(Icons.folder_open),
+            trailing: Icon(Icons.keyboard_arrow_right),
+            title: Text(project['name'] != null ? project['name'] : 'Untitled project'),
+            subtitle: Text(description),
+          ),
         )
       )
     ;
