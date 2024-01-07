@@ -32,7 +32,6 @@ def get(user, id):
   if obj['type'] == 'pattern' and 'preview' in obj and '.png' in obj['preview']:
     obj['previewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(proj['_id'], obj['preview']))
     del obj['preview']
-    wif.draw_image(obj, with_plan=True)
   return obj
 
 def copy_to_project(user, id, project_id):
@@ -55,6 +54,9 @@ def copy_to_project(user, id, project_id):
   obj['createdAt'] = datetime.datetime.now()
   obj['commentCount'] = 0
   if 'preview' in obj: del obj['preview']
+  if obj.get('pattern'):
+    images = wif.generate_images(obj)
+    if images: obj.update(images)
   db.objects.insert_one(obj)
   return obj
 
@@ -101,7 +103,15 @@ def update(user, id, data):
   if not project: raise util.errors.NotFound('Project not found')
   if not util.can_edit_project(user, project):
     raise util.errors.Forbidden('Forbidden')
-  allowed_keys = ['name', 'description', 'pattern', 'preview']
+  allowed_keys = ['name', 'description', 'pattern']
+
+  if data.get('pattern'):
+    obj.update(data)
+    images = wif.generate_images(obj)
+    if images:
+      data.update(images)
+      allowed_keys += ['preview', 'fullPreview']
+
   updater = util.build_updater(data, allowed_keys)
   if updater:
     db.objects.update({'_id': ObjectId(id)}, updater)

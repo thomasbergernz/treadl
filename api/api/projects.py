@@ -1,7 +1,7 @@
 import datetime, re
 from bson.objectid import ObjectId
 from util import database, wif, util
-from api import uploads
+from api import uploads, objects
 
 default_pattern = {
   'warp': {
@@ -156,36 +156,32 @@ def create_object(user, username, path, data):
       uploads.blur_image('projects/' + str(project['_id']) + '/' + data['storedName'], handle_cb)
     return obj
   if data['type'] == 'pattern':
+    obj = {
+      'project': project['_id'],
+      'createdAt': datetime.datetime.now(),
+      'type': 'pattern',
+    }
     if data.get('wif'):
       try:
         pattern = wif.loads(data['wif'])
         if pattern:
-          obj = {
-            'project': project['_id'],
-            'name': pattern['name'],
-            'createdAt': datetime.datetime.now(),
-            'type': 'pattern',
-            'pattern': pattern
-          }
-          result = db.objects.insert_one(obj)
-          obj['_id'] = result.inserted_id
-          return obj
+          obj['name'] = pattern['name']
+          obj['pattern'] = pattern
       except Exception as e:
         raise util.errors.BadRequest('Unable to load WIF file. It is either invalid or in a format we cannot understand.')
-    elif data.get('name'):
+    else:
       pattern = default_pattern.copy()
       pattern['warp'].update({'shafts': data.get('shafts', 8)})
       pattern['weft'].update({'treadles': data.get('treadles', 8)})
-      obj = {
-        'project': project['_id'],
-        'name': data['name'],
-        'createdAt': datetime.datetime.now(),
-        'type': 'pattern',
-        'pattern': pattern
-      }
-      result = db.objects.insert_one(obj)
-      obj['_id'] = result.inserted_id
-      return obj
+      obj['name'] = data.get('name') or 'Untitled Pattern'
+      obj['pattern'] = pattern
+    result = db.objects.insert_one(obj)
+    obj['_id'] = result.inserted_id
+    images = wif.generate_images(obj)
+    if images:
+      db.objects.update_one({'_id': obj['_id']}, {'$set': images})
+
+    return objects.get(user, obj['_id'])
   raise util.errors.BadRequest('Unable to create object')
 
 

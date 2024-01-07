@@ -208,10 +208,13 @@ def loads(wif_file):
 
 def generate_images(obj):
   try:
-    preview = draw_image(obj)
-    full_preview = draw_image(obj, with_plan=True)
+    return {
+      'preview': draw_image(obj),
+      'fullPreview': draw_image(obj, with_plan=True)
+    }
   except Exception as e:
     print(e)
+    return {}
 
 def draw_image(obj, with_plan=False):
   if not obj or not obj['pattern']: raise Exception('Invalid pattern')
