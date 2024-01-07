@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
 import 'api.dart';
 import 'util.dart';
@@ -136,7 +137,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
     try {
       final XFile? imageFile = await picker.pickImage(source: ImageSource.gallery);
       if (imageFile == null) return;
-      _createObjectFromFile(imageFile.name, imageFile);
+      final f = new DateFormat('yyyy-MM-dd_hh-mm-ss');
+      String time = f.format(new DateTime.now());
+      String name = _project['name'] + ' ' + time + '.' + imageFile.name.split('.').last;
+      _createObjectFromFile(name, imageFile);
     }
     on Exception {
       showDialog(
@@ -161,27 +165,14 @@ class _ProjectScreenState extends State<ProjectScreen> {
     showCupertinoModalPopup(context: context, builder: (BuildContext context) => settingsDialog);
   }
 
-  Widget getMemoryImageBox(data, [bool? isMemory, bool? isNetwork]) {
-    return new AspectRatio(
-      aspectRatio: 1 / 1,
-      child: new Container(
-        decoration: new BoxDecoration(
-          image: new DecorationImage(
-            fit: BoxFit.fitWidth,
-            alignment: FractionalOffset.topCenter,
-            image: new MemoryImage(data),
-          )
-        ),
-      ),
-    );
-  }
   Widget getNetworkImageBox(String url) {
     return new AspectRatio(
       aspectRatio: 1 / 1,
       child: new Container(
         decoration: new BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
           image: new DecorationImage(
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.fill,
             alignment: FractionalOffset.topCenter,
             image: new NetworkImage(url),
           )
@@ -237,6 +228,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     }
 
     return new Card(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -246,17 +238,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
             ),
           );
         },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            new ListTile(
-              leading: leader,
-              trailing: Icon(Icons.keyboard_arrow_right),
-              title: Text(object['name']),
-              subtitle: Text(type),
-            ),
-          ]
-        )
+        child: ListTile(
+          leading: leader,
+          trailing: Icon(Icons.keyboard_arrow_right),
+          title: Text(object['name']),
+          subtitle: Text(type),
+        ),
       )
     );
   }
@@ -303,7 +290,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
             children: [
               Text('This project is currently empty', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
               Image(image: AssetImage('assets/empty.png'), width: 300),
-              Text('Add something to this project using the button below.', textAlign: TextAlign.center),
+              Text('Add a pattern file, an image, or something else to this project using the + button below.', textAlign: TextAlign.center),
           ])
       ),
       floatingActionButtonLocation: ExpandableFab.location,

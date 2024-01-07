@@ -88,18 +88,12 @@ class _ProjectsTabState extends State<ProjectsTab> {
               ),
             );
           },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              new ListTile(
+          child: ListTile(
                 leading: Icon(Icons.folder_open),
                 trailing: Icon(Icons.keyboard_arrow_right),
                 title: Text(project['name'] != null ? project['name'] : 'Untitled project'),
                 subtitle: Text(description),
               ),
-            ]
-          ),
         )
       )
     ;
