@@ -24,6 +24,14 @@ def colour_tuple(triplet):
   components = triplet.split(',')
   return tuple(map(lambda c: int(c), components))
 
+def darken_colour(c_tuple, val):
+  def darken(c):
+    c = c * val
+    if c < 0: c = 0
+    if c > 255: c = 255
+    return int(c)
+  return tuple(map(darken, c_tuple))
+
 def get_colour_index(colours, colour):
   for (index, c) in enumerate(colours):
     if c == colour: return index + 1
@@ -250,7 +258,7 @@ def draw_image(obj, with_plan=False):
   WHITE=(255,255,255)
   GREY = (150,150,150)
   BLACK = (0,0,0)
-  img = Image.new("RGB", (full_width, full_height), WHITE)
+  img = Image.new("RGBA", (full_width, full_height), WHITE)
   draw = ImageDraw.Draw(img)
 
   # Draw warp
@@ -363,10 +371,24 @@ def draw_image(obj, with_plan=False):
       tieup = tieups[treadle-1] if treadle > 0 else []
       tieup = [t for t in tieup if t < warp['shafts']]
       thread_type = 'warp' if shaft in tieup else 'weft'
-      draw.rectangle([
-        (drawdown_right - (x + 1) * BASE_SIZE, drawdown_top + y * BASE_SIZE),
-        (drawdown_right - x * BASE_SIZE, drawdown_top + (y + 1) * BASE_SIZE),
-        ], fill=colour_tuple(warp_colour if thread_type == 'warp' else weft_colour))
+      x1 = drawdown_right - (x + 1) * BASE_SIZE
+      x2 = drawdown_right - x * BASE_SIZE
+      y1 = drawdown_top + y * BASE_SIZE
+      y2 = drawdown_top + (y + 1) * BASE_SIZE
+      colour = colour_tuple(warp_colour if thread_type == 'warp' else weft_colour)
+      d = [0.6, 0.8, 0.9, 1.1, 1.3, 1.3, 1.1, 0.9, 0.8, 0.6, 0.5]
+      if thread_type == 'warp':
+        for (i, grad_x) in enumerate(range(x1, x2)):
+          draw.line([
+            (grad_x, y1), (grad_x, y2),
+          ],
+          fill=(darken_colour(colour, d[i])), width=1, joint=None)
+      else:
+        for (i, grad_y) in enumerate(range(y1, y2)):
+          draw.line([
+            (x1, grad_y), (x2, grad_y),
+          ],
+          fill=(darken_colour(colour, d[i])), width=1, joint=None)
 
   in_mem_file = io.BytesIO()
   img.save(in_mem_file, 'PNG')
