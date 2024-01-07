@@ -118,13 +118,15 @@ def get_objects(user, username, path):
   if not util.can_view_project(user, project):
     raise util.errors.Forbidden('This project is private')
 
-  objs = list(db.objects.find({'project': project['_id']}, {'createdAt': 1, 'name': 1, 'description': 1, 'project': 1, 'preview': 1, 'type': 1, 'storedName': 1, 'isImage': 1, 'imageBlurHash': 1, 'commentCount': 1}))
+  objs = list(db.objects.find({'project': project['_id']}, {'createdAt': 1, 'name': 1, 'description': 1, 'project': 1, 'preview': 1, 'fullPreview': 1, 'type': 1, 'storedName': 1, 'isImage': 1, 'imageBlurHash': 1, 'commentCount': 1}))
   for obj in objs:
     if obj['type'] == 'file' and 'storedName' in obj:
       obj['url'] = uploads.get_presigned_url('projects/{0}/{1}'.format(project['_id'], obj['storedName']))
     if obj['type'] == 'pattern' and 'preview' in obj and '.png' in obj['preview']:
       obj['previewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(project['_id'], obj['preview']))
       del obj['preview']
+    if obj.get('fullPreview'):
+      obj['fullPreviewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(project['_id'], obj['fullPreview']))
   return objs
 
 def create_object(user, username, path, data):

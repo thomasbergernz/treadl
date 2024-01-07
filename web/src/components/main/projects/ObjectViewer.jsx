@@ -111,7 +111,7 @@ function ObjectViewer() {
               }
               {(utils.canEditProject(user, project) || project.openSource) &&
                 <React.Fragment>
-                  {object.patternImage &&
+                  {(object.fullPreviewUrl || object.patternImage) &&
                     <Dropdown.Item icon='file outline' content='Download complete pattern as an image' onClick={e => utils.downloadPatternImage(object)}/>
                   }
                   <Dropdown.Divider />

@@ -34,10 +34,12 @@ function DraftPreview({ object }) {
               dispatch(actions.objects.update(objectId, 'previewUrl', previewUrl));
             });
           }
-          // Generate the entire pattern and store in memory
-          util.generateCompletePattern(o.pattern, `.preview-${objectId}`, image => {
-            dispatch(actions.objects.update(objectId, 'patternImage', image));
-          });
+          if (!o.fullPreviewUrl) {
+            // Generate the entire pattern and store in memory
+            util.generateCompletePattern(o.pattern, `.preview-${objectId}`, image => {
+              dispatch(actions.objects.update(objectId, 'patternImage', image));
+            });
+          }
         }, 1000);
       }
     }, err => setLoading(false));

@@ -135,7 +135,7 @@ const utils = {
   downloadPatternImage(object) {
     const element = document.createElement('a');
     element.setAttribute('target', '_blank');
-    element.setAttribute('href', object.patternImage);
+    element.setAttribute('href', object.fullPreviewUrl || object.patternImage);
     element.setAttribute('download', `${object.name.replace(/ /g, '_')}-pattern.png`);
     element.style.display = 'none';
     document.body.appendChild(element);

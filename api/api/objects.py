@@ -32,6 +32,8 @@ def get(user, id):
   if obj['type'] == 'pattern' and 'preview' in obj and '.png' in obj['preview']:
     obj['previewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(proj['_id'], obj['preview']))
     del obj['preview']
+  if obj.get('fullPreview'):
+    obj['fullPreviewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(proj['_id'], obj['fullPreview']))
   return obj
 
 def copy_to_project(user, id, project_id):
