@@ -308,21 +308,44 @@ class _ProjectScreenState extends State<ProjectScreen> {
       ),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: ExpandableFab(
-        distance: 50,
+        distance: 70,
+        type: ExpandableFabType.up,
         openButtonBuilder: RotateFloatingActionButtonBuilder(
           child: const Icon(Icons.add),
         ),
         children: [
-          FloatingActionButton(
-            heroTag: null,
-            onPressed: _chooseImage,
-            child: Icon(Icons.image_outlined),
-          ),
-          FloatingActionButton(
-            heroTag: null,
-            child: const Icon(Icons.insert_drive_file_outlined),
-            onPressed: _chooseFile,
-          ),
+          Row(children:[
+            Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              child: Text('Add an image', style: TextStyle(fontSize: 15, color: Colors.white)),
+            ),
+            SizedBox(width: 10),
+            FloatingActionButton(
+              heroTag: null,
+              onPressed: _chooseImage,
+              child: Icon(Icons.image_outlined),
+            ),
+          ]),
+          Row(children:[
+            Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              child: Text('Add a WIF or other file', style: TextStyle(fontSize: 15, color: Colors.white)),
+            ),
+            SizedBox(width: 10),
+            FloatingActionButton(
+              heroTag: null,
+              child: const Icon(Icons.insert_drive_file_outlined),
+              onPressed: _chooseFile,
+            ),
+          ]),
         ],
       ),
     ); 
