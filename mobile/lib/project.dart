@@ -30,7 +30,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
   void getObjects(String fullName) async {
     setState(() => _loading = true);
-    print(fullName);
     var data = await api.request('GET', '/projects/' + fullName + '/objects');
     if (data['success'] == true) {
       setState(() {
@@ -77,7 +76,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
     String fullPath = _project['fullName'];
     var resp = await api.request('POST', '/projects/$fullPath/objects', objectData);
     setState(() => _creating = false);
-    print(resp);
     if (resp['success']) {
       List<dynamic> newObjects = _objects;
       newObjects.add(resp['payload']);
@@ -88,6 +86,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void _createObjectFromWif(String name, String wif) {
+    setState(() => _creating = true);
     _createObject({
       'name': name,
       'type': 'pattern',
@@ -368,7 +367,6 @@ class _ProjectSettingsDialog extends StatelessWidget {
             TextButton(
               child: Text('OK'),
               onPressed: () async {
-                print(renameController.text);
                 var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'name': renameController.text});
                 if (data['success']) {
                   Navigator.pop(context); 
