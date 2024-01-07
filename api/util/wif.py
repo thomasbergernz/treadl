@@ -18,6 +18,7 @@ def denormalise_colour(max_color, triplet):
   return ','.join(new_components)
 
 def colour_tuple(triplet):
+  if not triplet: return None
   components = triplet.split(',')
   return tuple(map(lambda c: int(c), components))
 
@@ -211,7 +212,7 @@ def draw_image(obj):
   weft = pattern['weft']
   tieups = pattern['tieups']
 
-  full_width = len(warp['threading']) * BASE_SIZE + weft['treadles'] * BASE_SIZE + BASE_SIZE
+  full_width = len(warp['threading']) * BASE_SIZE + BASE_SIZE + weft['treadles'] * BASE_SIZE + BASE_SIZE
   full_height = warp['shafts'] * BASE_SIZE + len(weft['treadling']) * BASE_SIZE + BASE_SIZE * 2
 
   warp_top = 0
@@ -221,7 +222,7 @@ def draw_image(obj):
 
   weft_left = warp_right + BASE_SIZE
   weft_top = warp['shafts'] * BASE_SIZE + BASE_SIZE * 2
-  weft_right = warp_right + weft['treadles'] * BASE_SIZE + BASE_SIZE
+  weft_right = warp_right + BASE_SIZE + weft['treadles'] * BASE_SIZE + BASE_SIZE
   weft_bottom = weft_top + len(weft['treadling']) * BASE_SIZE
 
   tieup_left = warp_right + BASE_SIZE
@@ -274,7 +275,6 @@ def draw_image(obj):
       (xcoord + BASE_SIZE, warp_top + BASE_SIZE),
     ], fill=colour_tuple(colour))
   
-
   # Draw weft
   draw.rectangle([
     (weft_left, weft_top),
@@ -336,9 +336,24 @@ def draw_image(obj):
           (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
         ], fill=BLACK, outline=None, width=1)
 
+  # Draw drawdown
   draw.rectangle([
     (drawdown_left, drawdown_top),
     (drawdown_right, drawdown_bottom)
   ], fill=None, outline=(0,0,0), width=1)
+  for (y, weft_thread) in enumerate(weft['treadling']):
+    for (x, warp_thread) in enumerate(warp['threading']):
+      treadle = 0 if weft_thread['treadle'] > weft['treadles'] else weft_thread['treadle']
+      shaft = warp_thread['shaft']
+      weft_colour = weft_thread.get('colour') or weft.get('defaultColour')
+      warp_colour = warp_thread.get('colour') or warp.get('defaultColour')
+      tieup = tieups[treadle-1] if treadle > 0 else []
+      tieup = [t for t in tieup if t < warp['shafts']]
+      thread_type = 'warp' if shaft in tieup else 'weft'
+      draw.rectangle([
+        (drawdown_right - (x + 1) * BASE_SIZE, drawdown_top + y * BASE_SIZE),
+        (drawdown_right - x * BASE_SIZE, drawdown_top + (y + 1) * BASE_SIZE),
+        ], fill=colour_tuple(warp_colour if thread_type == 'warp' else weft_colour))
+
 
   img.save("image.png", "PNG")
