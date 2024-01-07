@@ -17,6 +17,10 @@ def denormalise_colour(max_color, triplet):
     new_components.append(str(int(float(color_factor) * int(component))))
   return ','.join(new_components)
 
+def colour_tuple(triplet):
+  components = triplet.split(',')
+  return tuple(map(lambda c: int(c), components))
+
 def get_colour_index(colours, colour):
   for (index, c) in enumerate(colours):
     if c == colour: return index + 1
@@ -262,6 +266,13 @@ def draw_image(obj):
         (xcoord, ycoord),
         (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
       ], fill=BLACK, outline=None, width=1)
+    colour = warp['defaultColour']
+    if thread and thread.get('colour'):
+      colour = thread['colour']
+    draw.rectangle([
+      (xcoord, warp_top),
+      (xcoord + BASE_SIZE, warp_top + BASE_SIZE),
+    ], fill=colour_tuple(colour))
   
 
   # Draw weft
@@ -290,11 +301,41 @@ def draw_image(obj):
         (xcoord, ycoord),
         (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
       ], fill=BLACK, outline=None, width=1)
+    colour = weft['defaultColour']
+    if thread and thread.get('colour'):
+      colour = thread['colour']
+    draw.rectangle([
+      (weft_right - BASE_SIZE, ycoord),
+      (weft_right, ycoord + BASE_SIZE),
+    ], fill=colour_tuple(colour))
 
+  # Draw tieups
   draw.rectangle([
     (tieup_left, tieup_top),
     (tieup_right, tieup_bottom)
-  ], fill=None, outline=(0,0,0), width=1)
+  ], fill=None, outline=GREY, width=1)
+  for y in range(1, warp['shafts'] + 1):
+    ycoord = y * BASE_SIZE
+    draw.line([
+      (tieup_left, ycoord),
+      (tieup_right, ycoord),
+    ],
+    fill=GREY, width=1, joint=None)
+  for (x, tieup) in enumerate(tieups):
+    xcoord = tieup_left + x * BASE_SIZE
+    draw.line([
+      (xcoord, tieup_top),
+      (xcoord, tieup_bottom),
+    ],
+    fill=GREY, width=1, joint=None)
+    for entry in tieup:
+      if entry > 0:
+        ycoord = tieup_bottom - (entry * BASE_SIZE)
+        draw.rectangle([
+          (xcoord, ycoord),
+          (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
+        ], fill=BLACK, outline=None, width=1)
+
   draw.rectangle([
     (drawdown_left, drawdown_top),
     (drawdown_right, drawdown_bottom)
