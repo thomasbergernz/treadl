@@ -204,7 +204,7 @@ def loads(wif_file):
 
   return draft
 
-def draw_image(obj):
+def draw_image(obj, with_plan=False):
   if not obj or not obj['pattern']: raise Exception('Invalid pattern')
   BASE_SIZE = 10
   pattern = obj['pattern']
@@ -212,8 +212,8 @@ def draw_image(obj):
   weft = pattern['weft']
   tieups = pattern['tieups']
 
-  full_width = len(warp['threading']) * BASE_SIZE + BASE_SIZE + weft['treadles'] * BASE_SIZE + BASE_SIZE
-  full_height = warp['shafts'] * BASE_SIZE + len(weft['treadling']) * BASE_SIZE + BASE_SIZE * 2
+  full_width = len(warp['threading']) * BASE_SIZE + BASE_SIZE + weft['treadles'] * BASE_SIZE + BASE_SIZE if with_plan else len(warp['threading']) * BASE_SIZE
+  full_height = warp['shafts'] * BASE_SIZE + len(weft['treadling']) * BASE_SIZE + BASE_SIZE * 2 if with_plan else len(weft['treadling']) * BASE_SIZE
 
   warp_top = 0
   warp_left = 0
@@ -230,10 +230,10 @@ def draw_image(obj):
   tieup_right = tieup_left + weft['treadles'] * BASE_SIZE
   tieup_bottom = warp_bottom
 
-  drawdown_top = warp_bottom + BASE_SIZE
-  drawdown_right = warp_right
-  drawdown_left = warp_left
-  drawdown_bottom = weft_bottom
+  drawdown_top = warp_bottom + BASE_SIZE if with_plan else 0
+  drawdown_right = warp_right if with_plan else full_width
+  drawdown_left = warp_left if with_plan else 0
+  drawdown_bottom = weft_bottom if with_plan else full_height
 
   WHITE=(255,255,255)
   GREY = (150,150,150)
@@ -242,99 +242,100 @@ def draw_image(obj):
   draw = ImageDraw.Draw(img)
 
   # Draw warp
-  draw.rectangle([
-    (warp_left, warp_top),
-    (warp_right, warp_bottom)
-  ], fill=None, outline=GREY, width=1)
-  for y in range(1, warp['shafts'] + 1):
-    ycoord = y * BASE_SIZE
-    draw.line([
-      (warp_left, ycoord),
-      (warp_right, ycoord),
-    ],
-    fill=GREY, width=1, joint=None)
-  for (i, x) in enumerate(range(len(warp['threading'])-1, 0, -1)):
-    thread = warp['threading'][i]
-    xcoord = x * BASE_SIZE
-    draw.line([
-      (xcoord, warp_top),
-      (xcoord, warp_bottom),
-    ],
-    fill=GREY, width=1, joint=None)
-    if thread.get('shaft', 0) > 0:
-      ycoord = warp_bottom - (thread['shaft'] * BASE_SIZE)
-      draw.rectangle([
-        (xcoord, ycoord),
-        (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
-      ], fill=BLACK, outline=None, width=1)
-    colour = warp['defaultColour']
-    if thread and thread.get('colour'):
-      colour = thread['colour']
+  if with_plan:
     draw.rectangle([
-      (xcoord, warp_top),
-      (xcoord + BASE_SIZE, warp_top + BASE_SIZE),
-    ], fill=colour_tuple(colour))
-  
-  # Draw weft
-  draw.rectangle([
-    (weft_left, weft_top),
-    (weft_right, weft_bottom)
-  ], fill=None, outline=GREY, width=1)
-  for x in range(1, weft['treadles'] + 1):
-    xcoord = weft_left + x * BASE_SIZE
-    draw.line([
-      (xcoord, weft_top),
-      (xcoord, weft_bottom),
-    ],
-    fill=GREY, width=1, joint=None)
-  for (i, y) in enumerate(range(0, len(weft['treadling']))):
-    thread = weft['treadling'][i]
-    ycoord = weft_top + y * BASE_SIZE
-    draw.line([
-      (weft_left, ycoord),
-      (weft_right, ycoord),
-    ],
-    fill=GREY, width=1, joint=None)
-    if thread.get('treadle', 0) > 0:
-      xcoord = weft_left + (thread['treadle'] - 1) * BASE_SIZE
-      draw.rectangle([
-        (xcoord, ycoord),
-        (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
-      ], fill=BLACK, outline=None, width=1)
-    colour = weft['defaultColour']
-    if thread and thread.get('colour'):
-      colour = thread['colour']
-    draw.rectangle([
-      (weft_right - BASE_SIZE, ycoord),
-      (weft_right, ycoord + BASE_SIZE),
-    ], fill=colour_tuple(colour))
-
-  # Draw tieups
-  draw.rectangle([
-    (tieup_left, tieup_top),
-    (tieup_right, tieup_bottom)
-  ], fill=None, outline=GREY, width=1)
-  for y in range(1, warp['shafts'] + 1):
-    ycoord = y * BASE_SIZE
-    draw.line([
-      (tieup_left, ycoord),
-      (tieup_right, ycoord),
-    ],
-    fill=GREY, width=1, joint=None)
-  for (x, tieup) in enumerate(tieups):
-    xcoord = tieup_left + x * BASE_SIZE
-    draw.line([
-      (xcoord, tieup_top),
-      (xcoord, tieup_bottom),
-    ],
-    fill=GREY, width=1, joint=None)
-    for entry in tieup:
-      if entry > 0:
-        ycoord = tieup_bottom - (entry * BASE_SIZE)
+      (warp_left, warp_top),
+      (warp_right, warp_bottom)
+    ], fill=None, outline=GREY, width=1)
+    for y in range(1, warp['shafts'] + 1):
+      ycoord = y * BASE_SIZE
+      draw.line([
+        (warp_left, ycoord),
+        (warp_right, ycoord),
+      ],
+      fill=GREY, width=1, joint=None)
+    for (i, x) in enumerate(range(len(warp['threading'])-1, 0, -1)):
+      thread = warp['threading'][i]
+      xcoord = x * BASE_SIZE
+      draw.line([
+        (xcoord, warp_top),
+        (xcoord, warp_bottom),
+      ],
+      fill=GREY, width=1, joint=None)
+      if thread.get('shaft', 0) > 0:
+        ycoord = warp_bottom - (thread['shaft'] * BASE_SIZE)
         draw.rectangle([
           (xcoord, ycoord),
           (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
         ], fill=BLACK, outline=None, width=1)
+      colour = warp['defaultColour']
+      if thread and thread.get('colour'):
+        colour = thread['colour']
+      draw.rectangle([
+        (xcoord, warp_top),
+        (xcoord + BASE_SIZE, warp_top + BASE_SIZE),
+      ], fill=colour_tuple(colour))
+    
+    # Draw weft
+    draw.rectangle([
+      (weft_left, weft_top),
+      (weft_right, weft_bottom)
+    ], fill=None, outline=GREY, width=1)
+    for x in range(1, weft['treadles'] + 1):
+      xcoord = weft_left + x * BASE_SIZE
+      draw.line([
+        (xcoord, weft_top),
+        (xcoord, weft_bottom),
+      ],
+      fill=GREY, width=1, joint=None)
+    for (i, y) in enumerate(range(0, len(weft['treadling']))):
+      thread = weft['treadling'][i]
+      ycoord = weft_top + y * BASE_SIZE
+      draw.line([
+        (weft_left, ycoord),
+        (weft_right, ycoord),
+      ],
+      fill=GREY, width=1, joint=None)
+      if thread.get('treadle', 0) > 0:
+        xcoord = weft_left + (thread['treadle'] - 1) * BASE_SIZE
+        draw.rectangle([
+          (xcoord, ycoord),
+          (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
+        ], fill=BLACK, outline=None, width=1)
+      colour = weft['defaultColour']
+      if thread and thread.get('colour'):
+        colour = thread['colour']
+      draw.rectangle([
+        (weft_right - BASE_SIZE, ycoord),
+        (weft_right, ycoord + BASE_SIZE),
+      ], fill=colour_tuple(colour))
+
+    # Draw tieups
+    draw.rectangle([
+      (tieup_left, tieup_top),
+      (tieup_right, tieup_bottom)
+    ], fill=None, outline=GREY, width=1)
+    for y in range(1, warp['shafts'] + 1):
+      ycoord = y * BASE_SIZE
+      draw.line([
+        (tieup_left, ycoord),
+        (tieup_right, ycoord),
+      ],
+      fill=GREY, width=1, joint=None)
+    for (x, tieup) in enumerate(tieups):
+      xcoord = tieup_left + x * BASE_SIZE
+      draw.line([
+        (xcoord, tieup_top),
+        (xcoord, tieup_bottom),
+      ],
+      fill=GREY, width=1, joint=None)
+      for entry in tieup:
+        if entry > 0:
+          ycoord = tieup_bottom - (entry * BASE_SIZE)
+          draw.rectangle([
+            (xcoord, ycoord),
+            (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
+          ], fill=BLACK, outline=None, width=1)
 
   # Draw drawdown
   draw.rectangle([
