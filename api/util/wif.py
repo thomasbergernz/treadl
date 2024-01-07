@@ -264,11 +264,33 @@ def draw_image(obj):
       ], fill=BLACK, outline=None, width=1)
   
 
-
+  # Draw weft
   draw.rectangle([
     (weft_left, weft_top),
     (weft_right, weft_bottom)
-  ], fill=None, outline=(0,0,0), width=1)
+  ], fill=None, outline=GREY, width=1)
+  for x in range(1, weft['treadles'] + 1):
+    xcoord = weft_left + x * BASE_SIZE
+    draw.line([
+      (xcoord, weft_top),
+      (xcoord, weft_bottom),
+    ],
+    fill=GREY, width=1, joint=None)
+  for (i, y) in enumerate(range(0, len(weft['treadling']))):
+    thread = weft['treadling'][i]
+    ycoord = weft_top + y * BASE_SIZE
+    draw.line([
+      (weft_left, ycoord),
+      (weft_right, ycoord),
+    ],
+    fill=GREY, width=1, joint=None)
+    if thread.get('treadle', 0) > 0:
+      xcoord = weft_left + (thread['treadle'] - 1) * BASE_SIZE
+      draw.rectangle([
+        (xcoord, ycoord),
+        (xcoord + BASE_SIZE, ycoord + BASE_SIZE)
+      ], fill=BLACK, outline=None, width=1)
+
   draw.rectangle([
     (tieup_left, tieup_top),
     (tieup_right, tieup_bottom)
