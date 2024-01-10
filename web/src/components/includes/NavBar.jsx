@@ -114,7 +114,7 @@ export default function NavBar() {
               <Menu.Menu position='right'>
                 {isAuthenticated && <>
                   <Menu.Item className='abovee-mobile'><SearchBar /></Menu.Item>
-                  <Dropdown direction="left" pointing="top right" icon={null} style={{ marginTop: 10}}
+                  <Dropdown direction="left" pointing="top right" icon={null} style={{ marginTop: 10, zIndex: 30}}
                     trigger={<UserChip user={user} withoutLink avatarOnly />}
                     >
                     <Dropdown.Menu style={{ minWidth: '200px', paddingTop: 10 }}>
