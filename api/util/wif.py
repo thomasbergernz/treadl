@@ -393,8 +393,8 @@ def draw_image(obj, with_plan=False):
   in_mem_file = io.BytesIO()
   img.save(in_mem_file, 'PNG')
   in_mem_file.seek(0)
-  file_name = 'preview-{0}_{1}_{2}.png'.format(
-    'full' if with_plan else 'base', obj['_id'], int(time.time())
+  file_name = 'preview-{0}_{1}.png'.format(
+    'full' if with_plan else 'base', obj['_id']
   )
   path = 'projects/{}/{}'.format(obj['project'], file_name)
   uploads.upload_file(path, in_mem_file)
