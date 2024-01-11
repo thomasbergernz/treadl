@@ -3,13 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'routeArguments.dart';
 import 'api.dart';
-import 'project.dart';
-import 'settings.dart';
+import 'util.dart';
+import 'lib.dart';
+import 'object.dart';
 
 class _ExploreTabState extends State<ExploreTab> {
   List<dynamic> objects = [];
   bool loading = false;
   final Api api = Api();
+  final Util util = Util();
 
   @override
   initState() {
@@ -31,42 +33,7 @@ class _ExploreTabState extends State<ExploreTab> {
     }
   }
 
-  Widget buildProjectCard(Map<String,dynamic> project) {
-    String description = project['description'] != null ? project['description'].replaceAll("\n", " ") : '';
-    if (description != null && description.length > 80) {
-      description = description.substring(0, 77) + '...';
-    }
-    if (project['visibility'] == 'public') {
-      description = "PUBLIC PROJECT\n" + description;
-    }
-    else description = "PRIVATE PROJECT\n" + description;
-    return new Card(
-        child: InkWell(
-          onTap: () {
-            
-          },
-          child: Container(
-            padding: EdgeInsets.all(5),
-            child: ListTile(
-            leading: new AspectRatio(
-              aspectRatio: 1 / 1,
-              child: new Container(
-                decoration: new BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Icon(Icons.folder)
-              ),
-            ),
-            trailing: Icon(Icons.keyboard_arrow_right),
-            title: Text(project['name'] != null ? project['name'] : 'Untitled project'),
-            subtitle: Text(description),
-          ),
-        ))
-      )
-    ;
-  }
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -79,35 +46,52 @@ class _ExploreTabState extends State<ExploreTab> {
           child: CircularProgressIndicator()
         )
       : Container(
-          margin: const EdgeInsets.all(10.0),
+          color: Color.fromRGBO(255, 251, 248, 1),
+          margin: const EdgeInsets.only(left: 10, right: 10),
           alignment: Alignment.center,
           child: GridView.count(
             crossAxisCount: 2,
             mainAxisSpacing: 5,
             crossAxisSpacing: 5,
+            childAspectRatio: 0.9,
             children: objects.map((object) =>
               Card(
-                elevation: 3,
+                elevation: 20,
                 clipBehavior: Clip.hardEdge,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6.0),
                 ),
                 child: InkWell(
                   onTap: () {
-            
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ObjectScreen(object, object['projectObject']),
+                      ),
+                    );
                   },
                   child: Column(
                     children: [
-                        Container(
-                          height: 100,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(object['previewUrl']),
-                            ),
+                      Container(
+                        height: 100,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(object['previewUrl']),
                           ),
                         ),
-                      Text(object['name']),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            UserChip(object['userObject']),
+                            SizedBox(height: 5),
+                            Text(util.ellipsis(object['name'], 35), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                          ]
+                        )
+                      )
                     ]
                   )
                 )

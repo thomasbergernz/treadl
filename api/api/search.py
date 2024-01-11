@@ -95,7 +95,7 @@ def explore(page = 1):
   all_public_project_ids = list(map(lambda p: p['_id'], all_public_projects))
   for project in all_public_projects:
     project_map[project['_id']] = project
-  objects = list(db.objects.find({'project': {'$in': all_public_project_ids}, 'name': {'$not': re.compile('untitled pattern', re.IGNORECASE)}, 'preview': {'$exists': True}}, {'project': 1, 'name': 1, 'createdAt': 1, 'preview': 1}).sort('createdAt', pymongo.DESCENDING).skip((page - 1) * per_page).limit(per_page))
+  objects = list(db.objects.find({'project': {'$in': all_public_project_ids}, 'name': {'$not': re.compile('untitled pattern', re.IGNORECASE)}, 'preview': {'$exists': True}}, {'project': 1, 'name': 1, 'createdAt': 1, 'type': 1, 'preview': 1}).sort('createdAt', pymongo.DESCENDING).skip((page - 1) * per_page).limit(per_page))
   for object in objects:
     object['projectObject'] = project_map.get(object['project'])
     if 'preview' in object and '.png' in object['preview']:

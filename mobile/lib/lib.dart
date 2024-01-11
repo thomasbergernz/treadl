@@ -229,3 +229,19 @@ class NoticeboardInput extends StatelessWidget {
   }
 }
 
+class UserChip extends StatelessWidget {
+  final Map<String,dynamic> user;
+  final Util utils = new Util();
+  UserChip(this.user) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        utils.avatarImage(utils.avatarUrl(user), size: 20),
+        SizedBox(width: 5),
+        Text(user['username'], style: TextStyle(color: Colors.grey))
+      ]
+    );
+  }
+}

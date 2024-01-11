@@ -14,12 +14,12 @@ class _ObjectScreenState extends State<ObjectScreen> {
   Map<String,dynamic> _object;
   Map<String,dynamic>? _pattern;
   bool _isLoading = false;
-  final Function _onUpdate;
-  final Function _onDelete;
+  final Function? onUpdate;
+  final Function? onDelete;
   final Api api = Api();
   final Util util = Util();
   
-  _ObjectScreenState(this._object, this._project, this._onUpdate, this._onDelete) { }
+  _ObjectScreenState(this._object, this._project, {this.onUpdate, this.onDelete}) { }
 
   @override
   initState() {
@@ -63,7 +63,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
       Navigator.pop(context);
       Navigator.pop(modalContext);
       Navigator.pop(context);
-      _onDelete(_object['_id']);
+      onDelete!(_object['_id']);
     }
   }
 
@@ -115,7 +115,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
                 if (data['success']) {
                   Navigator.pop(context);
                   _object['name'] = data['payload']['name'];
-                  _onUpdate(_object['_id'], data['payload']);
+                  onUpdate!(_object['_id'], data['payload']);
                   setState(() {
                     _object = _object;
                   });
@@ -206,12 +206,12 @@ class _ObjectScreenState extends State<ObjectScreen> {
               _shareObject(); 
             },
           ),
-          IconButton(
+          onUpdate != null ? IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
               _showSettingsModal(context); 
             },
-          ),
+          ) : SizedBox(height: 0),
         ]
       ),
       body: Container(
@@ -230,10 +230,10 @@ class _ObjectScreenState extends State<ObjectScreen> {
 class ObjectScreen extends StatefulWidget {
   final Map<String,dynamic> _object;
   final Map<String,dynamic> _project;
-  final Function _onUpdate;
-  final Function _onDelete;
-  ObjectScreen(this._object, this._project, this._onUpdate, this._onDelete) { }
+  final Function? onUpdate;
+  final Function? onDelete;
+  ObjectScreen(this._object, this._project, {this.onUpdate, this.onDelete}) { }
   @override
-  _ObjectScreenState createState() => _ObjectScreenState(_object, _project, _onUpdate, _onDelete); 
+  _ObjectScreenState createState() => _ObjectScreenState(_object, _project, onUpdate: onUpdate, onDelete: onDelete); 
 }
 

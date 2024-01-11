@@ -239,7 +239,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ObjectScreen(object, _project, _onUpdateObject, _onDeleteObject),
+              builder: (context) => ObjectScreen(object, _project, onUpdate: _onUpdateObject, onDelete: _onDeleteObject),
             ),
           );
         },
