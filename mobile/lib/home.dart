@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'explore.dart';
 import 'projects.dart';
 import 'groups.dart';
 
@@ -13,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _MyStatefulWidgetState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget> [
+    ExploreTab(),
     ProjectsTab(),
     GroupsTab()
   ];
@@ -32,12 +34,16 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
+            icon: Icon(Icons.explore),
+            label: 'Explore',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.folder),
-            label: 'Projects',
+            label: 'My Projects',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Groups',
+            label: 'My Groups',
           ),
         ],
         currentIndex: _selectedIndex,

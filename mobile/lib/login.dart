@@ -46,19 +46,17 @@ class _LoginScreenState extends State<LoginScreen> {
         title: Text('Login to Treadl'),
       ),
       body: Container(
-        margin: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        margin: const EdgeInsets.only(top: 40, left: 10, right: 10),
+        child: ListView(
           children: <Widget>[
-            Image(image: AssetImage('assets/logo.png'), width: 100),
-            SizedBox(height: 20),
-            Text('Login using your Treadl account.', style: TextStyle(fontSize: 18)),
-            SizedBox(height: 20),
+            Text('Login with your Treadl account', style: TextStyle(fontSize: 20)),
+            SizedBox(height: 30),
             TextField(
               autofocus: true,
               controller: _emailController,
               decoration: InputDecoration(
-                hintText: 'sam@example.com', labelText: 'Email address or username'
+                hintText: 'sam@example.com', labelText: 'Email address or username',
+                border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 10),
@@ -67,7 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
-                hintText: 'Type your password', labelText: 'Your password'
+                hintText: 'Type your password', labelText: 'Your password',
+                border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 5),

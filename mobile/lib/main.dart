@@ -107,10 +107,11 @@ class Startup extends StatelessWidget {
         api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken!});
       }
       // Push without including current route in stack:
-      Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+      //Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
     } else {
-      Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (Route<dynamic> route) => false);
+      //Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (Route<dynamic> route) => false);
     }
+    Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
   }
 
   @override

@@ -114,7 +114,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Projects'),
+        title: Text('My Projects'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.info_outline),

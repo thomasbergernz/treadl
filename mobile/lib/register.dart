@@ -47,66 +47,59 @@ class _RegisterScreenState extends State<RegisterScreen> {
         title: Text('Register with Treadl'),
       ),
       body: Container(
-        margin: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child:Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(image: AssetImage('assets/logo.png'), width: 100),
-              SizedBox(height: 20),
-              Text('Register a free account.', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 20),
-              TextField(
-                autofocus: true,
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  hintText: 'username', labelText: 'Choose a username',
-                  border: OutlineInputBorder(),
-                ),
+        margin: const EdgeInsets.only(top: 40, left: 10, right: 10),
+        child: ListView(
+          children: <Widget>[
+            TextField(
+              autofocus: true,
+              controller: _usernameController,
+              decoration: InputDecoration(
+                hintText: 'username', labelText: 'Choose a username',
+                border: OutlineInputBorder(),
               ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  hintText: 'sam@example.com', labelText: 'Your email address', helperText: 'For notifications & password resets - we never share this.',
-                  border: OutlineInputBorder()
-                ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                hintText: 'sam@example.com', labelText: 'Your email address', helperText: 'For notifications & password resets - we never share this.',
+                border: OutlineInputBorder()
               ),
-              SizedBox(height: 10),
-              TextField(
-                onEditingComplete: () => _submit(context),
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: 'Type your password', labelText: 'Choose a strong password',
-                  border: OutlineInputBorder()
-                ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              onEditingComplete: () => _submit(context),
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Type your password', labelText: 'Choose a strong password',
+                border: OutlineInputBorder()
               ),
-              SizedBox(height: 20),
-              RichText(
+            ),
+            SizedBox(height: 20),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: 'By registering you agree to Treadl\'s ',
+                style: Theme.of(context).textTheme.bodyText1,
+                children: <TextSpan>[
+                  TextSpan(text: 'Terms of Use', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.pink), recognizer: new TapGestureRecognizer()..onTap = () => launch('https://treadl.com/terms-of-use')),
+                  TextSpan(text: ' and '),
+                  TextSpan(text: 'Privacy Policy', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.pink), recognizer: new TapGestureRecognizer()..onTap = () => launch('https://treadl.com/privacy')),
+                  TextSpan(text: '.'),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _submit(context),
+              //color: Colors.pink,
+              child: _registering ? SizedBox(height: 20, width: 20, child:CircularProgressIndicator(backgroundColor: Colors.white)) : Text("Register",
                 textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: 'By registering you agree to Treadl\'s ',
-                  style: Theme.of(context).textTheme.bodyText1,
-                  children: <TextSpan>[
-                    TextSpan(text: 'Terms of Use', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.pink), recognizer: new TapGestureRecognizer()..onTap = () => launch('https://treadl.com/terms-of-use')),
-                    TextSpan(text: ' and '),
-                    TextSpan(text: 'Privacy Policy', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.pink), recognizer: new TapGestureRecognizer()..onTap = () => launch('https://treadl.com/privacy')),
-                    TextSpan(text: '.'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => _submit(context),
-                //color: Colors.pink,
-                child: _registering ? SizedBox(height: 20, width: 20, child:CircularProgressIndicator(backgroundColor: Colors.white)) : Text("Register",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 15)
-                )
-              ),
-            ]
-          )
+                style: TextStyle(color: Colors.white, fontSize: 15)
+              )
+            ),
+          ]
         )
       ),
     ); 
