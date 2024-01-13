@@ -81,7 +81,7 @@ class Util {
     await Share.share('$text: $url');
   }
 
-  String ellipsis(String input, int cutoff) {
+  static String ellipsis(String input, int cutoff) {
     return (input.length <= cutoff)
       ? input
     : '${input.substring(0, cutoff)}...';

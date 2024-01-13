@@ -11,8 +11,8 @@ import 'util.dart';
 import 'object.dart';
 
 class _ProjectScreenState extends State<ProjectScreen> {
-  final Function _onUpdate;
-  final Function _onDelete;
+  final Function? onUpdate;
+  final Function? onDelete;
   final picker = ImagePicker();
   final Api api = Api();
   final Util util = Util();
@@ -21,7 +21,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   bool _loading = false;
   bool _creating = false;
   
-  _ProjectScreenState(this._project, this._onUpdate, this._onDelete) { }
+  _ProjectScreenState(this._project, {this.onUpdate, this.onDelete}) { }
 
   @override
   initState() {
@@ -46,13 +46,13 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
   void _onDeleteProject() {
     Navigator.pop(context);
-    _onDelete(_project['_id']);
+    onDelete!(_project['_id']);
   }
   void _onUpdateProject(project) {
     setState(() {
       _project = project;
     });
-    _onUpdate(project['_id'], project);
+    onUpdate!(project['_id'], project);
   }
 
   void _onUpdateObject(String id, Map<String,dynamic> update) {
@@ -265,12 +265,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
               _shareProject(); 
             },
           ),
-          IconButton(
+          onUpdate != null ? IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
               showSettingsModal(); 
             },
-          ),
+          ) : SizedBox(width: 0),
         ]
       ),
       body: _loading ?
@@ -346,11 +346,11 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
 class ProjectScreen extends StatefulWidget {
   final Map<String,dynamic> _project;
-  final Function _onUpdate;
-  final Function _onDelete;
-  ProjectScreen(this._project, this._onUpdate, this._onDelete) { }
+  final Function? onUpdate;
+  final Function? onDelete;
+  ProjectScreen(this._project, {this.onUpdate, this.onDelete}) { }
   @override
-  _ProjectScreenState createState() => _ProjectScreenState(_project, _onUpdate, _onDelete); 
+  _ProjectScreenState createState() => _ProjectScreenState(_project, onUpdate: onUpdate, onDelete: onDelete); 
 }
 
 class _ProjectSettingsDialog extends StatelessWidget {

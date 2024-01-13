@@ -84,7 +84,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ProjectScreen(project, _onUpdateProject, _onDeleteProject),
+                builder: (context) => ProjectScreen(project, onUpdate: _onUpdateProject, onDelete: _onDeleteProject),
               ),
             );
           },

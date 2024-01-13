@@ -61,8 +61,11 @@ def discover(user, count = 3):
   random.shuffle(all_projects)
   for p in all_projects:
     if db.objects.find_one({'project': p['_id'], 'name': {'$ne': 'Untitled pattern'}}):
-      owner = db.users.find_one({'_id': p['user']}, {'username': 1})
+      owner = db.users.find_one({'_id': p['user']}, {'username': 1, 'avatar': 1})
       p['fullName'] = owner['username'] + '/' + p['path']
+      p['owner'] = owner
+      if 'avatar' in p['owner']:
+        p['owner']['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(p['owner']['_id'], p['owner']['avatar']))
       projects.append(p)
     if len(projects) >= count: break
 

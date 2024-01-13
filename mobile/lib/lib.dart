@@ -7,6 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'api.dart';
 import 'util.dart';
 import 'user.dart';
+import 'object.dart';
+import 'project.dart';
 
 class Alert extends StatelessWidget {
   final String type;
@@ -242,6 +244,121 @@ class UserChip extends StatelessWidget {
         SizedBox(width: 5),
         Text(user['username'], style: TextStyle(color: Colors.grey))
       ]
+    );
+  }
+}
+
+class PatternCard extends StatelessWidget {
+  final Map<String,dynamic> object;
+  PatternCard(this.object) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      clipBehavior: Clip.hardEdge,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6.0),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ObjectScreen(object, object['projectObject']),
+            ),
+          );
+        },
+        child: Column(
+          children: [
+            Container(
+              height: 100,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(object['previewUrl']),
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  UserChip(object['userObject']),
+                  SizedBox(height: 5),
+                  Text(Util.ellipsis(object['name'], 35), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ]
+              )
+            )
+          ]
+        )
+      )
+    );
+  }
+}
+
+class ProjectCard extends StatelessWidget {
+  final Map<String,dynamic> project;
+  ProjectCard(this.project) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      clipBehavior: Clip.hardEdge,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6.0),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProjectScreen(project),
+            ),
+          );
+        },
+        child: Column(
+          children: [
+            Container(
+              width: 150,
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  UserChip(project['owner']),
+                  SizedBox(height: 5),
+                  Text(Util.ellipsis(project['name'], 35), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ]
+              )
+            )
+          ]
+        )
+      )
+    );
+  }
+}
+
+class CustomText extends StatelessWidget {
+  final String text;
+  final String type;
+  final double margin;
+  TextStyle? style;
+  CustomText(this.text, this.type, {this.margin = 0}) {
+    if (this.type == 'h1') {
+      style = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+    }
+    else {
+      style = TextStyle();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(this.margin), 
+      child: Text(text, style: style)
     );
   }
 }
