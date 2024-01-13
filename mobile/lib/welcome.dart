@@ -36,7 +36,16 @@ class WelcomeScreen extends StatelessWidget {
           SizedBox(height: 15),
           CupertinoButton(
             onPressed: () => _register(context),
+            color: Colors.pink[400],
             child: new Text("Register",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            )
+          ),
+          SizedBox(height: 35),
+          CupertinoButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: new Text("Cancel",
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             )

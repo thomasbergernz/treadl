@@ -31,7 +31,7 @@ class AppModel extends ChangeNotifier {
       prefs.setString('apiToken', apiToken!);
       var data = await api.request('GET', '/users/me');
       if (data['success'] == true) {
-        setUser(data['payload']);
+        setUser(User.loadJSON(data['payload']));
         print(data);
       }
     }

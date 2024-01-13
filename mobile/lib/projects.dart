@@ -122,7 +122,9 @@ class _ProjectsTabState extends State<ProjectsTab> {
         Image(image: AssetImage('assets/login.png'), width: 300),
         Text('Once logged in, you\'ll find your own projects shown here.', textAlign: TextAlign.center),
         CupertinoButton(
-          onPressed: () => {},
+          onPressed: () {
+            Navigator.of(context).pushNamed('/welcome');
+          },
           child: new Text("Login or register",
             textAlign: TextAlign.center,
           )
