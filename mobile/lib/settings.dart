@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'api.dart';
+import 'model.dart';
 
 class SettingsScreen extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
  
   void _logout(BuildContext context) async {
+    AppModel model = Provider.of<AppModel>(context, listen: false);
     Api api = Api();
     api.request('POST', '/accounts/logout');
-    SharedPreferences prefs = await SharedPreferences.getInstance();      
-    prefs.remove('apiToken');
-    Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (Route<dynamic> route) => false);
+    model.setToken(null);
+    model.setUser(null);
+    Navigator.of(context).pop();
   }
 
   void _deleteAccount(BuildContext context) async {
@@ -41,9 +43,10 @@ class SettingsScreen extends StatelessWidget {
             Api api = Api();
             var data = await api.request('DELETE', '/accounts', {'password': _passwordController.text});
             if (data['success'] == true) {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.remove('apiToken');
-              Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (Route<dynamic> route) => false);
+              AppModel model = Provider.of<AppModel>(context, listen: false);
+              model.setToken(null);
+              model.setUser(null);
+              Navigator.popUntil(context, ModalRoute.withName('/home'));
             } else {
               showDialog(
                 context: context,

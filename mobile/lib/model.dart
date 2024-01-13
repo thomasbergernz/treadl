@@ -34,6 +34,8 @@ class AppModel extends ChangeNotifier {
         setUser(User.loadJSON(data['payload']));
         print(data);
       }
+    } else {
+      prefs.remove('apiToken');
     }
   }
 /*
