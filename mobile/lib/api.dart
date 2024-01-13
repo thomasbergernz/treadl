@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'util.dart';
+import 'model.dart';
 
 class Api {
 
   String? _token;
   //final String apiBase = 'https://api.treadl.com';
   final String apiBase = 'http://192.168.5.134:2001';
+
+  Api({token: null}) {
+    if (token != null) _token = token;
+  }
 
   Future<String?> loadToken() async {
     if (_token != null) {

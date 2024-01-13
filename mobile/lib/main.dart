@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 //import 'package:fluttertoast/fluttertoast.dart';
 import 'api.dart';
-import 'store.dart';
+import 'model.dart';
 import 'welcome.dart';
 import 'login.dart';
 import 'register.dart';
@@ -15,7 +15,7 @@ import 'home.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => Store(),
+      create: (context) => AppModel(),
       child: MyApp()
     )
   );
@@ -88,7 +88,7 @@ class Startup extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();      
     String? token = prefs.getString('apiToken');
     if (token != null) {
-      Provider.of<Store>(context, listen: false).setToken(token!);
+      Provider.of<AppModel>(context, listen: false).setToken(token!);
       
       FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
       await _firebaseMessaging.requestPermission(

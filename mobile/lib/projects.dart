@@ -5,6 +5,7 @@ import 'routeArguments.dart';
 import 'api.dart';
 import 'project.dart';
 import 'settings.dart';
+import 'model.dart';
 
 class _ProjectsTabState extends State<ProjectsTab> {
   List<dynamic> _projects = [];
@@ -110,6 +111,44 @@ class _ProjectsTabState extends State<ProjectsTab> {
     ;
   }
 
+  Widget getBody() {
+    AppModel model = Provider.of<AppModel>(context);
+    if (model.user == null)
+      return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('You need to login to see this', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+        Image(image: AssetImage('assets/login.png'), width: 300),
+        Text('Once logged in, you\'ll find your own projects shown here.', textAlign: TextAlign.center),
+        CupertinoButton(
+          onPressed: () => {},
+          child: new Text("Login or register",
+            textAlign: TextAlign.center,
+          )
+        )
+      ]
+    );
+    if (_loading) 
+      return CircularProgressIndicator();
+    else if (_projects != null && _projects.length > 0)
+      return ListView.builder(
+        itemCount: _projects.length,
+        itemBuilder: (BuildContext context, int index) {
+          return buildProjectCard(_projects[index]);
+        },
+      );
+    else return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('Create your first project', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+        Image(image: AssetImage('assets/reading.png'), width: 300),
+        Text('Projects contain all the files and patterns that make up a piece of work. Create one using the + button below.', textAlign: TextAlign.center),
+      ]
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,31 +168,10 @@ class _ProjectsTabState extends State<ProjectsTab> {
           ),
         ]
       ),
-      body: _loading ?
-        Container(
-          margin: const EdgeInsets.all(10.0),
-          alignment: Alignment.center,
-          child: CircularProgressIndicator()
-        )
-      : Container(
+      body: Container(
         margin: const EdgeInsets.all(10.0),
         alignment: Alignment.center,
-        child: (_projects != null && _projects.length > 0) ?
-          ListView.builder(
-            itemCount: _projects.length,
-            itemBuilder: (BuildContext context, int index) {
-              return buildProjectCard(_projects[index]);
-            },
-          )
-        :
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Create your first project', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
-              Image(image: AssetImage('assets/reading.png'), width: 300),
-              Text('Projects contain all the files and patterns that make up a piece of work. Create one using the + button below.', textAlign: TextAlign.center),
-          ])
+        child: getBody()
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: showNewProjectDialog,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart'; 
 import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 import 'api.dart';
+import 'model.dart';
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
@@ -16,9 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
     var data = await api.request('POST', '/accounts/login', {'email': _emailController.text, 'password': _passwordController.text});
     setState(() => _loggingIn = false);
     if (data['success'] == true) {
-      String token = data['payload']['token'];
-      SharedPreferences prefs = await SharedPreferences.getInstance();      
-      prefs.setString('apiToken', token);
+      AppModel model = Provider.of<AppModel>(context, listen: false);
+      model.setToken(data['payload']['token']);
       Navigator.of(context).pushNamedAndRemoveUntil('/onboarding', (Route<dynamic> route) => false);
     }
     else {
