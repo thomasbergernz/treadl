@@ -112,7 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 CupertinoButton(
                   color: Colors.white,
                   child: Text('Get started', style: TextStyle(color: Colors.pink)),
-                  onPressed: () => context.go('/'),
+                  onPressed: () => context.go('/home'),
                 ),
               ]
             )

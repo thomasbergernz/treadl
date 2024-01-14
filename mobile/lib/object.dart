@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'api.dart';
 import 'util.dart';
@@ -62,9 +63,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
   void _deleteObject(BuildContext context, BuildContext modalContext) async {
     var data = await api.request('DELETE', '/objects/' + id);
     if (data['success']) {
-      Navigator.pop(context);
-      Navigator.pop(modalContext);
-      Navigator.pop(context);
+      context.go('/home');
       onDelete!(id);
     }
   }
@@ -79,7 +78,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
           CupertinoDialogAction(
             isDefaultAction: true,
             child: Text('No'),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
           ),
           CupertinoDialogAction(
             isDestructiveAction: true,
@@ -107,7 +106,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
             TextButton(
               child: Text('CANCEL'),
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             TextButton(
@@ -115,14 +114,14 @@ class _ObjectScreenState extends State<ObjectScreen> {
               onPressed: () async {
                 var data = await api.request('PUT', '/objects/' + id, {'name': renameController.text});
                 if (data['success']) {
-                  Navigator.pop(context);
+                  context.pop();
                   object!['name'] = data['payload']['name'];
                   onUpdate!(id, data['payload']);
                   setState(() {
                     object = object;
                   });
                 }
-                Navigator.pop(context);
+                context.pop();
               },
             ),
           ],
@@ -138,7 +137,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
         return CupertinoActionSheet(
           title: Text('Manage this object'),
           cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(modalContext).pop(),
+            onPressed: () => modalContext.pop(),
             child: Text('Cancel')
           ),
           actions: [

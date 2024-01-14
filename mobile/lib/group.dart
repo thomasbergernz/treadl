@@ -6,31 +6,41 @@ import 'group_noticeboard.dart';
 import 'group_members.dart';
 
 class _GroupScreenState extends State<GroupScreen> {
+  final String id;
+  Map<String, dynamic>? _group;
   int _selectedIndex = 0;
-  List<Widget> _widgetOptions = <Widget> [];
-  final Map<String, dynamic> _group;
 
-  _GroupScreenState(this._group) {
-    _widgetOptions = <Widget> [
-      GroupNoticeBoardTab(this._group),
-      GroupMembersTab(this._group)
-    ];
+  _GroupScreenState(this.id) { }
+
+  @override
+  void initState() {
+    fetchGroup();
+    super.initState();
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  void fetchGroup() async {
+    Api api = Api();
+    var data = await api.request('GET', '/groups/' + id);
+    if (data['success'] == true) {
+      setState(() {
+        _group = data['payload'];
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_group['name'])
+        title: Text(_group?['name'] ?? 'Group')
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: _group != null ?
+          [
+            GroupNoticeBoardTab(_group!),
+            GroupMembersTab(_group!)
+          ].elementAt(_selectedIndex)
+        : CircularProgressIndicator(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -45,15 +55,17 @@ class _GroupScreenState extends State<GroupScreen> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.pink[600],
-        onTap: _onItemTapped,
+        onTap: (int index) => setState(() {
+          _selectedIndex = index;
+        }),
       ),
     );
   }
 }
 
 class GroupScreen extends StatefulWidget {
-  final Map<String,dynamic> group;
-  GroupScreen(this.group) { }
+  final String id;
+  GroupScreen(this.id) { }
   @override
-  _GroupScreenState createState() => _GroupScreenState(group); 
+  _GroupScreenState createState() => _GroupScreenState(id); 
 }

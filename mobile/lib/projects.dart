@@ -19,6 +19,8 @@ class _ProjectsTabState extends State<ProjectsTab> {
   }
 
   void getProjects() async {
+    AppModel model = Provider.of<AppModel>(context, listen: false);
+    if (model.user == null) return;
     setState(() {
       _loading = true;
     });

@@ -79,6 +79,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppModel model = Provider.of<AppModel>(context);
+    User? user = model.user;
     return Scaffold(
       appBar: AppBar(
         title: Text('About Treadl'),
@@ -96,16 +98,24 @@ class SettingsScreen extends StatelessWidget {
           ),
 
           SizedBox(height: 30),
-      
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Logout'),
-            onTap: () => _logout(context),
-          ),
-          ListTile(
-            leading: Icon(Icons.delete),
-            title: Text('Delete Account'),
-            onTap: () => _deleteAccount(context),
+
+          user != null ? Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.exit_to_app),
+                title: Text('Logout'),
+                onTap: () => _logout(context),
+              ),
+              ListTile(
+                leading: Icon(Icons.delete),
+                title: Text('Delete Account'),
+                onTap: () => _deleteAccount(context),
+              ),
+            ]
+          ) : CupertinoButton(
+            color: Colors.pink,
+            child: Text('Join Treadl', style: TextStyle(color: Colors.white)),
+            onPressed: () => context.push('/welcome'),
           ),
 
           SizedBox(height: 30),

@@ -15,6 +15,7 @@ import 'home.dart';
 import 'project.dart';
 import 'object.dart';
 import 'settings.dart';
+import 'group.dart';
 
 final router = GoRouter(
   routes: [
@@ -38,6 +39,7 @@ final router = GoRouter(
     GoRoute(path: '/onboarding', builder: (context, state) => OnboardingScreen()),
     GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
     GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
+    GoRoute(path: '/groups/:id', builder: (context, state) => GroupScreen(state.pathParameters['id']!)),
     GoRoute(path: '/:username/:path', builder: (context, state) => ProjectScreen(state.pathParameters['username']!, state.pathParameters['path']!)),
     GoRoute(path: '/:username/:path/:id', builder: (context, state) => ObjectScreen(state.pathParameters['username']!, state.pathParameters['path']!, state.pathParameters['id']!)),
   ],

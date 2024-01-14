@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'group.dart';
+import 'package:go_router/go_router.dart';
 import 'api.dart';
 import 'model.dart';
 import 'lib.dart';
@@ -16,6 +16,8 @@ class _GroupsTabState extends State<GroupsTab> {
   }
 
   void getGroups() async {
+    AppModel model = Provider.of<AppModel>(context, listen: false);
+    if (model.user == null) return;
     setState(() => _loading = true);
     Api api = Api();
     var data = await api.request('GET', '/groups');
@@ -36,14 +38,7 @@ class _GroupsTabState extends State<GroupsTab> {
     }
     return Card(
         child: InkWell(
-          onTap: () {
-            Navigator.push(
-	      context,
-              MaterialPageRoute(
-                builder: (context) => GroupScreen(group),
-              ),
-            );
-          },
+          onTap: () => context.push('/groups/' + group['_id']),
           child: ListTile(
             leading: Icon(Icons.people),
             trailing: Icon(Icons.keyboard_arrow_right),
