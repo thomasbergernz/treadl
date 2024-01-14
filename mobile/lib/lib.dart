@@ -314,12 +314,6 @@ class ProjectCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           context.push('/' + this.project['owner']['username'] + '/' + this.project['path']);
-          /*Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProjectScreen(project),
-            ),
-          );*/
         },
         child: Column(
           children: [

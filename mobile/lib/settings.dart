@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'api.dart';
 import 'model.dart';
 
@@ -14,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
     api.request('POST', '/accounts/logout');
     model.setToken(null);
     model.setUser(null);
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   void _deleteAccount(BuildContext context) async {
@@ -35,7 +36,7 @@ class SettingsScreen extends StatelessWidget {
       actions: [
         TextButton(
           child: Text('Cancel'),
-          onPressed: () { Navigator.of(context).pop(); }
+          onPressed: () => context.pop(),
         ),
         ElevatedButton(
           child: Text('Delete Account'),
@@ -46,7 +47,7 @@ class SettingsScreen extends StatelessWidget {
               AppModel model = Provider.of<AppModel>(context, listen: false);
               model.setToken(null);
               model.setUser(null);
-              Navigator.popUntil(context, ModalRoute.withName('/home'));
+              context.go('/home');
             } else {
               showDialog(
                 context: context,
@@ -57,7 +58,7 @@ class SettingsScreen extends StatelessWidget {
                     CupertinoDialogAction(
                       isDefaultAction: true,
                       child: Text('OK'),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => context.pop(),
                     ),
                   ],
                 )

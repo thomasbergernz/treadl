@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'routeArguments.dart';
 import 'api.dart';
-import 'project.dart';
-import 'settings.dart';
 import 'model.dart';
 import 'lib.dart';
 
@@ -84,14 +81,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
     return new Card(
         child: InkWell(
           onTap: () {
-            print(project);
             context.push('/' + project['owner']['username'] + '/' + project['path']);
-            /*Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProjectScreen(project, onUpdate: _onUpdateProject, onDelete: _onDeleteProject),
-              ),
-            );*/
           },
           child: Container(
             padding: EdgeInsets.all(5),
@@ -148,12 +138,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
           IconButton(
             icon: Icon(Icons.info_outline),
             onPressed: () {
-              Navigator.push(
-		context,
-                MaterialPageRoute(
-                  builder: (context) => SettingsScreen(),
-                ),
-              );
+              context.push('/settings');
             },
           ),
         ]
@@ -236,7 +221,7 @@ class _NewProjectDialogState extends State<_NewProjectDialog> {
             SizedBox(height: 10),
             CupertinoButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                context.pop();
               },
               child: Text('Cancel'),
             )

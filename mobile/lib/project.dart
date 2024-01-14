@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'api.dart';
@@ -61,7 +62,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void _onDeleteProject() {
-    Navigator.pop(context);
+    context.pop();
     onDelete!(project!['_id']);
   }
   void _onUpdateProject(project) {
@@ -167,7 +168,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
             CupertinoDialogAction(
               isDefaultAction: true,
               child: Text('OK'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             ),
           ],
         )
@@ -395,7 +396,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
             TextButton(
               child: Text('CANCEL'),
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             TextButton(
@@ -403,10 +404,10 @@ class _ProjectSettingsDialog extends StatelessWidget {
               onPressed: () async {
                 var data = await api.request('PUT', '/projects/' + fullPath, {'name': renameController.text});
                 if (data['success']) {
-                  Navigator.pop(context); 
+                  context.pop(); 
                   _onUpdateProject(data['payload']);
                 }
-                Navigator.pop(context);
+                context.pop();
               },
             ),
           ],
@@ -418,7 +419,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
   void _toggleVisibility(BuildContext context, bool checked) async {
     var data = await api.request('PUT', '/projects/' + fullPath, {'visibility': checked ? 'private': 'public'});
     if (data['success']) {
-      Navigator.pop(context); 
+      context.pop(); 
       _onUpdateProject(data['payload']);
     }
   }
@@ -426,8 +427,8 @@ class _ProjectSettingsDialog extends StatelessWidget {
   void _deleteProject(BuildContext context, BuildContext modalContext) async {
     var data = await api.request('DELETE', '/projects/' + fullPath);
     if (data['success']) {
-      Navigator.pop(context);
-      Navigator.pop(modalContext);
+      context.pop();
+      context.pop();
       _onDelete();
     }
   }
@@ -442,7 +443,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
           CupertinoDialogAction(
             isDefaultAction: true,
             child: Text('No'),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
           ),
           CupertinoDialogAction(
             isDestructiveAction: true,
@@ -459,7 +460,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
     return CupertinoActionSheet(
       title: Text('Manage this project'),
       cancelButton: CupertinoActionSheetAction(
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => context.pop(),
         child: Text('Cancel')
       ),
       actions: [

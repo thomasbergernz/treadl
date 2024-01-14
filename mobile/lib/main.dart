@@ -13,6 +13,7 @@ import 'register.dart';
 import 'onboarding.dart';
 import 'home.dart';
 import 'project.dart';
+import 'settings.dart';
 
 final router = GoRouter(
   routes: [
@@ -35,6 +36,7 @@ final router = GoRouter(
     GoRoute(path: '/register', builder: (context, state) => RegisterScreen()),
     GoRoute(path: '/onboarding', builder: (context, state) => OnboardingScreen()),
     GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
+    GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
     GoRoute(path: '/:username/:id', builder: (context, state) => ProjectScreen(state.pathParameters['username']!, state.pathParameters['id']!)),
   ],
 );
