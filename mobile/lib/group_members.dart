@@ -6,7 +6,6 @@ import 'util.dart';
 import 'user.dart';
 
 class _GroupMembersTabState extends State<GroupMembersTab> {
-  final Util util = new Util();
   final Map<String,dynamic> _group;
   final Api api = Api();
   List<dynamic> _members = [];
@@ -34,7 +33,7 @@ class _GroupMembersTabState extends State<GroupMembersTab> {
   Widget getMemberCard(member) {
     return new ListTile(
       onTap: () => context.push('/' + member['username']),
-      leading: util.avatarImage(util.avatarUrl(member), size: 40),
+      leading: Util.avatarImage(Util.avatarUrl(member), size: 40),
       trailing: Icon(Icons.keyboard_arrow_right),
       title: Text(member['username'])
     );

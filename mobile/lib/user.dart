@@ -9,7 +9,6 @@ import 'lib.dart';
 
 class _UserScreenState extends State<UserScreen> with SingleTickerProviderStateMixin {
   final String username;
-  final Util util = new Util();
   final Api api = Api();
   TabController? _tabController;
   Map<String,dynamic>? _user;
@@ -49,7 +48,7 @@ class _UserScreenState extends State<UserScreen> with SingleTickerProviderStateM
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(children: [
-            util.avatarImage(util.avatarUrl(u), size: 120),
+            Util.avatarImage(Util.avatarUrl(u), size: 120),
             Container(
               padding: EdgeInsets.only(left: 10),
               child: Column(

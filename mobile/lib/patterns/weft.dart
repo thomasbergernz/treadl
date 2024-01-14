@@ -4,7 +4,6 @@ import '../util.dart';
 class WeftPainter extends CustomPainter {
   final Map<String,dynamic> pattern;
   final double BASE_SIZE;
-  final Util util = Util();
 
   @override
   WeftPainter(this.BASE_SIZE, this.pattern) {}
@@ -50,7 +49,7 @@ class WeftPainter extends CustomPainter {
           Offset(size.width - BASE_SIZE, y) &
           Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
           Paint()
-            ..color = util.rgb(colour!)
+            ..color = Util.rgb(colour!)
         );
       }
     }

@@ -115,8 +115,7 @@ class Api {
     http.Client client = http.Client();
     http.Response response = await client.get(uri);
     if(response.statusCode == 200) {
-      Util util = Util();
-      final String dirPath = await util.storagePath();
+      final String dirPath = await Util.storagePath();
       final file = File('$dirPath/$fileName');
       await file.writeAsBytes(response.bodyBytes);
       return file;

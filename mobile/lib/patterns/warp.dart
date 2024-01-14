@@ -4,7 +4,6 @@ import '../util.dart';
 class WarpPainter extends CustomPainter {
   final Map<String,dynamic> pattern;
   final double BASE_SIZE;
-  final Util util = Util();
 
   @override
   WarpPainter(this.BASE_SIZE, this.pattern) {}
@@ -54,7 +53,7 @@ class WarpPainter extends CustomPainter {
           Offset(x, 0) &
           Size(BASE_SIZE.toDouble(), BASE_SIZE.toDouble()),
           Paint()
-            ..color = util.rgb(colour!)
+            ..color = Util.rgb(colour!)
         );
       }
     }

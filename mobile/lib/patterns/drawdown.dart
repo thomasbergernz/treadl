@@ -5,7 +5,6 @@ import '../util.dart';
 class DrawdownPainter extends CustomPainter {
   final Map<String,dynamic> pattern;
   final double BASE_SIZE;
-  final Util util = Util();
 
   @override
   DrawdownPainter(this.BASE_SIZE, this.pattern) {}
@@ -33,8 +32,8 @@ class DrawdownPainter extends CustomPainter {
         // Ensure we only get a treadle in the allowed bounds
         int treadle = weft['treadling'][tread]['treadle'] > weft['treadles'] ? 0 : weft['treadling'][tread]['treadle'];
         int shaft = warp['threading'][thread]['shaft'];
-        Color weftColour = util.rgb(weft['treadling'][tread]['colour'] ?? weft['defaultColour']);
-        Color warpColour = util.rgb(warp['threading'][thread]['colour'] ?? warp['defaultColour']);
+        Color weftColour = Util.rgb(weft['treadling'][tread]['colour'] ?? weft['defaultColour']);
+        Color warpColour = Util.rgb(warp['threading'][thread]['colour'] ?? warp['defaultColour']);
 
         // Only capture valid tie-ups (e.g. in case there is data for more shafts, which are then reduced)
         // Dart throws error if index < 0 so check fiest

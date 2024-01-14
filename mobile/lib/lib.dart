@@ -71,7 +71,6 @@ class NoticeboardPost extends StatefulWidget {
 }
 class _NoticeboardPostState extends State<NoticeboardPost> {
   final Map<String,dynamic> _entry;
-  final Util utils = new Util();
   final Api api = new Api();
   final Function? onDelete;
   final Function? onReply;
@@ -169,7 +168,7 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
             children: <Widget>[
               GestureDetector(
                 onTap: () => context.push('/' + _entry['authorUser']['username']),
-                child: utils.avatarImage(utils.avatarUrl(_entry['authorUser']), size: isReply ? 30 : 40)
+                child: Util.avatarImage(Util.avatarUrl(_entry['authorUser']), size: isReply ? 30 : 40)
               ),
               SizedBox(width: 5),
               Text(_entry['authorUser']['username'], style: TextStyle(color: Colors.pink)),
@@ -230,16 +229,17 @@ class NoticeboardInput extends StatelessWidget {
 
 class UserChip extends StatelessWidget {
   final Map<String,dynamic> user;
-  final Util utils = new Util();
   UserChip(this.user) {}
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider? avatar = Util.avatarUrl(user);
     return GestureDetector(
       onTap: () => context.push('/' + user['username']),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          utils.avatarImage(utils.avatarUrl(user), size: 20),
+          Util.avatarImage(avatar, size: 20),
           SizedBox(width: 5),
           Text(user['username'], style: TextStyle(color: Colors.grey))
         ]
@@ -317,7 +317,7 @@ class ProjectCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.folder),
+                  Icon(Icons.folder, color: Colors.pink[200]),
                   SizedBox(height: 10),
                   UserChip(project['owner']),
                   SizedBox(height: 5),

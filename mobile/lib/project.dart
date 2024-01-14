@@ -20,7 +20,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
   final Function? onDelete;
   final picker = ImagePicker();
   final Api api = Api();
-  final Util util = Util();
   Map<String,dynamic>? project;
   List<dynamic> _objects = [];
   bool _loading = false;
@@ -59,7 +58,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void _shareProject() {
-    util.shareUrl('Check out my project on Treadl', util.appUrl(fullPath));
+    Util.shareUrl('Check out my project on Treadl', Util.appUrl(fullPath));
   }
 
   void _onDeleteProject() {

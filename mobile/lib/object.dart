@@ -19,7 +19,6 @@ class _ObjectScreenState extends State<ObjectScreen> {
   Map<String,dynamic>? pattern;
   bool _isLoading = false;
   final Api api = Api();
-  final Util util = Util();
   
   _ObjectScreenState(this.username, this.projectPath, this.id) { }
 
@@ -45,7 +44,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     if (object!['type'] == 'pattern') {
       var data = await api.request('GET', '/objects/' + id + '/wif');
       if (data['success'] == true) {
-        file = await util.writeFile(object!['name'] + '.wif', data['payload']['wif']);
+        file = await Util.writeFile(object!['name'] + '.wif', data['payload']['wif']);
       }
     } else {
       String fileName = Uri.file(object!['url']).pathSegments.last;
@@ -53,7 +52,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
     }
 
     if (file != null) {
-      util.shareFile(file!, withDelete: true);
+      Util.shareFile(file!, withDelete: true);
     }
     setState(() => _isLoading = false);
   }

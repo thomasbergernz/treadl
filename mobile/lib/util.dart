@@ -9,7 +9,7 @@ String APP_URL = 'https://www.treadl.com';
 
 class Util {
 
-  ImageProvider? avatarUrl(Map<String,dynamic> user) {
+  static ImageProvider? avatarUrl(Map<String,dynamic> user) {
     if (user != null && user['avatar'] != null) {
       if (user['avatar'].length < 3) {
         return AssetImage('assets/avatars/${user['avatar']}.png');
@@ -21,7 +21,7 @@ class Util {
     return null;
   }
 
-  Widget avatarImage(ImageProvider? image, {double size=30}) {
+  static Widget avatarImage(ImageProvider? image, {double size=30}) {
     if (image != null) {
       return new Container(
         width: size,
@@ -38,46 +38,50 @@ class Util {
     return new Container(
       width: size,
       height: size,
-      child: Icon(Icons.person)
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.pink[400],
+      ),
+      child: Icon(Icons.person, size: size/1.5, color: Colors.white)
     );
   }
 
-  Color rgb(String input) {
+  static Color rgb(String input) {
     List<String> parts = input.split(',');
     List<int> iParts = parts.map((p) => int.parse(p)).toList();
     iParts = iParts.map((p) => p > 255 ? 255 : p).toList();
     return Color.fromRGBO(iParts[0], iParts[1], iParts[2], 1);
   }
 
-  String appUrl(String path) {
+  static String appUrl(String path) {
     return APP_URL + '/' + path;
   }
 
-  Future<String> storagePath() async {
+  static Future<String> storagePath() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
-  Future<File> writeFile(String fileName, String data) async {
-    final String dirPath = await storagePath();
+  static Future<File> writeFile(String fileName, String data) async {
+    final String dirPath = await Util.storagePath();
     final file = File('$dirPath/$fileName');
     String contents = data.replaceAll(RegExp(r'\\n'), '\r\n');
     return await file.writeAsString(contents);
   }
 
-  Future<bool> deleteFile(File file) async {
+  static Future<bool> deleteFile(File file) async {
     await file.delete(); 
     return true;
   }
 
-  void shareFile(File file, {bool? withDelete}) async {
+  static void shareFile(File file, {bool? withDelete}) async {
     await Share.shareXFiles([XFile(file.path)]);
     if (withDelete == true) {
-      await deleteFile(file);
+      await Util.deleteFile(file);
     }
   }
 
-  void shareUrl(String text, String url) async {
+  static void shareUrl(String text, String url) async {
     await Share.share('$text: $url');
   }
 
