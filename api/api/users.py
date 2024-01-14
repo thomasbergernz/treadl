@@ -30,13 +30,22 @@ def get(user, username):
   if not user or not user['_id'] == fetch_user['_id']:
     project_query['visibility'] = 'public'
 
-  fetch_user['projects'] = list(db.projects.find(project_query, {'name': 1, 'path': 1, 'description': 1, 'visibility': 1}).limit(15))
-  for project in fetch_user['projects']:
-    project['fullName'] = fetch_user['username'] + '/' + project['path']
   if 'avatar' in fetch_user:
     fetch_user['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(str(fetch_user['_id']), fetch_user['avatar']))
   if user:
     fetch_user['following'] = fetch_user['_id'] in list(map(lambda f: f['user'], user.get('following', [])))
+
+  user_projects = list(db.projects.find(project_query, {'name': 1, 'path': 1, 'description': 1, 'visibility': 1}).limit(15))
+  for project in user_projects:
+    project['fullName'] = fetch_user['username'] + '/' + project['path']
+    project['owner'] = {
+      '_id': fetch_user['_id'],
+      'username': fetch_user['username'],
+      'avatar': fetch_user.get('avatar'),
+      'avatarUrl': fetch_user.get('avatarUrl'),
+    }
+  fetch_user['projects'] = user_projects
+  
   return fetch_user
 
 def update(user, username, data):

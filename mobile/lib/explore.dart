@@ -58,7 +58,7 @@ class _ExploreTabState extends State<ExploreTab> {
               SizedBox(height: 10),
               CustomText('Discover projects', 'h1', margin: 5),
               Container(
-                height: 100,
+                height: 130,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: projects.map((p) => ProjectCard(p)).toList()

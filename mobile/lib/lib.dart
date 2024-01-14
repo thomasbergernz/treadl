@@ -312,11 +312,12 @@ class ProjectCard extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              width: 150,
               padding: EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Icon(Icons.folder),
+                  SizedBox(height: 10),
                   UserChip(project['owner']),
                   SizedBox(height: 5),
                   Text(Util.ellipsis(project['name'], 35), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
@@ -375,5 +376,24 @@ class LoginNeeded extends StatelessWidget {
         )
       ]
     );
+  }
+}
+
+class EmptyBox extends StatelessWidget {
+  final String title;
+  final String? description;
+
+  EmptyBox(this.title, {this.description}) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(title, style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+        Image(image: AssetImage('assets/empty.png'), width: 300),
+        description != null ? Text('Add a pattern file, an image, or something else to this project using the + button below.', textAlign: TextAlign.center) : SizedBox(height: 0),
+    ]);
   }
 }

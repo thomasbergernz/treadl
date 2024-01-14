@@ -5,11 +5,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'util.dart';
 import 'api.dart';
+import 'lib.dart';
 
-class _UserScreenState extends State<UserScreen> {
+class _UserScreenState extends State<UserScreen> with SingleTickerProviderStateMixin {
   final String username;
   final Util util = new Util();
   final Api api = Api();
+  TabController? _tabController;
   Map<String,dynamic>? _user;
   bool _loading = false;
   _UserScreenState(this.username) { }
@@ -17,6 +19,7 @@ class _UserScreenState extends State<UserScreen> {
   @override
   initState() {
     super.initState();
+    _tabController = new TabController(length: 2, vsync: this);
     getUser(username);
   }
 
@@ -35,7 +38,7 @@ class _UserScreenState extends State<UserScreen> {
   Widget getBody() {
     if (_loading)
       return CircularProgressIndicator();
-    else if (_user != null) {
+    else if (_user != null && _tabController != null) {
       var u = _user!;
       String? created;
       if (u['createdAt'] != null) {
@@ -47,10 +50,10 @@ class _UserScreenState extends State<UserScreen> {
         children: [
           Row(children: [
             util.avatarImage(util.avatarUrl(u), size: 120),
-            Expanded(child: Container(
+            Container(
               padding: EdgeInsets.only(left: 10),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(u['username'], style: Theme.of(context).textTheme.titleLarge),
                   SizedBox(height: 5),
@@ -77,14 +80,59 @@ class _UserScreenState extends State<UserScreen> {
                       child: Text(u['website'],
                         style: TextStyle(color: Colors.pink))
                     ) : SizedBox(height: 1),
-                ]
+                  ]
+                )
               )
-            ))
-          ]),
-          SizedBox(height: 30),
-          Text(u['bio'] != null ? u['bio'] : '')
-        ]
-      );
+            ]),
+            SizedBox(height: 10),
+            TabBar(
+              unselectedLabelColor: Colors.black,
+              labelColor: Colors.pink,
+              tabs: [
+                Tab(
+                  text: 'Profile',
+                  icon: Icon(Icons.person),
+                ),
+                Tab(
+                  text: 'Projects',
+                  icon: Icon(Icons.folder),
+                )
+              ],
+              controller: _tabController!,
+              indicatorSize: TabBarIndicatorSize.tab,
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 30),
+                      Text(u['bio'] != null ? u['bio'] : 'The user doesn\'t have any more profile information.'),
+                    ]
+                  ),
+                  (u['projects'] != null && u['projects'].length > 0) ?
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 5,
+                        childAspectRatio: 1.3,
+                        children: u['projects'].map<Widget>((p) =>
+                          ProjectCard(p)               
+                        ).toList()
+                      ),
+                    ) :
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      child: EmptyBox('This user doesn\'t have any public projects'),
+                    ),
+                ],
+              ),
+            )
+          ]);
     }
     else
       return Text('User not found');

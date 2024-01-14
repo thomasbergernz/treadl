@@ -10,6 +10,7 @@ import 'dart:io';
 import 'api.dart';
 import 'util.dart';
 import 'model.dart';
+import 'lib.dart';
 
 class _ProjectScreenState extends State<ProjectScreen> {
   final String username;
@@ -275,14 +276,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
         },
       );
     else 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('This project is currently empty', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
-          Image(image: AssetImage('assets/empty.png'), width: 300),
-          Text('Add a pattern file, an image, or something else to this project using the + button below.', textAlign: TextAlign.center),
-      ]);
+      return EmptyBox('This project is currently empty', description: 'Add a pattern file, an image, or something else to this project using the + button below.');
   }
 
   @override
