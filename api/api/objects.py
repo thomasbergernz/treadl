@@ -36,6 +36,7 @@ def get(user, id):
     del obj['preview']
   if obj.get('fullPreview'):
     obj['fullPreviewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(proj['_id'], obj['fullPreview']))
+  obj['projectObject'] = proj
   return obj
 
 def copy_to_project(user, id, project_id):

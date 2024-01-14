@@ -79,7 +79,7 @@ class _GroupsTabState extends State<GroupsTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Groups'),
+        title: Text('My Groups'),
       ),
       body: Container(
         margin: const EdgeInsets.all(10.0),

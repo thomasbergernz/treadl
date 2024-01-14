@@ -3,7 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import 'dart:convert';
-import 'api.dart';
+import 'model.dart';
 
 String APP_URL = 'https://www.treadl.com';
 
@@ -85,5 +85,10 @@ class Util {
     return (input.length <= cutoff)
       ? input
     : '${input.substring(0, cutoff)}...';
+  }
+
+  static bool canEditProject(User? user, Map<String,dynamic>? project) {
+    if (user == null || project == null) return false;
+    return project['user'] == user.id;
   }
 }

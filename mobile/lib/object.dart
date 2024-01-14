@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'api.dart';
 import 'util.dart';
+import 'model.dart';
 import 'patterns/pattern.dart';
 import 'patterns/viewer.dart';
 
@@ -14,16 +15,13 @@ class _ObjectScreenState extends State<ObjectScreen> {
   final String username;
   final String projectPath;
   final String id;
-  final Map<String,dynamic>? project;
   Map<String,dynamic>? object;
   Map<String,dynamic>? pattern;
   bool _isLoading = false;
-  final Function? onUpdate;
-  final Function? onDelete;
   final Api api = Api();
   final Util util = Util();
   
-  _ObjectScreenState(this.username, this.projectPath, this.id, {this.object, this.project, this.onUpdate, this.onDelete}) { }
+  _ObjectScreenState(this.username, this.projectPath, this.id) { }
 
   @override
   initState() {
@@ -64,7 +62,6 @@ class _ObjectScreenState extends State<ObjectScreen> {
     var data = await api.request('DELETE', '/objects/' + id);
     if (data['success']) {
       context.go('/home');
-      onDelete!(id);
     }
   }
 
@@ -116,7 +113,6 @@ class _ObjectScreenState extends State<ObjectScreen> {
                 if (data['success']) {
                   context.pop();
                   object!['name'] = data['payload']['name'];
-                  onUpdate!(id, data['payload']);
                   setState(() {
                     object = object;
                   });
@@ -201,6 +197,8 @@ class _ObjectScreenState extends State<ObjectScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppModel model = Provider.of<AppModel>(context);
+    User? user = model.user;
     String description = '';
     if (object?['description'] != null)
       description = object!['description']!;
@@ -214,7 +212,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
               _shareObject(); 
             },
           ),
-          onUpdate != null ? IconButton(
+          Util.canEditProject(user, object?['projectObject']) ? IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
               _showSettingsModal(context); 
@@ -239,12 +237,8 @@ class ObjectScreen extends StatefulWidget {
   final String username;
   final String projectPath;
   final String id;
-  final Map<String,dynamic>? object;
-  final Map<String,dynamic>? project;
-  final Function? onUpdate;
-  final Function? onDelete;
-  ObjectScreen(this.username, this.projectPath, this.id, {this.object, this.project, this.onUpdate, this.onDelete}) { }
+  ObjectScreen(this.username, this.projectPath, this.id, ) { }
   @override
-  _ObjectScreenState createState() => _ObjectScreenState(username, projectPath, id, object: object, project: project, onUpdate: onUpdate, onDelete: onDelete); 
+  _ObjectScreenState createState() => _ObjectScreenState(username, projectPath, id); 
 }
 

@@ -276,7 +276,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
         },
       );
     else 
-      return EmptyBox('This project is currently empty', description: 'Add a pattern file, an image, or something else to this project using the + button below.');
+      return EmptyBox('This project is currently empty', description: 'If this is your project, you can add a pattern file, an image, or something else to this project using the + button below.');
   }
 
   @override
@@ -307,7 +307,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
         child: getBody(),
       ),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: user != null ? ExpandableFab(
+      floatingActionButton: Util.canEditProject(user, project) ? ExpandableFab(
         distance: 70,
         type: ExpandableFabType.up,
         openButtonBuilder: RotateFloatingActionButtonBuilder(
