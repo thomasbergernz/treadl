@@ -33,14 +33,14 @@ class _GroupsTabState extends State<GroupsTab> {
     String? description = group['description'];
     if (description != null && description.length > 80) {
       description = description.substring(0, 77) + '...';
-    } else {
-      description = '';
+    } else if (description == null) {
+      description = 'This group doesn\'t have a description.';
     }
     return Card(
         child: InkWell(
           onTap: () => context.push('/groups/' + group['_id']),
           child: ListTile(
-            leading: Icon(Icons.people),
+            leading: Icon(Icons.people, size: 40, color: Colors.pink[300]),
             trailing: Icon(Icons.keyboard_arrow_right),
             title: Text(group['name']),
             subtitle: Text(description.replaceAll("\n", " ")),

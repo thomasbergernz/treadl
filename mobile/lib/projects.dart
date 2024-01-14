@@ -95,7 +95,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Icon(Icons.folder)
+                child: Icon(Icons.folder, color: Colors.pink[300])
               ),
             ),
             trailing: Icon(Icons.keyboard_arrow_right),
