@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'api.dart';
 import 'util.dart';
-import 'group_noticeboard.dart';
 import 'user.dart';
 
 class _GroupMembersTabState extends State<GroupMembersTab> {
@@ -33,14 +33,7 @@ class _GroupMembersTabState extends State<GroupMembersTab> {
 
   Widget getMemberCard(member) {
     return new ListTile(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => UserScreen(member),
-          ),
-        );
-      },
+      onTap: () => context.push('/' + member['username']),
       leading: util.avatarImage(util.avatarUrl(member), size: 40),
       trailing: Icon(Icons.keyboard_arrow_right),
       title: Text(member['username'])

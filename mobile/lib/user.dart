@@ -7,16 +7,17 @@ import 'util.dart';
 import 'api.dart';
 
 class _UserScreenState extends State<UserScreen> {
+  final String username;
   final Util util = new Util();
   final Api api = Api();
-  Map<String,dynamic> _user;
+  Map<String,dynamic>? _user;
   bool _loading = false;
-  _UserScreenState(this._user) { }
+  _UserScreenState(this.username) { }
 
   @override
   initState() {
     super.initState();
-    getUser(_user['username']);
+    getUser(username);
   }
 
   void getUser(String username) async {
@@ -31,85 +32,91 @@ class _UserScreenState extends State<UserScreen> {
     }
   }
 
+  Widget getBody() {
+    if (_loading)
+      return CircularProgressIndicator();
+    else if (_user != null) {
+      var u = _user!;
+      String? created;
+      if (u['createdAt'] != null) {
+        DateTime createdAt = DateTime.parse(u['createdAt']!);
+        created = DateFormat('MMMM y').format(createdAt);
+      }
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(children: [
+            util.avatarImage(util.avatarUrl(u), size: 120),
+            Expanded(child: Container(
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(u['username'], style: Theme.of(context).textTheme.titleLarge),
+                  SizedBox(height: 5),
+                  u['location'] != null ?
+                    Row(children: [
+                      Icon(CupertinoIcons.location),
+                      SizedBox(width: 10),
+                      Text(u['location'])
+                    ]) : SizedBox(height: 1),
+                  SizedBox(height: 10),
+                  Text('Member' + (created != null ? (' since ' + created!) : ''),
+                    style: TextStyle(color: Colors.grey[500])
+                  ),
+                  SizedBox(height: 10),
+                  u['website'] != null ?
+                    GestureDetector(
+                      onTap: () {
+                        String url = u['website'];
+                        if (!url.startsWith('http')) {
+                          url = 'http://' + url;
+                        }
+                        launch(url);
+                      },
+                      child: Text(u['website'],
+                        style: TextStyle(color: Colors.pink))
+                    ) : SizedBox(height: 1),
+                ]
+              )
+            ))
+          ]),
+          SizedBox(height: 30),
+          Text(u['bio'] != null ? u['bio'] : '')
+        ]
+      );
+    }
+    else
+      return Text('User not found');
+  }
+
   @override
   Widget build(BuildContext context) {
-    String? created;
-    if (_user['createdAt'] != null) {
-      DateTime createdAt = DateTime.parse(_user['createdAt']);
-      created = DateFormat('MMMM y').format(createdAt);
-    }
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text(_user['username']),
+        title: Text(username),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () {
-              launch('https://www.treadl.com/' + _user['username']);
+              launch('https://www.treadl.com/' + username);
             },
           ),
         ]
       ),
-      body: _loading ?
-        Container(
-          margin: const EdgeInsets.all(10.0),
-          alignment: Alignment.center,
-          child: CircularProgressIndicator()
-        )
-      : Container(
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.only(top: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(children: [
-              util.avatarImage(util.avatarUrl(_user), size: 120),
-              Expanded(child: Container(
-                padding: EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(_user['username'], style: Theme.of(context).textTheme.titleLarge),
-                    SizedBox(height: 5),
-                    _user['location'] != null ?
-                      Row(children: [
-                        Icon(CupertinoIcons.location),
-                        SizedBox(width: 10),
-                        Text(_user['location'])
-                      ]) : SizedBox(height: 1),
-                    SizedBox(height: 10),
-                    Text('Member' + (created != null ? (' since ' + created!) : ''),
-                      style: TextStyle(color: Colors.grey[500])
-                    ),
-                    SizedBox(height: 10),
-                    _user['website'] != null ?
-                      GestureDetector(
-                        onTap: () {
-                          String url = _user['website'];
-                          if (!url.startsWith('http')) {
-                            url = 'http://' + url;
-                          }
-                          launch(url);
-                        },
-                        child: Text(_user['website'],
-                          style: TextStyle(color: Colors.pink))
-                      ) : SizedBox(height: 1),
-                  ]
-                )
-              ))
-            ]),
-            SizedBox(height: 30),
-            Text(_user['bio'] != null ? _user['bio'] : '')
-          ]
-        )
+      body: Container(
+        margin: const EdgeInsets.all(10.0),
+        alignment: Alignment.center,
+        child: getBody()
       ),
     ); 
   }
 }
 
 class UserScreen extends StatefulWidget {
-  final Map<String,dynamic> user;
-  UserScreen(this.user) { }
+  final String username;
+  UserScreen(this.username) { }
   @override
-  _UserScreenState createState() => _UserScreenState(user); 
+  _UserScreenState createState() => _UserScreenState(username); 
 }

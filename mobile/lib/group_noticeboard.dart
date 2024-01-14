@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'api.dart';
-import 'user.dart';
 import 'lib.dart';
 
 class _GroupNoticeBoardTabState extends State<GroupNoticeBoardTab> {
@@ -40,8 +38,10 @@ class _GroupNoticeBoardTabState extends State<GroupNoticeBoardTab> {
   }
 
   void _sendPost(context) async {
+    String text =  _newEntryController.text;
+    if (text.length == 0) return;
     setState(() => _posting = true);
-    var data = await api.request('POST', '/groups/' + _group['_id'] + '/entries', {'content': _newEntryController.text});
+    var data = await api.request('POST', '/groups/' + _group['_id'] + '/entries', {'content': text});
     if (data['success'] == true) {
       _newEntryController.value = TextEditingValue(text: '');
       FocusScope.of(context).requestFocus(FocusNode());

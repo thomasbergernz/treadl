@@ -168,11 +168,7 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
           Row(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => UserScreen(_entry['authorUser']),
-                  ));
-                },
+                onTap: () => context.push('/' + _entry['authorUser']['username']),
                 child: utils.avatarImage(utils.avatarUrl(_entry['authorUser']), size: isReply ? 30 : 40)
               ),
               SizedBox(width: 5),
