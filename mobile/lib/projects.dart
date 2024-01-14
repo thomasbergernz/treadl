@@ -131,6 +131,8 @@ class _ProjectsTabState extends State<ProjectsTab> {
 
   @override
   Widget build(BuildContext context) {
+    AppModel model = Provider.of<AppModel>(context);
+    User? user = model.user;
     return Scaffold(
       appBar: AppBar(
         title: Text('My Projects'),
@@ -148,11 +150,11 @@ class _ProjectsTabState extends State<ProjectsTab> {
         alignment: Alignment.center,
         child: getBody()
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: user != null ? FloatingActionButton(
         onPressed: showNewProjectDialog,
         child: _creatingProject ? CircularProgressIndicator(backgroundColor: Colors.white) : Icon(Icons.add),
         backgroundColor: Colors.pink[500],
-      ),
+      ) : null,
     ); 
   }
 }

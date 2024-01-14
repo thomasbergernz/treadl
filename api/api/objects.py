@@ -29,6 +29,8 @@ def get(user, id):
   owner = user and (user.get('_id') == proj['user'])
   if not owner and proj['visibility'] != 'public':
     raise util.errors.BadRequest('Forbidden')
+  if obj['type'] == 'file' and 'storedName' in obj:
+    obj['url'] = uploads.get_presigned_url('projects/{0}/{1}'.format(proj['_id'], obj['storedName']))
   if obj['type'] == 'pattern' and 'preview' in obj and '.png' in obj['preview']:
     obj['previewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(proj['_id'], obj['preview']))
     del obj['preview']

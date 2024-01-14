@@ -263,12 +263,7 @@ class PatternCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ObjectScreen(object, object['projectObject']),
-            ),
-          );
+          context.push('/' + object['userObject']['username'] + '/' + object['projectObject']['path'] + '/' + object['_id']);
         },
         child: Column(
           children: [

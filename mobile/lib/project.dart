@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 import 'api.dart';
 import 'util.dart';
-import 'object.dart';
+import 'model.dart';
 
 class _ProjectScreenState extends State<ProjectScreen> {
   final String username;
@@ -252,12 +252,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     return new Card(
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ObjectScreen(object, project!, onUpdate: _onUpdateObject, onDelete: _onDeleteObject),
-            ),
-          );
+          context.push('/' + username + '/' + projectPath + '/' + object['_id']);
         },
         child: ListTile(
           leading: leader,
@@ -269,8 +264,31 @@ class _ProjectScreenState extends State<ProjectScreen> {
     );
   }
 
+  Widget getBody() {
+    if (_loading || project == null)
+      return CircularProgressIndicator();
+    else if ((_objects != null && _objects.length > 0) || _creating)
+      return ListView.builder(
+        itemCount: _objects.length + (_creating ? 1 : 0),
+        itemBuilder: (BuildContext context, int index) {
+          return getObjectCard(index);
+        },
+      );
+    else 
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('This project is currently empty', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+          Image(image: AssetImage('assets/empty.png'), width: 300),
+          Text('Add a pattern file, an image, or something else to this project using the + button below.', textAlign: TextAlign.center),
+      ]);
+  }
+
   @override
   Widget build(BuildContext context) {
+    AppModel model = Provider.of<AppModel>(context);
+    User? user = model.user;
     return Scaffold(
       appBar: AppBar(
         title: Text(project?['name'] ?? 'Project'),
@@ -289,33 +307,13 @@ class _ProjectScreenState extends State<ProjectScreen> {
           ) : SizedBox(width: 0),
         ]
       ),
-      body: _loading ?
-        Container(
-          margin: const EdgeInsets.all(10.0),
-          alignment: Alignment.center,
-          child: CircularProgressIndicator()
-        )
-      : Container(
+      body: Container(
         margin: const EdgeInsets.all(10.0),
-        child: ((_objects != null && _objects.length > 0) || _creating) ?
-          ListView.builder(
-            itemCount: _objects.length + (_creating ? 1 : 0),
-            itemBuilder: (BuildContext context, int index) {
-              return getObjectCard(index);
-            },
-          )
-        :
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('This project is currently empty', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
-              Image(image: AssetImage('assets/empty.png'), width: 300),
-              Text('Add a pattern file, an image, or something else to this project using the + button below.', textAlign: TextAlign.center),
-          ])
+        alignment: Alignment.center,
+        child: getBody(),
       ),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: ExpandableFab(
+      floatingActionButton: user != null ? ExpandableFab(
         distance: 70,
         type: ExpandableFabType.up,
         openButtonBuilder: RotateFloatingActionButtonBuilder(
@@ -355,7 +353,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
             ),
           ]),
         ],
-      ),
+      ) : null,
     ); 
   }
 }

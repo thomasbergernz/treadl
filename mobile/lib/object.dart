@@ -10,30 +10,32 @@ import 'patterns/pattern.dart';
 import 'patterns/viewer.dart';
 
 class _ObjectScreenState extends State<ObjectScreen> {
-  final Map<String,dynamic> _project;
-  Map<String,dynamic> _object;
-  Map<String,dynamic>? _pattern;
+  final String username;
+  final String projectPath;
+  final String id;
+  final Map<String,dynamic>? project;
+  Map<String,dynamic>? object;
+  Map<String,dynamic>? pattern;
   bool _isLoading = false;
   final Function? onUpdate;
   final Function? onDelete;
   final Api api = Api();
   final Util util = Util();
   
-  _ObjectScreenState(this._object, this._project, {this.onUpdate, this.onDelete}) { }
+  _ObjectScreenState(this.username, this.projectPath, this.id, {this.object, this.project, this.onUpdate, this.onDelete}) { }
 
   @override
   initState() {
     super.initState();
-    if (_object['type'] == 'pattern') {
-      _fetchPattern();
-    }
+    fetchObject();
   }
 
-  void _fetchPattern() async {
-    var data = await api.request('GET', '/objects/' + _object['_id']);
+  void fetchObject() async {
+    var data = await api.request('GET', '/objects/' + id);
     if (data['success'] == true) {
       setState(() {
-        _pattern = data['payload']['pattern']; 
+        object = data['payload'];
+        pattern = data['payload']['pattern']; 
       });
     }
   }
@@ -41,14 +43,14 @@ class _ObjectScreenState extends State<ObjectScreen> {
   void _shareObject() async {
     setState(() => _isLoading = true);
     File? file;
-    if (_object['type'] == 'pattern') {
-      var data = await api.request('GET', '/objects/' + _object['_id'] + '/wif');
+    if (object!['type'] == 'pattern') {
+      var data = await api.request('GET', '/objects/' + id + '/wif');
       if (data['success'] == true) {
-        file = await util.writeFile(_object['name'] + '.wif', data['payload']['wif']);
+        file = await util.writeFile(object!['name'] + '.wif', data['payload']['wif']);
       }
     } else {
-      String fileName = Uri.file(_object['url']).pathSegments.last;
-      file = await api.downloadFile(_object['url'], fileName);
+      String fileName = Uri.file(object!['url']).pathSegments.last;
+      file = await api.downloadFile(object!['url'], fileName);
     }
 
     if (file != null) {
@@ -58,12 +60,12 @@ class _ObjectScreenState extends State<ObjectScreen> {
   }
 
   void _deleteObject(BuildContext context, BuildContext modalContext) async {
-    var data = await api.request('DELETE', '/objects/' + _object['_id']);
+    var data = await api.request('DELETE', '/objects/' + id);
     if (data['success']) {
       Navigator.pop(context);
       Navigator.pop(modalContext);
       Navigator.pop(context);
-      onDelete!(_object['_id']);
+      onDelete!(id);
     }
   }
 
@@ -111,13 +113,13 @@ class _ObjectScreenState extends State<ObjectScreen> {
             TextButton(
               child: Text('OK'),
               onPressed: () async {
-                var data = await api.request('PUT', '/objects/' + _object['_id'], {'name': renameController.text});
+                var data = await api.request('PUT', '/objects/' + id, {'name': renameController.text});
                 if (data['success']) {
                   Navigator.pop(context);
-                  _object['name'] = data['payload']['name'];
-                  onUpdate!(_object['_id'], data['payload']);
+                  object!['name'] = data['payload']['name'];
+                  onUpdate!(id, data['payload']);
                   setState(() {
-                    _object = _object;
+                    object = object;
                   });
                 }
                 Navigator.pop(context);
@@ -156,15 +158,22 @@ class _ObjectScreenState extends State<ObjectScreen> {
   }
 
   Widget getObjectWidget() {
-    if (_object['isImage'] == true) {
-      return Image.network(_object['url']);
+    if (object == null) {
+      return Center(child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [CircularProgressIndicator()]
+      ));
     }
-    else if (_object['type'] == 'pattern') {
-      if (_pattern != null) {
-        return PatternViewer(_pattern!, withEditor: true);
+    else if (object!['isImage'] == true && object!['url'] != null) {
+      print(object!['url']);
+      return Image.network(object!['url']);
+    }
+    else if (object!['type'] == 'pattern') {
+      if (pattern != null) {
+        return PatternViewer(pattern!, withEditor: true);
       }
-      else if (_object['previewUrl'] != null) {
-        return Image.network(_object['previewUrl']!);;
+      else if (object!['previewUrl'] != null) {
+        return Image.network(object!['previewUrl']!);;
       }
       else {
         return Column(
@@ -184,7 +193,7 @@ class _ObjectScreenState extends State<ObjectScreen> {
           Text('Treadl cannot display this type of item.'),
           SizedBox(height: 20),
           ElevatedButton(child: Text('View file'), onPressed: () {
-            launch(_object['url']);
+            launch(object!['url']);
           }),
         ],
       ));
@@ -194,11 +203,11 @@ class _ObjectScreenState extends State<ObjectScreen> {
   @override
   Widget build(BuildContext context) {
     String description = '';
-    if (_object['description'] != null)
-      description = _object['description'];
+    if (object?['description'] != null)
+      description = object!['description']!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_object['name']),
+        title: Text(object?['name'] ?? 'Object'),
         actions: <Widget>[
            IconButton(
             icon: Icon(Icons.ios_share),
@@ -228,12 +237,15 @@ class _ObjectScreenState extends State<ObjectScreen> {
 }
 
 class ObjectScreen extends StatefulWidget {
-  final Map<String,dynamic> _object;
-  final Map<String,dynamic> _project;
+  final String username;
+  final String projectPath;
+  final String id;
+  final Map<String,dynamic>? object;
+  final Map<String,dynamic>? project;
   final Function? onUpdate;
   final Function? onDelete;
-  ObjectScreen(this._object, this._project, {this.onUpdate, this.onDelete}) { }
+  ObjectScreen(this.username, this.projectPath, this.id, {this.object, this.project, this.onUpdate, this.onDelete}) { }
   @override
-  _ObjectScreenState createState() => _ObjectScreenState(_object, _project, onUpdate: onUpdate, onDelete: onDelete); 
+  _ObjectScreenState createState() => _ObjectScreenState(username, projectPath, id, object: object, project: project, onUpdate: onUpdate, onDelete: onDelete); 
 }
 

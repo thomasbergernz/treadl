@@ -13,6 +13,7 @@ import 'register.dart';
 import 'onboarding.dart';
 import 'home.dart';
 import 'project.dart';
+import 'object.dart';
 import 'settings.dart';
 
 final router = GoRouter(
@@ -37,7 +38,8 @@ final router = GoRouter(
     GoRoute(path: '/onboarding', builder: (context, state) => OnboardingScreen()),
     GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
     GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
-    GoRoute(path: '/:username/:id', builder: (context, state) => ProjectScreen(state.pathParameters['username']!, state.pathParameters['id']!)),
+    GoRoute(path: '/:username/:path', builder: (context, state) => ProjectScreen(state.pathParameters['username']!, state.pathParameters['path']!)),
+    GoRoute(path: '/:username/:path/:id', builder: (context, state) => ObjectScreen(state.pathParameters['username']!, state.pathParameters['path']!, state.pathParameters['id']!)),
   ],
 );
 
@@ -114,9 +116,7 @@ class Startup extends StatelessWidget {
     _handled = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();      
     String? token = prefs.getString('apiToken');
-    print('Nooo');
     if (token != null) {
-      print('HEE');
       AppModel model = Provider.of<AppModel>(context, listen: false);
       await model.setToken(token!);
       FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
