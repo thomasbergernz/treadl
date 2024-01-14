@@ -24,7 +24,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Map<String,dynamic>? project;
   List<dynamic> _objects = [];
   bool _loading = false;
-  bool _creating = false;
+  Map<String,dynamic>? _creatingObject;
   
   _ProjectScreenState(this.username, this.projectPath, {this.project, this.onUpdate, this.onDelete}) :
       fullPath = username + '/' + projectPath;
@@ -93,7 +93,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
   void _createObject(objectData) async {
     var resp = await api.request('POST', '/projects/$fullPath/objects', objectData);
-    setState(() => _creating = false);
+    setState(() => _creatingObject = null);
     if (resp['success']) {
       List<dynamic> newObjects = _objects;
       newObjects.add(resp['payload']);
@@ -104,7 +104,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void _createObjectFromWif(String name, String wif) {
-    setState(() => _creating = true);
+    setState(() => _creatingObject = {
+      'name': name,
+      'type': 'pattern',
+    });
     _createObject({
       'name': name,
       'type': 'pattern',
@@ -116,15 +119,18 @@ class _ProjectScreenState extends State<ProjectScreen> {
     final int size = await file.length();
     final String forId = project!['_id'];
     final String type = file.mimeType ?? 'text/plain';
-    setState(() => _creating = true);
+    setState(() => _creatingObject = {
+      'name': name,
+      'type': 'file',
+    });
     var data = await api.request('GET', '/uploads/file/request?name=$name&size=$size&type=$type&forType=project&forId=$forId');
     if (!data['success']) {
-      setState(() => _creating = false);
+      setState(() => _creatingObject = null);
       return;
     }
     var uploadSuccess = await api.putFile(data['payload']['signedRequest'], File(file.path), type);
     if (!uploadSuccess) {
-      setState(() => _creating = false);
+      setState(() => _creatingObject = null);
       return;
     }
     _createObject({
@@ -211,15 +217,14 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   Widget getObjectCard(int index) {
+    Map<String,dynamic>? objectToShow;
     if (index >= _objects.length) {
-      return new Card(
-        child: Container(
-          padding: EdgeInsets.all(10),
-          child: Center(child:CircularProgressIndicator())
-        )
-      );
+      objectToShow = _creatingObject;
+      objectToShow!['creating'] = true;
+    } else {
+      objectToShow = _objects[index];
     }
-    var object = _objects[index];
+    Map<String,dynamic> object = objectToShow!;
     Widget leader;
     String type;
 
@@ -249,6 +254,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
       type = 'Unknown';
       leader = getIconBox(Icon(Icons.file_present));
     }
+    if (object['creating'] == true) {
+      leader = CircularProgressIndicator();
+    }
 
     return new Card(
       child: InkWell(
@@ -268,9 +276,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Widget getBody() {
     if (_loading || project == null)
       return CircularProgressIndicator();
-    else if ((_objects != null && _objects.length > 0) || _creating)
+    else if ((_objects != null && _objects.length > 0) || _creatingObject != null)
       return ListView.builder(
-        itemCount: _objects.length + (_creating ? 1 : 0),
+        itemCount: _objects.length + (_creatingObject != null ? 1 : 0),
         itemBuilder: (BuildContext context, int index) {
           return getObjectCard(index);
         },
