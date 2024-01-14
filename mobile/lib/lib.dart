@@ -312,6 +312,7 @@ class ProjectCard extends StatelessWidget {
         child: Column(
           children: [
             Container(
+              width: 200,
               padding: EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +339,7 @@ class CustomText extends StatelessWidget {
   TextStyle? style;
   CustomText(this.text, this.type, {this.margin = 0}) {
     if (this.type == 'h1') {
-      style = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+      style = TextStyle(fontSize: 25, fontWeight: FontWeight.bold);
     }
     else {
       style = TextStyle();
