@@ -10,26 +10,33 @@ class _ExploreTabState extends State<ExploreTab> {
   List<dynamic> objects = [];
   List<dynamic> projects = [];
   bool loading = false;
+  int explorePage = 1;
   final Api api = Api();
   final Util util = Util();
 
   @override
   initState() {
     super.initState();
+    getExploreData();
     getData();
+  }
+
+  void getExploreData() async {
+    if (explorePage == -1) return;
+    var data = await api.request('GET', '/search/explore?page=${explorePage}');
+    if (data['success'] == true) {
+      setState(() {
+        loading = false;
+        objects = objects + data['payload']['objects'];
+        explorePage = data['payload']['objects'].length == 0 ? -1 : (explorePage + 1); // Set to -1 to disable 'load more'
+      });
+    }
   }
 
   void getData() async {
     setState(() {
       loading = true;
     });
-    var data = await api.request('GET', '/search/explore');
-    if (data['success'] == true) {
-      setState(() {
-        loading = false;
-        objects = data['payload']['objects'];
-      });
-    }
     var data2 = await api.request('GET', '/search/discover');
     if (data2['success'] == true) {
       setState(() {
@@ -40,6 +47,18 @@ class _ExploreTabState extends State<ExploreTab> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> patternCards = objects.map<Widget>((object) =>
+      PatternCard(object)               
+    ).toList();
+    if (explorePage > -1) {
+      patternCards.add(Center(
+        child: CupertinoButton(
+          child: Text('Load more'),
+          onPressed: () => getExploreData(),
+        )
+      ));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Explore'),
@@ -71,9 +90,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 mainAxisSpacing: 5,
                 crossAxisSpacing: 5,
                 childAspectRatio: 0.9,
-                children: objects.map((object) =>
-                  PatternCard(object)               
-                ).toList(),
+                children: patternCards,
               )),
             ]
           )
