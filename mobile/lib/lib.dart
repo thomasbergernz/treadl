@@ -235,12 +235,15 @@ class UserChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        utils.avatarImage(utils.avatarUrl(user), size: 20),
-        SizedBox(width: 5),
-        Text(user['username'], style: TextStyle(color: Colors.grey))
-      ]
+    return GestureDetector(
+      onTap: () => context.push('/' + user['username']),
+      child: Row(
+        children: [
+          utils.avatarImage(utils.avatarUrl(user), size: 20),
+          SizedBox(width: 5),
+          Text(user['username'], style: TextStyle(color: Colors.grey))
+        ]
+      )
     );
   }
 }
