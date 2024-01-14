@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
 import 'api.dart';
 import 'util.dart';
 import 'user.dart';
@@ -102,7 +103,7 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
       if (onDelete != null) {
         onDelete!(_entry);
       }
-      Navigator.of(context).pop();
+      context.pop();
     }
   }
 
@@ -148,7 +149,7 @@ class _NoticeboardPostState extends State<NoticeboardPost> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                   child: Text('Cancel'),
                 )
@@ -312,12 +313,13 @@ class ProjectCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          Navigator.push(
+          context.push('/' + this.project['owner']['username'] + '/' + this.project['path']);
+          /*Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ProjectScreen(project),
             ),
-          );
+          );*/
         },
         child: Column(
           children: [
@@ -359,6 +361,31 @@ class CustomText extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(this.margin), 
       child: Text(text, style: style)
+    );
+  }
+}
+
+class LoginNeeded extends StatelessWidget {
+  final String? text;
+  LoginNeeded({this.text}) {}
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('You need to login to see this', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+        Image(image: AssetImage('assets/login.png'), width: 300),
+        text != null ? Text(text!, textAlign: TextAlign.center) : SizedBox(height: 10),
+        CupertinoButton(
+          onPressed: () {
+            context.push('/welcome');
+          },
+          child: new Text("Login or register",
+            textAlign: TextAlign.center,
+          )
+        )
+      ]
     );
   }
 }

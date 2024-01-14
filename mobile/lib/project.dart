@@ -11,22 +11,38 @@ import 'util.dart';
 import 'object.dart';
 
 class _ProjectScreenState extends State<ProjectScreen> {
+  final String username;
+  final String projectPath;
+  final String fullPath;
   final Function? onUpdate;
   final Function? onDelete;
   final picker = ImagePicker();
   final Api api = Api();
   final Util util = Util();
-  Map<String,dynamic> _project;
+  Map<String,dynamic>? project;
   List<dynamic> _objects = [];
   bool _loading = false;
   bool _creating = false;
   
-  _ProjectScreenState(this._project, {this.onUpdate, this.onDelete}) { }
+  _ProjectScreenState(this.username, this.projectPath, {this.project, this.onUpdate, this.onDelete}) :
+      fullPath = username + '/' + projectPath;
 
   @override
   initState() {
     super.initState();
-    getObjects(_project['fullName']);
+    getProject(fullPath);
+    getObjects(fullPath);
+  }
+
+  void getProject(String fullName) async {
+    setState(() => _loading = true);
+    var data = await api.request('GET', '/projects/' + fullName);
+    if (data['success'] == true) {
+      setState(() {
+        project = data['payload'];
+        _loading = false;
+      });
+    }
   }
 
   void getObjects(String fullName) async {
@@ -41,18 +57,18 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void _shareProject() {
-    util.shareUrl('Check out my project on Treadl', util.appUrl(_project['fullName']));
+    util.shareUrl('Check out my project on Treadl', util.appUrl(fullPath));
   }
 
   void _onDeleteProject() {
     Navigator.pop(context);
-    onDelete!(_project['_id']);
+    onDelete!(project!['_id']);
   }
   void _onUpdateProject(project) {
     setState(() {
-      _project = project;
+      project = project;
     });
-    onUpdate!(project['_id'], project);
+    onUpdate!(project!['_id'], project!);
   }
 
   void _onUpdateObject(String id, Map<String,dynamic> update) {
@@ -74,7 +90,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void _createObject(objectData) async {
-    String fullPath = _project['fullName'];
     var resp = await api.request('POST', '/projects/$fullPath/objects', objectData);
     setState(() => _creating = false);
     if (resp['success']) {
@@ -97,7 +112,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
   void _createObjectFromFile(String name, XFile file) async {
     final int size = await file.length();
-    final String forId = _project['_id'];
+    final String forId = project!['_id'];
     final String type = file.mimeType ?? 'text/plain';
     setState(() => _creating = true);
     var data = await api.request('GET', '/uploads/file/request?name=$name&size=$size&type=$type&forType=project&forId=$forId');
@@ -139,7 +154,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
       if (imageFile == null) return;
       final f = new DateFormat('yyyy-MM-dd_hh-mm-ss');
       String time = f.format(new DateTime.now());
-      String name = _project['name'] + ' ' + time + '.' + imageFile.name.split('.').last;
+      String name = project!['name'] + ' ' + time + '.' + imageFile.name.split('.').last;
       _createObjectFromFile(name, imageFile);
     }
     on Exception {
@@ -161,7 +176,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
   
   void showSettingsModal() {
-    Widget settingsDialog = new _ProjectSettingsDialog(_project, _onDeleteProject, _onUpdateProject);
+    Widget settingsDialog = new _ProjectSettingsDialog(project!, _onDeleteProject, _onUpdateProject);
     showCupertinoModalPopup(context: context, builder: (BuildContext context) => settingsDialog);
   }
 
@@ -239,7 +254,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ObjectScreen(object, _project, onUpdate: _onUpdateObject, onDelete: _onDeleteObject),
+              builder: (context) => ObjectScreen(object, project!, onUpdate: _onUpdateObject, onDelete: _onDeleteObject),
             ),
           );
         },
@@ -257,7 +272,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_project['name']),
+        title: Text(project?['name'] ?? 'Project'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.ios_share),
@@ -345,20 +360,24 @@ class _ProjectScreenState extends State<ProjectScreen> {
 }
 
 class ProjectScreen extends StatefulWidget {
-  final Map<String,dynamic> _project;
+  final String username;
+  final String projectPath;
+  final Map<String,dynamic>? project;
   final Function? onUpdate;
   final Function? onDelete;
-  ProjectScreen(this._project, {this.onUpdate, this.onDelete}) { }
+  ProjectScreen(this.username, this.projectPath, {this.project, this.onUpdate, this.onDelete}) { }
   @override
-  _ProjectScreenState createState() => _ProjectScreenState(_project, onUpdate: onUpdate, onDelete: onDelete); 
+  _ProjectScreenState createState() => _ProjectScreenState(username, projectPath, project: project, onUpdate: onUpdate, onDelete: onDelete); 
 }
 
 class _ProjectSettingsDialog extends StatelessWidget {
-  final Map<String,dynamic> _project;
+  final String fullPath;
+  final Map<String,dynamic> project;
   final Function _onDelete;
   final Function _onUpdateProject;
   final Api api = Api();
-  _ProjectSettingsDialog(this._project, this._onDelete, this._onUpdateProject) {}
+  _ProjectSettingsDialog(this.project, this._onDelete, this._onUpdateProject) :
+    fullPath = project['owner']['username'] + '/' + project['path'];
   
   void _renameProject(BuildContext context) async {
     TextEditingController renameController = TextEditingController();
@@ -382,7 +401,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
             TextButton(
               child: Text('OK'),
               onPressed: () async {
-                var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'name': renameController.text});
+                var data = await api.request('PUT', '/projects/' + fullPath, {'name': renameController.text});
                 if (data['success']) {
                   Navigator.pop(context); 
                   _onUpdateProject(data['payload']);
@@ -397,7 +416,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
   }
 
   void _toggleVisibility(BuildContext context, bool checked) async {
-    var data = await api.request('PUT', '/projects/' + _project['owner']['username'] + '/' + _project['path'], {'visibility': checked ? 'private': 'public'});
+    var data = await api.request('PUT', '/projects/' + fullPath, {'visibility': checked ? 'private': 'public'});
     if (data['success']) {
       Navigator.pop(context); 
       _onUpdateProject(data['payload']);
@@ -405,7 +424,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
   }
 
   void _deleteProject(BuildContext context, BuildContext modalContext) async {
-    var data = await api.request('DELETE', '/projects/' + _project['owner']['username'] + '/' + _project['path']);
+    var data = await api.request('DELETE', '/projects/' + fullPath);
     if (data['success']) {
       Navigator.pop(context);
       Navigator.pop(modalContext);
@@ -450,7 +469,7 @@ class _ProjectSettingsDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
              CupertinoSwitch(
-                value: _project['visibility'] == 'private',
+                value: project?['visibility'] == 'private',
                 onChanged: (c) => _toggleVisibility(context, c),
               ),
               SizedBox(width: 10),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'group.dart';
 import 'api.dart';
+import 'model.dart';
+import 'lib.dart';
 
 class _GroupsTabState extends State<GroupsTab> {
   List<dynamic> _groups = [];
@@ -55,38 +55,42 @@ class _GroupsTabState extends State<GroupsTab> {
     ;
   }
 
+  Widget getBody() {
+    AppModel model = Provider.of<AppModel>(context);
+    if (model.user == null)
+      return LoginNeeded(text: 'Once logged in, you\'ll find your groups here.');
+    else if (_loading)
+      return CircularProgressIndicator();
+    else if (_groups != null && _groups.length > 0)
+      return ListView.builder(
+        itemCount: _groups.length,
+        itemBuilder: (BuildContext context, int index) {
+          return buildGroupCard(_groups[index]);
+        },
+      );
+    else
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('You aren\'t a member of any groups yet', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+          Image(image: AssetImage('assets/group.png'), width: 300),
+          Text('Groups let you meet and keep in touch with others in the weaving community.', textAlign: TextAlign.center),
+          Text('Please use our website to join and leave groups.', textAlign: TextAlign.center),
+      ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Groups'),
       ),
-      body: _loading ?
-        Container(
-          margin: const EdgeInsets.all(10.0),
-          alignment: Alignment.center,
-          child: CircularProgressIndicator()
-        )
-      : Container(
+      body: Container(
         margin: const EdgeInsets.all(10.0),
-        child: (_groups != null && _groups.length > 0) ? 
-          ListView.builder(
-            itemCount: _groups.length,
-            itemBuilder: (BuildContext context, int index) {
-              return buildGroupCard(_groups[index]);
-            },
-          )
-        :
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('You aren\'t a member of any groups yet', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
-              Image(image: AssetImage('assets/group.png'), width: 300),
-              Text('Groups let you meet and keep in touch with others in the weaving community.', textAlign: TextAlign.center),
-              Text('Please use our website to join and leave groups.', textAlign: TextAlign.center),
-          ])
-      ),
+        alignment: Alignment.center,
+        child: getBody()
+      )
     ); 
   }
 }

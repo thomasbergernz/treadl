@@ -23,7 +23,7 @@ class AppModel extends ChangeNotifier {
   }
 
   String? apiToken;
-  void setToken(String? newToken) async {
+  Future<void> setToken(String? newToken) async {
     apiToken = newToken;
     SharedPreferences prefs = await SharedPreferences.getInstance();      
     if (apiToken != null) {

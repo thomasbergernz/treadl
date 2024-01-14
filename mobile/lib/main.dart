@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:go_router/go_router.dart';
 //import 'package:fluttertoast/fluttertoast.dart';
 import 'api.dart';
 import 'model.dart';
@@ -11,6 +12,32 @@ import 'login.dart';
 import 'register.dart';
 import 'onboarding.dart';
 import 'home.dart';
+import 'project.dart';
+
+final router = GoRouter(
+  routes: [
+    GoRoute(path: '/', builder: (context, state) => Startup()),
+    GoRoute(path: '/welcome', pageBuilder: (context, state) {
+      return CustomTransitionPage(
+        key: state.pageKey,
+        child: WelcomeScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          // Change the opacity of the screen using a Curve based on the the animation's value
+          return FadeTransition(
+            opacity:
+                CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+            child: child,
+          );
+        },
+      );
+    }),
+    GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
+    GoRoute(path: '/register', builder: (context, state) => RegisterScreen()),
+    GoRoute(path: '/onboarding', builder: (context, state) => OnboardingScreen()),
+    GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
+    GoRoute(path: '/:username/:id', builder: (context, state) => ProjectScreen(state.pathParameters['username']!, state.pathParameters['id']!)),
+  ],
+);
 
 void main() {
   runApp(
@@ -37,21 +64,19 @@ class _AppState extends State<MyApp> {
       // Initialize FlutterFire:
       future: _initialization,
       builder: (context, snapshot) {
-        return MaterialApp(
+        return MaterialApp.router(
+          routerConfig: router,
+        /*return MaterialApp(*/
           debugShowCheckedModeBanner: false,
           title: 'Treadl',
           theme: ThemeData(
             primarySwatch: Colors.pink,
             //textSelectionColor: Colors.blue,
           ),   
-          home: Startup(),
+          /*home: Startup(),
           routes: <String, WidgetBuilder>{
-            '/welcome': (BuildContext context) => WelcomeScreen(),
-            '/login': (BuildContext context) => LoginScreen(),
-            '/register': (BuildContext context) => RegisterScreen(),
-            '/onboarding': (BuildContext context) => OnboardingScreen(),
-            '/home': (BuildContext context) => HomeScreen(),
-          }
+            
+          }*/
         );
       },
     );
@@ -87,9 +112,11 @@ class Startup extends StatelessWidget {
     _handled = true;
     SharedPreferences prefs = await SharedPreferences.getInstance();      
     String? token = prefs.getString('apiToken');
+    print('Nooo');
     if (token != null) {
-      Provider.of<AppModel>(context, listen: false).setToken(token!);
-      
+      print('HEE');
+      AppModel model = Provider.of<AppModel>(context, listen: false);
+      await model.setToken(token!);
       FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
       await _firebaseMessaging.requestPermission(
         alert: true,
@@ -107,7 +134,7 @@ class Startup extends StatelessWidget {
         api.request('PUT', '/accounts/pushToken', {'pushToken': _pushToken!});
       }
     }
-    Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+    context.go('/home');
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:go_router/go_router.dart';
 import 'api.dart';
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
@@ -111,7 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 CupertinoButton(
                   color: Colors.white,
                   child: Text('Get started', style: TextStyle(color: Colors.pink)),
-                  onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false),
+                  onPressed: () => context.go('/'),
                 ),
               ]
             )

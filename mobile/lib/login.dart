@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'api.dart';
 import 'model.dart';
 
@@ -12,14 +13,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final Api api = Api();
   bool _loggingIn = false;
 
-  void _submit(context) async {
+  void _submit(BuildContext context) async {
     setState(() => _loggingIn = true);
     var data = await api.request('POST', '/accounts/login', {'email': _emailController.text, 'password': _passwordController.text});
     setState(() => _loggingIn = false);
     if (data['success'] == true) {
       AppModel model = Provider.of<AppModel>(context, listen: false);
-      model.setToken(data['payload']['token']);
-      Navigator.of(context).pushNamedAndRemoveUntil('/onboarding', (Route<dynamic> route) => false);
+      await model.setToken(data['payload']['token']);
+      context.go('/onboarding');
     }
     else {
       showDialog(
@@ -31,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
             CupertinoDialogAction(
               isDefaultAction: true,
               child: Text('Try again'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             ),
           ],
         )

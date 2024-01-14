@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'routeArguments.dart';
 import 'api.dart';
 import 'project.dart';
 import 'settings.dart';
 import 'model.dart';
+import 'lib.dart';
 
 class _ProjectsTabState extends State<ProjectsTab> {
   List<dynamic> _projects = [];
@@ -82,12 +84,14 @@ class _ProjectsTabState extends State<ProjectsTab> {
     return new Card(
         child: InkWell(
           onTap: () {
-            Navigator.push(
+            print(project);
+            context.push('/' + project['owner']['username'] + '/' + project['path']);
+            /*Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ProjectScreen(project, onUpdate: _onUpdateProject, onDelete: _onDeleteProject),
               ),
-            );
+            );*/
           },
           child: Container(
             padding: EdgeInsets.all(5),
@@ -114,23 +118,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
   Widget getBody() {
     AppModel model = Provider.of<AppModel>(context);
     if (model.user == null)
-      return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('You need to login to see this', style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
-        Image(image: AssetImage('assets/login.png'), width: 300),
-        Text('Once logged in, you\'ll find your own projects shown here.', textAlign: TextAlign.center),
-        CupertinoButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed('/welcome');
-          },
-          child: new Text("Login or register",
-            textAlign: TextAlign.center,
-          )
-        )
-      ]
-    );
+      return LoginNeeded(text: 'Once logged in, you\'ll find your own projects shown here.');
     if (_loading) 
       return CircularProgressIndicator();
     else if (_projects != null && _projects.length > 0)
@@ -212,7 +200,7 @@ class _NewProjectDialogState extends State<_NewProjectDialog> {
     var data = await api.request('POST', '/projects', {'name': name, 'visibility': priv ? 'private' : 'public'});
     if (data['success'] == true) {
       _onComplete(data['payload']);
-      Navigator.of(context).pop();
+      context.pop();
     }
   }
 

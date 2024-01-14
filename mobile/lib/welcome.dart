@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import 'store.dart';
 import 'login.dart';
 
 class WelcomeScreen extends StatelessWidget {
   void _login(BuildContext context) {
-    Navigator.of(context).pushNamed('/login');
+    context.push('/login');
   }
   void _register(BuildContext context) {
-    Navigator.of(context).pushNamed('/register');
+    context.push('/register');
   }
 
   @override
@@ -44,7 +45,7 @@ class WelcomeScreen extends StatelessWidget {
           ),
           SizedBox(height: 35),
           CupertinoButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: new Text("Cancel",
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,

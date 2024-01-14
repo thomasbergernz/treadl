@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart'; 
 import 'package:flutter/gestures.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'api.dart';
+import 'model.dart';
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
@@ -17,10 +19,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     var data = await api.request('POST', '/accounts/register', {'username': _usernameController.text, 'email': _emailController.text, 'password': _passwordController.text});
     setState(() => _registering = false);
     if (data['success'] == true) {
-      String token = data['payload']['token'];
-      SharedPreferences prefs = await SharedPreferences.getInstance();      
-      prefs.setString('apiToken', token);
-      Navigator.of(context).pushNamedAndRemoveUntil('/onboarding', (Route<dynamic> route) => false);
+      AppModel model = Provider.of<AppModel>(context, listen: false);
+      model.setToken(data['payload']['token']);
+      context.go('/onboarding');
     }
     else {
       showDialog(
@@ -32,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             CupertinoDialogAction(
               isDefaultAction: true,
               child: Text('Try again'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             ),
           ],
         )
