@@ -37,17 +37,16 @@ class _GroupsTabState extends State<GroupsTab> {
       description = 'This group doesn\'t have a description.';
     }
     return Card(
-        child: InkWell(
-          onTap: () => context.push('/groups/' + group['_id']),
-          child: ListTile(
-            leading: Icon(Icons.people, size: 40, color: Colors.pink[300]),
-            trailing: Icon(Icons.keyboard_arrow_right),
-            title: Text(group['name']),
-            subtitle: Text(description.replaceAll("\n", " ")),
-          )
+      child: InkWell(
+        onTap: () => context.push('/groups/' + group['_id']),
+        child: ListTile(
+          leading: Icon(Icons.people, size: 40, color: Colors.pink[300]),
+          trailing: Icon(Icons.keyboard_arrow_right),
+          title: Text(group['name']),
+          subtitle: Text(description.replaceAll("\n", " ")),
         )
       )
-    ;
+    );
   }
 
   Widget getBody() {

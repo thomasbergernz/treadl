@@ -108,7 +108,8 @@ class _UserScreenState extends State<UserScreen> with SingleTickerProviderStateM
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 30),
-                      Text(u['bio'] != null ? u['bio'] : 'The user doesn\'t have any more profile information.'),
+                      u['bio'] != null ? Text(u['bio']) :
+                      EmptyBox('This user doesn\'t have any more profile information.')
                     ]
                   ),
                   (u['projects'] != null && u['projects'].length > 0) ?

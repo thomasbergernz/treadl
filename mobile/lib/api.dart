@@ -10,8 +10,8 @@ import 'model.dart';
 class Api {
 
   String? _token;
-  //final String apiBase = 'https://api.treadl.com';
-  final String apiBase = 'http://192.168.5.134:2001';
+  final String apiBase = 'https://api.treadl.com';
+  //final String apiBase = 'http://192.168.5.134:2001';
 
   Api({token: null}) {
     if (token != null) _token = token;

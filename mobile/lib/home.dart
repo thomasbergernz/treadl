@@ -42,7 +42,7 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
             label: 'My Projects',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.people),
             label: 'My Groups',
           ),
         ],

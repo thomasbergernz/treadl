@@ -70,7 +70,6 @@ class _ExploreTabState extends State<ExploreTab> {
           child: CircularProgressIndicator()
         )
       : Container(
-          color: Color.fromRGBO(255, 251, 248, 1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

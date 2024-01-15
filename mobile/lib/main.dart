@@ -74,17 +74,12 @@ class _AppState extends State<MyApp> {
       builder: (context, snapshot) {
         return MaterialApp.router(
           routerConfig: router,
-        /*return MaterialApp(*/
           debugShowCheckedModeBanner: false,
           title: 'Treadl',
           theme: ThemeData(
             primarySwatch: Colors.pink,
-            //textSelectionColor: Colors.blue,
+            scaffoldBackgroundColor: Color.fromRGBO(255, 251, 248, 1),
           ),   
-          /*home: Startup(),
-          routes: <String, WidgetBuilder>{
-            
-          }*/
         );
       },
     );
