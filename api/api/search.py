@@ -111,6 +111,7 @@ def explore(page = 1):
     user_map[a['_id']] = a
   for object in objects:
     object['userObject'] = user_map.get(object.get('projectObject', {}).get('user'))
+    object['projectObject']['owner'] = user_map.get(object.get('projectObject', {}).get('user'))
         
   return {'objects': objects}
   

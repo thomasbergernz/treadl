@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'routeArguments.dart';
 import 'api.dart';
 import 'util.dart';
 import 'lib.dart';
@@ -51,10 +50,16 @@ class _ExploreTabState extends State<ExploreTab> {
       PatternCard(object)               
     ).toList();
     if (explorePage > -1) {
-      patternCards.add(Center(
-        child: CupertinoButton(
-          child: Text('Load more'),
-          onPressed: () => getExploreData(),
+      patternCards.add(Container(
+        decoration: BoxDecoration(
+          color: Colors.pink[50],
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child:Center(
+          child: CupertinoButton(
+            child: Text('Load more'),
+            onPressed: () => getExploreData(),
+          )
         )
       ));
     }
@@ -75,6 +80,7 @@ class _ExploreTabState extends State<ExploreTab> {
             children: [
               SizedBox(height: 10),
               CustomText('Discover projects', 'h1', margin: 5),
+              SizedBox(height: 5),
               Container(
                 height: 130,
                 child: ListView(
@@ -84,12 +90,16 @@ class _ExploreTabState extends State<ExploreTab> {
               ),
               SizedBox(height: 10),
               CustomText('Recent patterns', 'h1', margin: 5),
-              Expanded(child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-                childAspectRatio: 0.9,
-                children: patternCards,
+              SizedBox(height: 5),
+              Expanded(child: Container(
+                margin: EdgeInsets.only(left: 15, right: 15),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 5,
+                  childAspectRatio: 0.9,
+                  children: patternCards,
+                ),
               )),
             ]
           )

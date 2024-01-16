@@ -26,9 +26,10 @@ def get(user, id):
   if not obj: raise util.errors.NotFound('Object not found')
   proj = db.projects.find_one({'_id': obj['project']})
   if not proj: raise util.errors.NotFound('Project not found')
-  owner = user and (user.get('_id') == proj['user'])
-  if not owner and proj['visibility'] != 'public':
+  is_owner = user and (user.get('_id') == proj['user'])
+  if not is_owner and proj['visibility'] != 'public':
     raise util.errors.BadRequest('Forbidden')
+  owner = db.users.find_one({'_id': proj['user']}, {'username': 1, 'avatar': 1})
   if obj['type'] == 'file' and 'storedName' in obj:
     obj['url'] = uploads.get_presigned_url('projects/{0}/{1}'.format(proj['_id'], obj['storedName']))
   if obj['type'] == 'pattern' and 'preview' in obj and '.png' in obj['preview']:
@@ -37,6 +38,10 @@ def get(user, id):
   if obj.get('fullPreview'):
     obj['fullPreviewUrl'] = uploads.get_presigned_url('projects/{0}/{1}'.format(proj['_id'], obj['fullPreview']))
   obj['projectObject'] = proj
+  if owner:
+    if 'avatar' in owner:
+      owner['avatarUrl'] = uploads.get_presigned_url('users/{0}/{1}'.format(str(owner['_id']), owner['avatar']))
+    obj['projectObject']['owner'] = owner
   return obj
 
 def copy_to_project(user, id, project_id):

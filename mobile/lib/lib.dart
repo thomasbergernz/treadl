@@ -262,7 +262,7 @@ class PatternCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          context.push('/' + object['userObject']['username'] + '/' + object['projectObject']['path'] + '/' + object['_id']);
+          context.push('/' + object['projectObject']['owner']['username'] + '/' + object['projectObject']['path'] + '/' + object['_id']);
         },
         child: Column(
           children: [
@@ -280,7 +280,7 @@ class PatternCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UserChip(object['userObject']),
+                  UserChip(object['projectObject']['owner']),
                   SizedBox(height: 5),
                   Text(Util.ellipsis(object['name'], 35), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ]
