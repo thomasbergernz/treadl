@@ -5,6 +5,7 @@ import { accounts } from './accounts';
 import { users } from './users';
 import { projects } from './projects';
 import { objects } from './objects';
+import { snippets } from './snippets';
 import { uploads } from './uploads';
 import { groups } from './groups';
 import { search } from './search';
@@ -53,7 +54,7 @@ export const api = {
     api.req(method, path, data, success, fail, true, options);
   },
 
-  auth, accounts, users, projects, objects, uploads, groups, search, invitations, root
+  auth, accounts, users, projects, objects, snippets, uploads, groups, search, invitations, root
 };
 
 export default api;

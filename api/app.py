@@ -6,7 +6,7 @@ import werkzeug
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from util import util
-from api import accounts, users, projects, objects, uploads, groups, search, invitations, root, activitypub
+from api import accounts, users, projects, objects, snippets, uploads, groups, search, invitations, root, activitypub
 
 app = Flask(__name__)
 CORS(app)
@@ -187,6 +187,19 @@ def object_comments(id):
 @app.route('/objects/<id>/comments/<comment_id>', methods=['DELETE'])
 def object_comment(id, comment_id):
   return util.jsonify(objects.delete_comment(util.get_user(), id, comment_id))
+
+# SNIPPETS
+@app.route('/snippets', methods=['POST', 'GET'])
+def snippets_route():
+  if request.method == 'POST':
+    return util.jsonify(snippets.create(util.get_user(), request.json))
+  if request.method == 'GET':
+    return util.jsonify(snippets.list_for_user(util.get_user()))
+
+@app.route('/snippets/<id>', methods=['DELETE'])
+def snippet_route(id):
+  if request.method == 'DELETE':
+    return util.jsonify(snippets.delete(util.get_user(), id))
 
 # GROUPS
 

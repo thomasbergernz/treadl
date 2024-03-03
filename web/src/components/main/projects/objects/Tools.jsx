@@ -10,6 +10,7 @@ import Slider from 'rc-slider';
 import styled from 'styled-components';
 import HelpLink from '../../../includes/HelpLink';
 import Tour, { ReRunTour } from '../../../includes/Tour';
+import SnippetSaver from '../../../includes/SnippetSaver';
 
 import 'rc-slider/assets/index.css';
 
@@ -55,6 +56,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [newColour, setNewColour] = useState('#22194D');
   const [selectedThreadCount, setSelectedThreadCount] = useState(0);
+  const [creatingSnippet, setCreatingSnippet] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { objectId, username, projectPath } = useParams();
@@ -134,6 +136,12 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     newWeft.treadling = newWeft?.treadling?.map(t => ({ ...t, isSelected: undefined }));
     updatePattern({ warp: newWarp, weft: newWeft });
   }
+  const saveSnippet = () => {
+    const selectedWarp = warp?.threading?.filter(t => t.isSelected);
+    const selectedWeft = weft?.treadling?.filter(t => t.isSelected);
+    if (selectedWarp?.length) setCreatingSnippet({ type: 'warp', threading: selectedWarp, treadling: null });
+    else setCreatingSnippet({ type: 'weft', threading: null, treadling: weft.treadling });
+  }
 
   const onZoomChange = zoom => updatePattern({ baseSize: zoom || 10 });
 
@@ -208,6 +216,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
             <div>
               <Header>{selectedThreadCount} threads selected</Header>
               <Button size='small' basic onClick={deselectThreads}>De-select all</Button>
+              <Button size='small' color='teal' onClick={saveSnippet}>Save selection as snippet</Button>
               <Button size='small' color='orange' onClick={deleteSelectedThreads}>Delete threads</Button>
             </div>
           :
@@ -332,26 +341,6 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                 onConfirm={deleteObject}
               />
               
-              {/*}
-              <Dropdown icon={null} direction='left' disabled={unsaved}
-                trigger={<Button color='blue' size='tiny' icon='download' style={{marginLeft: 5}} />}
-              >
-                <Dropdown.Menu>
-                  {object.previewUrl &&
-                    <Dropdown.Item onClick={e => utils.downloadDrawdownImage(object)} content='Download drawdown as an image' icon='file outline' />
-                  }
-                  {(utils.canEditProject(user, project) || project.openSource) &&
-                    <>
-                      {object.patternImage &&
-                        <Dropdown.Item icon='file outline' content='Download complete pattern as an image' onClick={e => utils.downloadPatternImage(object)}/>
-                      }
-                      <Dropdown.Divider />
-                      <Dropdown.Item onClick={e => utils.downloadWif(object)} content="Download pattern in WIF format" icon="text file" />
-                    </>
-                  }
-                </Dropdown.Menu>
-              </Dropdown>*/}
-              
               <Dropdown style={{marginLeft: 5}} icon={null} direction='left'
                 trigger={<Button basic size='tiny' icon='help' />}
               >
@@ -370,6 +359,9 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
           </div>
         </div>
       </Segment>
+      {creatingSnippet &&
+        <SnippetSaver type={creatingSnippet.type} threading={creatingSnippet.threading} treadling={creatingSnippet.treadling} isOpen={!!creatingSnippet} onComplete={s => console.log(s)} />
+      }
     </div>
   );
 }
