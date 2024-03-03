@@ -142,6 +142,12 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     if (selectedWarp?.length) setCreatingSnippet({ type: 'warp', threading: selectedWarp, treadling: null });
     else setCreatingSnippet({ type: 'weft', threading: null, treadling: weft.treadling });
   }
+  const onSaveSnippet = (snippet) => {
+    setCreatingSnippet(null);
+    if (snippet) {
+      toast('📌 Snippet saved');
+    }
+  }
 
   const onZoomChange = zoom => updatePattern({ baseSize: zoom || 10 });
 
@@ -360,7 +366,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
         </div>
       </Segment>
       {creatingSnippet &&
-        <SnippetSaver type={creatingSnippet.type} threading={creatingSnippet.threading} treadling={creatingSnippet.treadling} isOpen={!!creatingSnippet} onComplete={s => console.log(s)} />
+        <SnippetSaver type={creatingSnippet.type} threading={creatingSnippet.threading} treadling={creatingSnippet.treadling} isOpen={!!creatingSnippet} onComplete={onSaveSnippet} />
       }
     </div>
   );
