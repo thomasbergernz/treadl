@@ -1,13 +1,10 @@
 import datetime
 from bson.objectid import ObjectId
-from util import database
+from util import database, util
 
-def list_for_user(username):
+def list_for_user(user):
   db = database.get_db()
-  owner = db.users.find_one({'username': username}, {'_id': 1, 'username': 1})
-  if not owner:
-    raise util.errors.BadRequest('User not found')
-  snippets = db.snippets.find({'user': owner['_id']}).sort('createdAt', -1)
+  snippets = db.snippets.find({'user': user['_id']}).sort('createdAt', -1)
   return {'snippets': list(snippets)}
 
 def create(user, data):

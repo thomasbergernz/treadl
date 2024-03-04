@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import HelpLink from '../../../includes/HelpLink';
 import Tour, { ReRunTour } from '../../../includes/Tour';
 import SnippetSaver from '../../../includes/SnippetSaver';
+import SnippetChooser from '../../../includes/SnippetChooser';
 
 import 'rc-slider/assets/index.css';
 
@@ -368,6 +369,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
       {creatingSnippet &&
         <SnippetSaver type={creatingSnippet.type} threading={creatingSnippet.threading} treadling={creatingSnippet.treadling} isOpen={!!creatingSnippet} onComplete={onSaveSnippet} />
       }
+      <SnippetChooser type={editor?.insertType} isOpen={!!editor?.insertType} onComplete={console.log} />
     </div>
   );
 }

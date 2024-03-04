@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import utils from '../../../../utils/utils.js';
+import actions from '../../../../actions/index.js';
 
 const WarpContainer = styled.div`
   top:0px;
@@ -50,6 +51,7 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
   const { tool, colour } = editor;
   const warpRef = useRef(null);
   const colourwayRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => paintDrawdown());
   useEffect(() => {
@@ -218,13 +220,14 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
       updatePattern({ warp: newWarp });
     }
     if (editor.tool === 'insert') {
-      const number = parseInt(prompt('Enter a number of threads to insert before this point.'));
+      dispatch(actions.objects.updateEditor({ insertType: 'warp', insertPoint: thread }));
+      /*const number = parseInt(prompt('Enter a number of threads to insert before this point.'));
       if (number && number > 0) {
         const newThreads = [...new Array(number)].map(() => ({ shaft: 0 }));
         const newWarp = Object.assign({}, warp);
         newWarp.threading?.splice(thread, 0, ...newThreads);
         updatePattern({ warp: newWarp });
-      }
+      }*/
     }
   };
 
