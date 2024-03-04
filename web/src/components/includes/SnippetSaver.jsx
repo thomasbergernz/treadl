@@ -21,19 +21,16 @@ export default function SnippetSaver({ type, threading, treadling, isOpen, onCom
   }, []);
 
   const save = () => {
-    api.snippets.create({ type, threading, treadling }, newSnippet => {
+    api.snippets.create({ name, type, threading, treadling }, newSnippet => {
       onComplete(newSnippet);
     });
   }
-
   let shafts = 0;
   threading?.forEach(thread => {
-    thread.isSelected = undefined;
     if (thread.shaft > shafts) shafts = thread.shaft;
   });
   let treadles = 0;
   treadling?.forEach(thread => {
-    thread.isSelected = undefined;
     if (thread.treadle > treadles) treadles = thread.treadle;
   });
 

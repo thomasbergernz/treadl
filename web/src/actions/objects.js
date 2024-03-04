@@ -8,6 +8,7 @@ export default {
   DELETE_OBJECT: 'DELETE_OBJECT',
   SELECT_OBJECT: 'SELECT_OBJECT',
   UPDATE_EDITOR: 'UPDATE_EDITOR',
+  RECEIVE_SNIPPET: 'RECEIVE_SNIPPET',
   RECEIVE_COMMENT: 'RECEIVE_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
 
@@ -43,6 +44,10 @@ export default {
 
   updateEditor(editor) {
     return { type: this.UPDATE_EDITOR, editor };
+  },
+
+  receiveSnippet(snippet) {
+    return { type: this.RECEIVE_SNIPPET, snippet };
   },
 
   receiveComment(comment) {

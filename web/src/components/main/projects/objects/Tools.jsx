@@ -137,10 +137,10 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     updatePattern({ warp: newWarp, weft: newWeft });
   }
   const saveSnippet = () => {
-    const selectedWarp = warp?.threading?.filter(t => t.isSelected);
-    const selectedWeft = weft?.treadling?.filter(t => t.isSelected);
+    const selectedWarp = warp?.threading?.filter(t => t.isSelected)?.map(t => ({ shaft: t.shaft, colour: t.colour }));
+    const selectedWeft = weft?.treadling?.filter(t => t.isSelected)?.map(t => ({ treadle: t.treadle }));
     if (selectedWarp?.length) setCreatingSnippet({ type: 'warp', threading: selectedWarp, treadling: null });
-    else setCreatingSnippet({ type: 'weft', threading: null, treadling: weft.treadling });
+    else setCreatingSnippet({ type: 'weft', threading: null, treadling: selectedWeft });
   }
   const onSaveSnippet = (snippet) => {
     setCreatingSnippet(null);

@@ -8,6 +8,7 @@ const initialState = {
   comments: [],
   selected: null,
   editor: { tool: 'straight', colour: null, view: 'interlacement', autoExtend: true },
+  snippets: [],
 };
 
 function objects(state = initialState, action) {
@@ -76,6 +77,19 @@ function objects(state = initialState, action) {
     case actions.objects.UPDATE_EDITOR:
       const editor = Object.assign({}, state.editor, action.editor);
       return Object.assign({}, state, { editor });
+    case actions.objects.RECEIVE_SNIPPET: {
+      const snippets = [];
+      let found = false;
+      state.snippets.forEach((snippet) => {
+        if (snippet._id === action.snippet._id) {
+          snippet = Object.assign({}, action.snippet);
+          found = true;
+        }
+        snippets.push(snippet);
+      });
+      if (!found) snippets.push(action.snippet);
+      return Object.assign({}, state, { loading: false, snippets });
+    }
 
     case actions.objects.RECEIVE_COMMENT: {
       let found = false;
