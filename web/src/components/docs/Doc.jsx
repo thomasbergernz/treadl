@@ -4,12 +4,14 @@ import styled from 'styled-components';
 
 import PatternDoc from './patterns.md';
 import ProjectDoc from './projects.md';
+import SnippetsDoc from './snippets.md';
 import GroupDoc from './groups.md';
 import AccountDoc from './account.md';
 
 const docs = {
   patterns: <PatternDoc />,
   projects: <ProjectDoc />,
+  snippets: <SnippetsDoc />,
   groups: <GroupDoc />,
   account: <AccountDoc />,
 };

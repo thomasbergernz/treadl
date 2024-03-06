@@ -22,6 +22,9 @@ function Docs() {
           <Card as={Link} to='/docs/patterns' header='Pattern editor'
             description={`Learn how to use the ${utils.appName()} pattern editor.`}
           />
+          <Card as={Link} to='/docs/snippets' header='Snippets'
+            description={`Re-use bits of your patterns within and across your drafts.`}
+          />
           <Card as={Link} to='/docs/groups' header='Groups'
             description={`Learn more about ${utils.appName()} groups, and how they can be managed.`}
           />
