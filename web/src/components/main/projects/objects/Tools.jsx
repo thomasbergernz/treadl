@@ -139,15 +139,30 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   }
   const saveSnippet = () => {
     const selectedWarp = warp?.threading?.filter(t => t.isSelected)?.map(t => ({ shaft: t.shaft, colour: t.colour }));
-    const selectedWeft = weft?.treadling?.filter(t => t.isSelected)?.map(t => ({ treadle: t.treadle }));
+    const selectedWeft = weft?.treadling?.filter(t => t.isSelected)?.map(t => ({ treadle: t.treadle, colour: t.colour}));
     if (selectedWarp?.length) setCreatingSnippet({ type: 'warp', threading: selectedWarp, treadling: null });
     else setCreatingSnippet({ type: 'weft', threading: null, treadling: selectedWeft });
   }
   const onSaveSnippet = (snippet) => {
     setCreatingSnippet(null);
+    dispatch(actions.objects.receiveSnippet(snippet));
     if (snippet) {
       toast('📌 Snippet saved');
     }
+  }
+  const onInsertSnippet = (snippet) => {
+    if (snippet) {
+      const newWarp = Object.assign({}, pattern.warp);
+      const newWeft = Object.assign({}, pattern.weft);
+      if (snippet.type === 'warp') {
+        newWarp.threading.splice(editor.insertPoint, 0, ...snippet.threading);
+      }
+      else {
+        newWeft.treadling.splice(editor.insertPoint, 0, ...snippet.treadling);
+      }
+      updatePattern({ warp: newWarp, weft: newWeft });
+    } 
+    dispatch(actions.objects.updateEditor( { insertType: null, inseertPoint: null }));
   }
 
   const onZoomChange = zoom => updatePattern({ baseSize: zoom || 10 });
@@ -255,7 +270,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                 <Button.Group size="tiny">
                   <Button className='joyride-pan' data-tooltip="Pan (drag to move) pattern" color={editor.tool === 'pan' && 'blue'} size="tiny" icon onClick={() => enableTool('pan')}><Icon name="move" /></Button>
                   <Button data-tooltip="Select threads" color={editor.tool === 'select' && 'blue'} size="tiny" icon onClick={() => enableTool('select')}><Icon name="i cursor" /></Button>
-                  <Button data-tooltip="Insert threads" color={editor.tool === 'insert' && 'blue'} size="tiny" icon onClick={() => enableTool('insert')}><Icon name="plus" /></Button>
+                  <Button data-tooltip="Insert threads or snippets" color={editor.tool === 'insert' && 'blue'} size="tiny" icon onClick={() => enableTool('insert')}><Icon name="plus" /></Button>
                   <Button className='joyride-colour' data-tooltip="Apply thread colour" color={editor.tool === 'colour' && 'blue'} size="tiny" icon onClick={() => enableTool('colour')}><Icon name="paint brush" /></Button>
                   <Button data-tooltip="Erase threads" color={editor.tool === 'eraser' && 'blue'} size="tiny" icon onClick={() => enableTool('eraser')}><Icon name="eraser" /></Button>
                   <Button className='joyride-straight' data-tooltip="Straight draw" color={editor.tool === 'straight' && 'blue'} size="tiny" icon onClick={() => enableTool('straight')}>/ /</Button>
@@ -270,7 +285,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                 </div>
                 <Button.Group size="tiny">
                   <Popup hoverable on="click"
-                    trigger={<Button style={{marginLeft: 5}} size="tiny" icon="tint" style={{color: utils.rgb(editor.colour)}} />}
+                    trigger={<Button size="tiny" icon="tint" style={{marginLeft: 5, color: utils.rgb(editor.colour)}} />}
                     content={<div style={{width: 150}}>
                       {pattern.colours && pattern.colours.map(colour =>
                         <ColourSquare key={colour} colour={utils.rgb(colour)} onClick={() => setColour(colour)} />
@@ -369,7 +384,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
       {creatingSnippet &&
         <SnippetSaver type={creatingSnippet.type} threading={creatingSnippet.threading} treadling={creatingSnippet.treadling} isOpen={!!creatingSnippet} onComplete={onSaveSnippet} />
       }
-      <SnippetChooser type={editor?.insertType} isOpen={!!editor?.insertType} onComplete={console.log} />
+      <SnippetChooser type={editor?.insertType} isOpen={!!editor?.insertType} onComplete={onInsertSnippet} />
     </div>
   );
 }

@@ -87,8 +87,11 @@ function objects(state = initialState, action) {
         }
         snippets.push(snippet);
       });
-      if (!found) snippets.push(action.snippet);
+      if (!found) snippets.splice(0, 0, action.snippet);
       return Object.assign({}, state, { loading: false, snippets });
+    }
+    case actions.objects.DELETE_SNIPPET: {
+      return Object.assign({}, state, { snippets: state.snippets.filter(e => e._id !== action.snippetId) });
     }
 
     case actions.objects.RECEIVE_COMMENT: {

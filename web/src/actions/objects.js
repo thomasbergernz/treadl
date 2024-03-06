@@ -9,6 +9,7 @@ export default {
   SELECT_OBJECT: 'SELECT_OBJECT',
   UPDATE_EDITOR: 'UPDATE_EDITOR',
   RECEIVE_SNIPPET: 'RECEIVE_SNIPPET',
+  DELETE_SNIPPET: 'DELETE_SNIPPET',
   RECEIVE_COMMENT: 'RECEIVE_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
 
@@ -48,6 +49,10 @@ export default {
 
   receiveSnippet(snippet) {
     return { type: this.RECEIVE_SNIPPET, snippet };
+  },
+
+  deleteSnippet(snippetId) {
+    return { type: this.DELETE_SNIPPET, snippetId };
   },
 
   receiveComment(comment) {

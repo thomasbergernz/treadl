@@ -18,7 +18,7 @@ def create(user, data):
   snippet = {
     'name': name,
     'user': user['_id'],
-    'createdAt': datetime.datetime.now(),
+    'createdAt': datetime.datetime.utcnow(),
     'type': snippet_type,
     'threading': data.get('threading', []),
     'treadling': data.get('treadling', []),
@@ -31,6 +31,6 @@ def delete(user, id):
   db = database.get_db()
   snippet = db.snippets.find_one({'_id': ObjectId(id), 'user': user['_id']})
   if not snippet:
-    raise util.errors.BadRequest('Snippet not found')
+    raise util.errors.NotFound('Snippet not found')
   db.snippets.remove({'_id': snippet['_id']})
   return {'deletedSnippet': snippet['_id'] }

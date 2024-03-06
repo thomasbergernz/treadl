@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import utils from '../../../../utils/utils.js';
+import actions from '../../../../actions';
 
 const WeftContainer = styled.div`
   position: absolute;
@@ -50,6 +51,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
   const { tool, colour } = editor;
   const weftRef = useRef(null);
   const colourwayRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => paintDrawdown());
   useEffect(() => {
@@ -220,13 +222,7 @@ function Weft({ cellStyle, warp, weft, baseSize, updatePattern }) {
       updatePattern({ weft: newWeft });
     }
     if (editor.tool === 'insert') {
-      const number = parseInt(prompt('Enter a number of threads to insert above this point.'));
-      if (number && number > 0) {
-        const newThreads = [...new Array(number)].map(() => ({ treadle: 0 }));
-        const newWeft = Object.assign({}, weft);
-        newWeft.treadling?.splice(thread - 1, 0, ...newThreads);
-        updatePattern({ weft: newWeft });
-      }
+      dispatch(actions.objects.updateEditor({ insertType: 'weft', insertPoint: thread - 1 }));
     }
   };
 

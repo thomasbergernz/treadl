@@ -221,13 +221,6 @@ function Warp({ baseSize, cellStyle, warp, weft, updatePattern }) {
     }
     if (editor.tool === 'insert') {
       dispatch(actions.objects.updateEditor({ insertType: 'warp', insertPoint: thread }));
-      /*const number = parseInt(prompt('Enter a number of threads to insert before this point.'));
-      if (number && number > 0) {
-        const newThreads = [...new Array(number)].map(() => ({ shaft: 0 }));
-        const newWarp = Object.assign({}, warp);
-        newWarp.threading?.splice(thread, 0, ...newThreads);
-        updatePattern({ warp: newWarp });
-      }*/
     }
   };
 
