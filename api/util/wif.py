@@ -364,18 +364,27 @@ def draw_image(obj, with_plan=False):
   ], fill=None, outline=(0,0,0), width=1)
   for (y, weft_thread) in enumerate(weft['treadling']):
     for (x, warp_thread) in enumerate(warp['threading']):
+      # Ensure selected treadle and shaft is within configured pattern range
       treadle = 0 if weft_thread['treadle'] > weft['treadles'] else weft_thread['treadle']
-      shaft = warp_thread['shaft']
+      shaft = 0 if warp_thread['shaft'] > warp['shafts'] else warp_thread['shaft']
+
+      # Work out if should be warp or weft in "front"
+      tieup = tieups[treadle-1] if treadle > 0 else []
+      tieup = [t for t in tieup if t <= warp['shafts']]
+      thread_type = 'warp' if shaft in tieup else 'weft'
+
+      # Calculate current colour
       weft_colour = weft_thread.get('colour') or weft.get('defaultColour')
       warp_colour = warp_thread.get('colour') or warp.get('defaultColour')
-      tieup = tieups[treadle-1] if treadle > 0 else []
-      tieup = [t for t in tieup if t < warp['shafts']]
-      thread_type = 'warp' if shaft in tieup else 'weft'
+      colour = colour_tuple(warp_colour if thread_type == 'warp' else weft_colour)
+
+      # Calculate drawdown coordinates
       x1 = drawdown_right - (x + 1) * BASE_SIZE
       x2 = drawdown_right - x * BASE_SIZE
       y1 = drawdown_top + y * BASE_SIZE
       y2 = drawdown_top + (y + 1) * BASE_SIZE
-      colour = colour_tuple(warp_colour if thread_type == 'warp' else weft_colour)
+
+      # Draw the thread, with shadow
       d = [0.6, 0.8, 0.9, 1.1, 1.3, 1.3, 1.1, 0.9, 0.8, 0.6, 0.5]
       if thread_type == 'warp':
         for (i, grad_x) in enumerate(range(x1, x2)):
