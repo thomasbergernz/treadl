@@ -10,6 +10,8 @@ export default {
   UPDATE_EDITOR: 'UPDATE_EDITOR',
   RECEIVE_SNIPPET: 'RECEIVE_SNIPPET',
   DELETE_SNIPPET: 'DELETE_SNIPPET',
+  RECEIVE_SNAPSHOT: 'RECEIVE_SNAPSHOT',
+  TRAVERSE_SNAPSHOTS: 'TRAVERSE_SNAPSHOTS',
   RECEIVE_COMMENT: 'RECEIVE_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
 
@@ -53,6 +55,14 @@ export default {
 
   deleteSnippet(snippetId) {
     return { type: this.DELETE_SNIPPET, snippetId };
+  },
+
+  receiveSnapshot(snapshot) {
+    return { type: this.RECEIVE_SNAPSHOT, snapshot };
+  },
+
+  traverseSnapshots(direction) {
+    return { type: this.TRAVERSE_SNAPSHOTS, direction };
   },
 
   receiveComment(comment) {

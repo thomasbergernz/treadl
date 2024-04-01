@@ -63,13 +63,15 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   const { objectId, username, projectPath } = useParams();
   const { colours } = pattern;
 
-  const { user, project, editor } = useSelector(state => {
+  const { user, project, editor, snapshots, currentSnapshotIndex } = useSelector(state => {
     const user = state.users.users.filter(u => state.auth.currentUserId === u._id)[0];
     let project = {};
     state.projects.projects.forEach((p) => {
       if (p.path === projectPath && p.owner && p.owner.username === username) project = p;
     });
-    return { user, project, editor: state.objects.editor };
+    const snapshots = state.objects.snapshots.filter(s => s.objectId === objectId);
+    const currentSnapshotIndex = state.objects.currentSnapshotIndex;
+    return { user, project, editor: state.objects.editor, snapshots, currentSnapshotIndex };
   });
 
   useEffect(() => {
@@ -84,6 +86,22 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   useEffect(() => {
     if (colours?.length && !editor.colour) setColour(colours[colours.length - 1]);
   }, [colours]);
+
+  const undo = () => {
+    const snapshot = snapshots[currentSnapshotIndex + 1];
+    console.log(snapshot);
+    console.log(currentSnapshotIndex);
+    if (!snapshot) return;
+    const newWarp = Object.assign({}, snapshot.warp);
+    const newWeft = Object.assign({}, snapshot.weft);
+    //if (snapshot.warp.threading) newWarp.threading = snapshot.warp.threading;
+    //if (snapshot.weft.treadling) newWeft.treadling = snapshot.weft.treadling;
+    updatePattern({ warp: newWarp, weft: newWeft }, true);
+    dispatch(actions.objects.traverseSnapshots(-1));
+  };
+  const redo = () => {
+
+  };
 
   const enableTool = (tool) => {
     dispatch(actions.objects.updateEditor({ tool, colour: editor.colour }));
@@ -247,6 +265,12 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
             </div>
           :
             <div style={{display: 'flex', alignItems: 'end'}}>
+              <div style={{marginRight: 10}}>
+                <Button.Group size="tiny">
+                  <Button disabled={snapshots?.length < 2} data-tooltip="Undo" size="tiny" icon onClick={undo}><Icon name="undo" /></Button>
+                  <Button disabled={!currentSnapshotIndex} data-tooltip="Redo" size="tiny" icon onClick={redo}><Icon name="redo" /></Button>
+                </Button.Group>
+              </div>
               <div>
                 <ToolLabel>View</ToolLabel>
                 <Popup hoverable on='click'

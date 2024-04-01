@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useBlocker } from 'react-router';
 import { toast } from 'react-toastify';
+import { useDebouncedCallback } from 'use-debounce';
 import styled from 'styled-components';
 import Tour from '../../../includes/Tour';
 import ElementPan from '../../../includes/ElementPan';
@@ -43,6 +44,8 @@ function Draft() {
       dispatch(actions.objects.receive(o));
       setObject(o);
       setPattern(o.pattern);
+      console.log('GETTING OBJECT', createSnapshot);
+      setTimeout(() => createSnapshot(o.pattern), 1000);
     });
   }, [objectId]);
   
@@ -51,15 +54,28 @@ function Draft() {
       currentLocation.pathname !== nextLocation.pathname
   );
 
+  const createSnapshot = (snapshotPattern) => {
+    const snapshot = Object.assign({}, snapshotPattern);
+    snapshot.objectId = objectId;
+    snapshot.warp = Object.assign({}, snapshotPattern.warp);
+    snapshot.weft = Object.assign({}, snapshotPattern.weft);
+    snapshot.tieups = Object.assign({}, snapshotPattern.tieups);
+    dispatch(actions.objects.receiveSnapshot(snapshot));
+    console.log('CREATING SNAPSHOT');
+  };
+  const debouncedSnapshot = useDebouncedCallback(createSnapshot, 2000);
+
   const updateObject = (update) => {
     setObject(Object.assign({}, object, update));
     setUnsaved(true);
   };
 
-  const updatePattern = (update) => {
+  const updatePattern = (update, withoutSnapshot = false) => {
     const newPattern = Object.assign({}, pattern, update);
-    setPattern(Object.assign({}, pattern, newPattern));
+    //setPattern(Object.assign({}, pattern, newPattern));
+    setPattern(newPattern);
     setUnsaved(true);
+    if (!withoutSnapshot) debouncedSnapshot(newPattern);
   };
   
   const saveObject = () => {

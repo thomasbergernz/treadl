@@ -9,6 +9,8 @@ const initialState = {
   selected: null,
   editor: { tool: 'straight', colour: null, view: 'interlacement', autoExtend: true },
   snippets: [],
+  snapshots: [],
+  currentSnapshotIndex: 0,
 };
 
 function objects(state = initialState, action) {
@@ -92,6 +94,16 @@ function objects(state = initialState, action) {
     }
     case actions.objects.DELETE_SNIPPET: {
       return Object.assign({}, state, { snippets: state.snippets.filter(e => e._id !== action.snippetId) });
+    }
+
+    case actions.objects.RECEIVE_SNAPSHOT: {
+      const snapshots = Object.assign([], state.snapshots);
+      snapshots.splice(0, 0, action.snapshot);
+      return Object.assign({}, state, { snapshots, currentSnapshotIndex: 0});
+    }
+    case actions.objects.TRAVERSE_SNAPSHOTS: {
+      const currentSnapshotIndex = state.currentSnapshotIndex + action.direction;
+      return Object.assign({}, state, { currentSnapshotIndex });
     }
 
     case actions.objects.RECEIVE_COMMENT: {
