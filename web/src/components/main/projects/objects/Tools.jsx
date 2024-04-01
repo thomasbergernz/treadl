@@ -105,14 +105,6 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     updateObject({ name: event.target.value });
   };
 
-  const setShafts = (event) => {
-    updatePattern({ warp: { ...warp, shafts: parseInt(event.target.value, 10) || 1 } });
-  };
-
-  const setTreadles = (event) => {
-    updatePattern({ weft: { ...weft, treadles: parseInt(event.target.value, 10) || 1 } });
-  };
-  
   const setAutomaticallyExtend = (event, data) => {
     dispatch(actions.objects.updateEditor({ autoExtend: data.checked }))
   };
@@ -190,6 +182,18 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     if (sure) {
       window.location.reload();
     }
+  };
+
+  const changeShafts = () => {
+    const newShafts = parseInt(window.prompt('Enter a new number of shafts for your pattern.'));
+    if (!newShafts) return;
+    updatePattern({ warp: { ...warp, shafts: newShafts } });
+  };
+
+  const changeTreadles = () => {
+    const newTreadles = parseInt(window.prompt('Enter a new number of treadles for your pattern.'));
+    if (!newTreadles) return;
+    updatePattern({ weft: { ...weft, treadles: newTreadles } });
   };
 
   const changeWidth = () => {
@@ -323,11 +327,15 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
                       <Grid.Row className='joyride-threads'>
                         <Grid.Column>
                           <small>Shafts</small>
-                          <Input fluid type="number" value={warp.shafts} onKeyDown={e => false} onChange={setShafts} size="mini" />
+                          <Input fluid readOnly value={warp.shafts} size="mini"
+                            action={{icon: 'edit', onClick: changeShafts}}
+                          />
                         </Grid.Column>
                         <Grid.Column>
                           <small>Treadles</small>
-                          <Input fluid type="number" value={weft.treadles} onKeyDown={e => false} onChange={setTreadles} size="mini" />
+                          <Input fluid readOnly value={weft.treadles} size="mini"
+                            action={{icon: 'edit', onClick: changeTreadles}}
+                          />
                         </Grid.Column>
                       </Grid.Row>
                       <Grid.Row style={{paddingTop: 0}}>
