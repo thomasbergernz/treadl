@@ -55,11 +55,15 @@ function Draft() {
   );
 
   const createSnapshot = (snapshotPattern) => {
-    const snapshot = Object.assign({}, snapshotPattern);
-    snapshot.objectId = objectId;
-    snapshot.warp = Object.assign({}, snapshotPattern.warp);
-    snapshot.weft = Object.assign({}, snapshotPattern.weft);
-    snapshot.tieups = Object.assign({}, snapshotPattern.tieups);
+    //const snapshot = Object.assign({}, snapshotPattern);
+    const deepCopy = JSON.parse(JSON.stringify(snapshotPattern));
+    const snapshot = {
+      objectId: objectId,
+      createdAt: new Date(),
+      warp: deepCopy.warp,
+      weft: deepCopy.weft,
+      tieups: deepCopy.tieups,
+    };
     dispatch(actions.objects.receiveSnapshot(snapshot));
     console.log('CREATING SNAPSHOT');
   };

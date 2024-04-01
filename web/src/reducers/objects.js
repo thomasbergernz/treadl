@@ -99,10 +99,12 @@ function objects(state = initialState, action) {
     case actions.objects.RECEIVE_SNAPSHOT: {
       const snapshots = Object.assign([], state.snapshots);
       snapshots.splice(0, 0, action.snapshot);
+      if (snapshots.length > 10) snapshots.pop(); // Only keep the latest 10 snapshots
       return Object.assign({}, state, { snapshots, currentSnapshotIndex: 0});
     }
     case actions.objects.TRAVERSE_SNAPSHOTS: {
       const currentSnapshotIndex = state.currentSnapshotIndex + action.direction;
+      if (currentSnapshotIndex < 0 || currentSnapshotIndex >= state.snapshots.length) return state;
       return Object.assign({}, state, { currentSnapshotIndex });
     }
 

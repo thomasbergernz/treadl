@@ -87,20 +87,20 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     if (colours?.length && !editor.colour) setColour(colours[colours.length - 1]);
   }, [colours]);
 
-  const undo = () => {
-    const snapshot = snapshots[currentSnapshotIndex + 1];
-    console.log(snapshot);
-    console.log(currentSnapshotIndex);
+  const applyNextHistory = direction => {
+    const snapshot = snapshots[currentSnapshotIndex + direction];
     if (!snapshot) return;
     const newWarp = Object.assign({}, snapshot.warp);
     const newWeft = Object.assign({}, snapshot.weft);
-    //if (snapshot.warp.threading) newWarp.threading = snapshot.warp.threading;
-    //if (snapshot.weft.treadling) newWeft.treadling = snapshot.weft.treadling;
-    updatePattern({ warp: newWarp, weft: newWeft }, true);
-    dispatch(actions.objects.traverseSnapshots(-1));
+    const newTieups = Object.assign({}, snapshot.tieups);
+    updatePattern({ warp: newWarp, weft: newWeft, tieups: newTieups }, true);
+    dispatch(actions.objects.traverseSnapshots(direction));
+  };
+  const undo = () => {
+    applyNextHistory(1); 
   };
   const redo = () => {
-
+    applyNextHistory(-1);
   };
 
   const enableTool = (tool) => {
@@ -192,7 +192,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
       toast('🗑️ Pattern deleted');
       dispatch(actions.objects.delete(objectId));
       navigate(`/${project.fullName}`);
-    }, err => console.log(err));
+    });
   }
 
   const revertChanges = () => {
@@ -267,7 +267,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
             <div style={{display: 'flex', alignItems: 'end'}}>
               <div style={{marginRight: 10}}>
                 <Button.Group size="tiny">
-                  <Button disabled={snapshots?.length < 2} data-tooltip="Undo" size="tiny" icon onClick={undo}><Icon name="undo" /></Button>
+                  <Button disabled={currentSnapshotIndex >= (snapshots?.length - 1)} data-tooltip="Undo" size="tiny" icon onClick={undo}><Icon name="undo" /></Button>
                   <Button disabled={!currentSnapshotIndex} data-tooltip="Redo" size="tiny" icon onClick={redo}><Icon name="redo" /></Button>
                 </Button.Group>
               </div>
