@@ -92,7 +92,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     if (!snapshot) return;
     const newWarp = Object.assign({}, snapshot.warp);
     const newWeft = Object.assign({}, snapshot.weft);
-    const newTieups = Object.assign({}, snapshot.tieups);
+    const newTieups = Object.assign([], snapshot.tieups);
     updatePattern({ warp: newWarp, weft: newWeft, tieups: newTieups }, true);
     dispatch(actions.objects.traverseSnapshots(direction));
   };
@@ -196,7 +196,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
   }
 
   const revertChanges = () => {
-    const sure = window.confirm('Really revert your changes to your last save point?\n\nAny updates to your pattern since you last saved will be lost.')
+    const sure = window.confirm('Really revert your changes to your last save point?\n\nAny updates to your pattern since you last saved, along with your "undo" history, will be lost.')
     if (sure) {
       window.location.reload();
     }

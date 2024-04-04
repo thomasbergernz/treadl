@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
@@ -40,7 +40,7 @@ function Tieups({ cellStyle, warp, weft, tieups, updatePattern, baseSize }) {
     updatePattern({ tieups: newTieups });
   };
 
-  const paintTieups = () => {
+  const paintTieups = useCallback(() => {
     const canvas = tieupRef.current;
     const ctx = canvas.getContext('2d');
 
@@ -62,7 +62,7 @@ function Tieups({ cellStyle, warp, weft, tieups, updatePattern, baseSize }) {
         ctx.fillRect(tieup * baseSize, canvas.height - ((tieups[tieup][shaft]) * baseSize), baseSize, baseSize);
       }
     }
-  }
+  }, [tieups, baseSize]);
 
   return (
     <StyledTieups ref={tieupRef} className='tieups joyride-tieups' width={weft.treadles * baseSize} height= {warp.shafts * baseSize} style={{width: weft.treadles * baseSize, height: warp.shafts * baseSize}} onClick={click}/>

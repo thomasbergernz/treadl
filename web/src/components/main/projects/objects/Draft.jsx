@@ -44,7 +44,7 @@ function Draft() {
       dispatch(actions.objects.receive(o));
       setObject(o);
       setPattern(o.pattern);
-      console.log('GETTING OBJECT', createSnapshot);
+      // Create a snapshot on first load (so undo has somewhere to revert to)
       setTimeout(() => createSnapshot(o.pattern), 1000);
     });
   }, [objectId]);
@@ -55,7 +55,6 @@ function Draft() {
   );
 
   const createSnapshot = (snapshotPattern) => {
-    //const snapshot = Object.assign({}, snapshotPattern);
     const deepCopy = JSON.parse(JSON.stringify(snapshotPattern));
     const snapshot = {
       objectId: objectId,
@@ -65,9 +64,8 @@ function Draft() {
       tieups: deepCopy.tieups,
     };
     dispatch(actions.objects.receiveSnapshot(snapshot));
-    console.log('CREATING SNAPSHOT');
   };
-  const debouncedSnapshot = useDebouncedCallback(createSnapshot, 2000);
+  const debouncedSnapshot = useDebouncedCallback(createSnapshot, 1000);
 
   const updateObject = (update) => {
     setObject(Object.assign({}, object, update));
