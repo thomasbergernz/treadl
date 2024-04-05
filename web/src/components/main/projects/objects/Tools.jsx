@@ -97,7 +97,7 @@ function Tools({ object, pattern, warp, weft, unsaved, saving, baseSize, updateP
     dispatch(actions.objects.traverseSnapshots(direction));
   };
   const undo = () => {
-    applyNextHistory(1); 
+    applyNextHistory(1);
   };
   const redo = () => {
     applyNextHistory(-1);

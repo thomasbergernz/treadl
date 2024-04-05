@@ -74,7 +74,6 @@ function Draft() {
 
   const updatePattern = (update, withoutSnapshot = false) => {
     const newPattern = Object.assign({}, pattern, update);
-    //setPattern(Object.assign({}, pattern, newPattern));
     setPattern(newPattern);
     setUnsaved(true);
     if (!withoutSnapshot) debouncedSnapshot(newPattern);
