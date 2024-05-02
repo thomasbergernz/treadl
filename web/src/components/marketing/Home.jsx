@@ -11,6 +11,7 @@ import PatternLoader from '../includes/PatternLoader';
 import projectImage from '../../images/project.png';
 import toolsImage from '../../images/tools.png';
 import filesImage from '../../images/files.png';
+import willImage from '../../images/will.jpg';
 
 const StyledHero = styled.div`
   background: linen;
@@ -170,7 +171,7 @@ function MarketingHome({ onRegisterClicked }) {
             <h4>Why join?</h4>
             <p>Everything above and...</p>
             <p>
-              <span role="img" aria-label="thumbs up">👍</span> It's free (<a href='#why-free'>How?</a>)
+              <span role="img" aria-label="thumbs up">👍</span> It's free (<a href='#why-free'>Find out more</a>)
             </p>
             <p>
               <span role="img" aria-label="runner">🏃</span> Quick &amp; easy to use
@@ -188,10 +189,6 @@ function MarketingHome({ onRegisterClicked }) {
               <span role="img" aria-label="map">🗺️</span> Contribute to the roadmap as we develop
             </p>
             <h4>And lots more coming soon!</h4>
-
-            <h2 id='why-free'>How is {utils.appName()} free?</h2>
-            <p>{utils.appName()} was built in order to help family weavers organise, store, and share their weaving projects, as well as plan and design new patterns. We thought that all of this could be useful to other people too!</p>
-            <p>{utils.appName()} is built on modern and low-cost technologies that are not too expensive to maintain. We may eventually add in additional paid-for features to help cover our costs if these grow too big. If you'd like to help us out or find out more then please <a href={`mailTo:${import.meta.env.VITE_CONTACT_EMAIL}`} target='_blank' rel='noopener noreferrer'>get in touch</a>!</p>
           </Grid.Column>
 
           <Grid.Column computer={6}>
@@ -199,10 +196,23 @@ function MarketingHome({ onRegisterClicked }) {
             <p>See what it's all about. Signing-up only takes a few seconds, and we'd love to hear your feedback.</p>
             <Divider hidden />
             <Button size="large" color="teal" fluid onClick={onRegisterClicked}>Join us</Button>
-
           </Grid.Column>
         </Grid>
       </Container>
+
+      <Grid stackable centered style={{ marginTop: 50, background: 'rgba(0,0,0, 0.05)', paddingTop: 40, paddingBottom: 40 }}>
+        <Grid.Column computer={6} textAlign='center'>
+          <img alt="Will" src={willImage} style={{ borderRadius: '50%', boxShadow: '0px 5px 5px rgba(0,0,0,0.2)', maxWidth: '200px' }} />
+          <p style={{marginTop: 10}}><em><span role="img" aria-label="wave">👋</span> Hi, I'm <a href="https://wilw.dev" target='_blank' rel='noopener noreferrer'>Will</a>. I'm the developer behind {utils.appName()}!</em></p>
+        </Grid.Column>
+        <Grid.Column computer={6}>
+          <h2 id='why-free'>Why is {utils.appName()} free?</h2>
+          <p>{utils.appName()} is built and maintained by a solo developer as a way to give back to the technology and arts communities. Initially it was built in order to help family weavers organise, store, and share their weaving projects, as well as plan and design new patterns. We thought that all of this could be useful to other people too!</p>
+          <p>{utils.appName()} is free to use, but costs time and money to maintain and run.</p>
+        {import.meta.env.VITE_PATREON_URL && <p>If you'd like to, or if you get value from {utils.appName()}, you may wish to support the project on <a href={import.meta.env.VITE_PATREON_URL} target='_blank' rel='noopener noreferrer'>Patreon</a>.</p>}
+        </Grid.Column>
+      </Grid>
+
 
     </div>
   );
